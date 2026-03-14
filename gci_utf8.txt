@@ -1,0 +1,21 @@
+﻿
+
+    디렉터리: C:\Users\Admi
+    nistrator\.gemini\a
+    ntigravity\scratch\
+    hyundai-sky-terrace
+    -music
+
+
+Mode      LastWriteTime
+----      -------------
+d-----  2026-03-14   오후
+                   4:20
+-a----  2026-03-14   오후
+                   4:21
+-a----  2026-03-14   오후
+                   4:21
+-a----  2026-03-14   오후
+                   3:57
+
+
