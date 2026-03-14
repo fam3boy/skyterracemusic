@@ -1,14 +1,10 @@
-"use client";
-
 import AdminLayout from '@/components/AdminLayout';
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { SongRequest, RequestStatus } from '@/types/database';
 
 export default function RequestsManagementPage() {
-  const [requests, setRequests] = useState<SongRequest[]>([]);
+  const [requests, setRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<RequestStatus | 'all'>('all');
+  const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'hold' | 'deleted'>('all');
   const [memoOpen, setMemoOpen] = useState<string | null>(null);
   const [memoText, setMemoText] = useState('');
 
@@ -18,46 +14,49 @@ export default function RequestsManagementPage() {
 
   async function fetchRequests() {
     setLoading(true);
-    let query = supabase
-      .from('song_requests')
-      .select('*, monthly_themes(title)')
-      .order('created_at', { ascending: false });
-
-    if (filter !== 'all') {
-      query = query.eq('status', filter);
+    try {
+      const res = await fetch(`/api/admin/requests?status=${filter}`);
+      if (res.ok) {
+        const data = await res.json();
+        setRequests(data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch requests', err);
+    } finally {
+      setLoading(false);
     }
-
-    const { data, error } = await query;
-    if (!error && data) {
-      setRequests(data as any);
-    }
-    setLoading(false);
   }
 
-  const updateStatus = async (id: string, status: RequestStatus) => {
-    const { error } = await supabase
-      .from('song_requests')
-      .update({ 
-        status, 
-        approved_at: status === 'approved' ? new Date().toISOString() : null 
-      })
-      .eq('id', id);
+  const updateStatus = async (id: string, status: string) => {
+    try {
+      const res = await fetch('/api/admin/requests', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status }),
+      });
 
-    if (!error) {
-      // Log action (simplified for now)
-      setRequests(requests.map(r => r.id === id ? { ...r, status, approved_at: status === 'approved' ? new Date().toISOString() : undefined } : r));
+      if (res.ok) {
+        setRequests(requests.map(r => r.id === id ? { ...r, status, approved_at: status === 'approved' ? new Date().toISOString() : null } : r));
+      }
+    } catch (err) {
+      console.error('Failed to update status', err);
     }
   };
 
   const handleSaveMemo = async (id: string) => {
-    const { error } = await supabase
-      .from('song_requests')
-      .update({ admin_memo: memoText })
-      .eq('id', id);
+    try {
+      const res = await fetch('/api/admin/requests', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, admin_memo: memoText }),
+      });
 
-    if (!error) {
-      setRequests(requests.map(r => r.id === id ? { ...r, admin_memo: memoText } : r));
-      setMemoOpen(null);
+      if (res.ok) {
+        setRequests(requests.map(r => r.id === id ? { ...r, admin_memo: memoText } : r));
+        setMemoOpen(null);
+      }
+    } catch (err) {
+      console.error('Failed to save memo', err);
     }
   };
 

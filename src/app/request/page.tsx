@@ -1,9 +1,6 @@
-"use client";
-
 import { useState } from 'react';
 import Link from 'next/link';
 import { isValidYouTubeUrl } from '@/utils/youtube';
-import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 
 export default function RequestPage() {
@@ -39,49 +36,19 @@ export default function RequestPage() {
     }
 
     try {
-      // Get current active theme
-      const { data: theme } = await supabase
-        .from('monthly_themes')
-        .select('id')
-        .eq('is_active', true)
-        .single();
+      // Check for duplicates via API
+      // First, we need the active theme ID, but we can just let the server handle it or fetch it.
+      // For efficiency, let's just submit, or do a check if the user has entered enough.
+      
+      const res = await fetch('/api/requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
 
-      // Check for duplicates in theme_tracks or song_requests
-      if (theme) {
-        const { data: existingTrack } = await supabase
-          .from('theme_tracks')
-          .select('id')
-          .eq('theme_id', theme.id)
-          .ilike('title', formData.title.trim())
-          .ilike('artist', formData.artist.trim())
-          .limit(1);
+      const data = await res.json();
 
-        const { data: existingRequest } = await supabase
-          .from('song_requests')
-          .select('id')
-          .eq('theme_id', theme.id)
-          .ilike('title', formData.title.trim())
-          .ilike('artist', formData.artist.trim())
-          .neq('status', 'deleted')
-          .limit(1);
-
-        if (existingTrack || existingRequest) {
-          setDuplicateWarning('이 곡은 이미 이번 달 테마 플레이리스트에 있거나 신청된 곡입니다. 그래도 신청하시겠습니까?');
-          // We don't block submission, just warn (as per requirement "중복곡 확인이 쉽게 보이도록")
-        }
-      }
-
-      const { data, error: insertError } = await supabase
-        .from('song_requests')
-        .insert({
-          ...formData,
-          theme_id: theme?.id,
-          status: 'pending'
-        })
-        .select()
-        .single();
-
-      if (insertError) throw insertError;
+      if (!res.ok) throw new Error(data.error || 'Failed to submit');
 
       router.push(`/status/${data.id}?new=true`);
     } catch (err: any) {

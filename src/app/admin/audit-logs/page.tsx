@@ -1,8 +1,5 @@
-"use client";
-
 import AdminLayout from '@/components/AdminLayout';
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
 
 export default function AuditLogsPage() {
   const [logs, setLogs] = useState<any[]>([]);
@@ -10,13 +7,17 @@ export default function AuditLogsPage() {
 
   useEffect(() => {
     async function fetchLogs() {
-      const { data, error } = await supabase
-        .from('audit_logs')
-        .select('*, admins(nickname, email)')
-        .order('created_at', { ascending: false });
-
-      if (!error && data) setLogs(data);
-      setLoading(false);
+      try {
+        const res = await fetch('/api/admin/audit-logs');
+        if (res.ok) {
+          const data = await res.json();
+          setLogs(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch logs', err);
+      } finally {
+        setLoading(false);
+      }
     }
     fetchLogs();
   }, []);

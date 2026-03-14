@@ -1,8 +1,5 @@
-"use client";
-
 import AdminLayout from '@/components/AdminLayout';
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
 
 export default function MailLogsPage() {
   const [logs, setLogs] = useState<any[]>([]);
@@ -15,13 +12,17 @@ export default function MailLogsPage() {
 
   async function fetchLogs() {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('weekly_mail_logs')
-      .select('*')
-      .order('sent_at', { ascending: false });
-
-    if (!error && data) setLogs(data);
-    setLoading(false);
+    try {
+      const res = await fetch('/api/admin/mail-logs');
+      if (res.ok) {
+        const data = await res.json();
+        setLogs(data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch logs', err);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleManualResend = async (log: any) => {

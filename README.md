@@ -18,7 +18,8 @@
 ## 🛠 기술 스택
 - **Framework**: Next.js 14 (App Router)
 - **Styling**: Tailwind CSS (현대백화점 브랜드 가이드 준수)
-- **Database/Auth**: Supabase
+- **Database**: Vercel Postgres (Edge Compatible)
+- **Auth**: NextAuth.js (Credentials Provider)
 - **Language**: TypeScript
 
 ## ⚙️ 설정 방법 (Environment Variables)
@@ -26,15 +27,24 @@
 `.env.local` 파일에 다음 항목을 설정해야 합니다:
 
 ```env
-# Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key (For server-side automation)
+# Vercel Postgres Configuration
+POSTGRES_URL=your_vercel_postgres_url
+POSTGRES_PRISMA_URL=...
+POSTGRES_URL_NON_POOLING=...
+POSTGRES_USER=...
+POSTGRES_HOST=...
+POSTGRES_PASSWORD=...
+POSTGRES_DATABASE=...
+
+# NextAuth Configuration
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_nextauth_secret (Generate with: openssl rand -base64 32)
 
 # Automation Settings
 CRON_SECRET=your_random_string (Security for API routes)
 WEEKLY_MAIL_RECIPIENT=broadcasting@hyundai.com (Mail destination)
 ```
+
 
 ## 📅 스케줄링 및 집계 구조
 

@@ -1,15 +1,11 @@
-"use client";
-
 import AdminLayout from '@/components/AdminLayout';
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { MonthlyTheme, ThemeTrack } from '@/types/database';
 
 export default function ThemesPage() {
-  const [themes, setThemes] = useState<MonthlyTheme[]>([]);
+  const [themes, setThemes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingTheme, setEditingTheme] = useState<any>(null);
-  const [tracks, setTracks] = useState<Partial<ThemeTrack>[]>([]);
+  const [tracks, setTracks] = useState<any[]>([]);
 
   useEffect(() => {
     fetchThemes();
@@ -17,58 +13,69 @@ export default function ThemesPage() {
 
   async function fetchThemes() {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('monthly_themes')
-      .select('*')
-      .order('theme_month', { ascending: false });
-
-    if (!error && data) setThemes(data);
-    setLoading(false);
+    try {
+      const res = await fetch('/api/admin/themes');
+      if (res.ok) {
+        const data = await res.json();
+        setThemes(data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch themes', err);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleToggleActive = async (id: string, current: boolean) => {
-    if (!current) {
-      // Deactivate all others first
-      await supabase.from('monthly_themes').update({ is_active: false }).neq('id', id);
+    try {
+      const res = await fetch('/api/admin/themes', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, is_active: !current }),
+      });
+
+      if (res.ok) {
+        fetchThemes();
+      }
+    } catch (err) {
+      console.error('Failed to toggle active', err);
     }
-    await supabase.from('monthly_themes').update({ is_active: !current }).eq('id', id);
-    fetchThemes();
   };
 
-  const handleEdit = async (theme: MonthlyTheme) => {
+  const handleEdit = async (theme: any) => {
     setEditingTheme(theme);
-    const { data } = await supabase
-      .from('theme_tracks')
-      .select('*')
-      .eq('theme_id', theme.id)
-      .order('order_index');
-    setTracks(data || []);
+    try {
+      const res = await fetch(`/api/admin/themes?id=${theme.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setTracks(data.tracks || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch theme details', err);
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { data: theme, error: themeError } = editingTheme.id 
-      ? await supabase.from('monthly_themes').update({ 
-          title: editingTheme.title, 
-          theme_month: editingTheme.theme_month,
-          description: editingTheme.description 
-        }).eq('id', editingTheme.id).select().single()
-      : await supabase.from('monthly_themes').insert({ 
-          title: editingTheme.title, 
-          theme_month: editingTheme.theme_month,
-          description: editingTheme.description 
-        }).select().single();
+    try {
+      const method = editingTheme.id ? 'PATCH' : 'POST';
+      const body = {
+        ...editingTheme,
+        tracks
+      };
 
-    if (!themeError && theme) {
-      // Sync tracks
-      await supabase.from('theme_tracks').delete().eq('theme_id', theme.id);
-      if (tracks.length > 0) {
-        await supabase.from('theme_tracks').insert(
-          tracks.map((t, i) => ({ ...t, theme_id: theme.id, order_index: i }))
-        );
+      const res = await fetch('/api/admin/themes', {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      if (res.ok) {
+        setEditingTheme(null);
+        fetchThemes();
       }
-      setEditingTheme(null);
-      fetchThemes();
+    } catch (err) {
+      console.error('Failed to save theme', err);
     }
   };
 

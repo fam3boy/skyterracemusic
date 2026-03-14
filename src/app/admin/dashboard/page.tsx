@@ -1,8 +1,5 @@
-"use client";
-
 import AdminLayout from '@/components/AdminLayout';
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
 
 export default function DashboardPage() {
   const [stats, setStats] = useState({
@@ -14,30 +11,20 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function fetchStats() {
-      // Get counts
-      const { count: pendingCount } = await supabase
-        .from('song_requests')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'pending');
-
-      const { count: approvedCount } = await supabase
-        .from('song_requests')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'approved');
-
-      // Get active theme
-      const { data: theme } = await supabase
-        .from('monthly_themes')
-        .select('*')
-        .eq('is_active', true)
-        .single();
-
-      setStats({
-        pending: pendingCount || 0,
-        approvedTotal: approvedCount || 0,
-        totalThisMonth: (pendingCount || 0) + (approvedCount || 0),
-      });
-      setActiveTheme(theme);
+      try {
+        const res = await fetch('/api/admin/stats');
+        if (res.ok) {
+          const data = await res.json();
+          setStats({
+            pending: data.pending,
+            approvedTotal: data.approvedTotal,
+            totalThisMonth: data.pending + data.approvedTotal
+          });
+          setActiveTheme(data.activeTheme);
+        }
+      } catch (err) {
+        console.error('Failed to fetch stats', err);
+      }
     }
     fetchStats();
   }, []);

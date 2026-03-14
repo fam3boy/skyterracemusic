@@ -1,30 +1,31 @@
-"use client";
-
-import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [loading, setLoading] = useState(true);
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    async function checkUser() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        router.push('/admin/login');
-      }
-      setLoading(false);
+    if (status === 'unauthenticated') {
+      router.push('/admin/login');
     }
-    checkUser();
-  }, [router]);
+  }, [status, router]);
 
-  if (loading) return null;
+  if (status === 'loading') {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-hyundai-gray-100">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-hyundai-emerald"></div>
+      </div>
+    );
+  }
+
+  if (!session) return null;
 
   return (
     <div className="flex min-h-screen bg-hyundai-gray-100">
@@ -66,7 +67,7 @@ export default function AdminLayout({
             활동 로그
           </Link>
           <button 
-            onClick={() => supabase.auth.signOut().then(() => router.push('/admin/login'))}
+            onClick={() => signOut({ callbackUrl: '/admin/login' })}
             className="w-full flex items-center gap-3 px-6 py-4 hover:bg-red-900/40 text-red-400 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

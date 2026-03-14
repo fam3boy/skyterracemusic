@@ -1,31 +1,28 @@
-"use client";
-
 import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
-import { SongRequest } from '@/types/database';
 
 export default function StatusDetailPage() {
   const { id } = useParams();
   const searchParams = useSearchParams();
   const isNew = searchParams.get('new') === 'true';
   
-  const [request, setRequest] = useState<SongRequest | null>(null);
+  const [request, setRequest] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchRequest() {
-      const { data, error } = await supabase
-        .from('song_requests')
-        .select('*')
-        .eq('id', id)
-        .single();
-      
-      if (!error && data) {
-        setRequest(data);
+      try {
+        const res = await fetch(`/api/requests/${id}`);
+        if (res.ok) {
+          const data = await res.json();
+          setRequest(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch request', err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
     fetchRequest();
   }, [id]);
