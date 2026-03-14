@@ -10,27 +10,58 @@ export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url);
   const status = searchParams.get('status');
+  const search = searchParams.get('q');
+  const startDate = searchParams.get('start');
+  const endDate = searchParams.get('end');
 
   try {
-    let result;
+    let queryStr = `
+      SELECT sr.*, mt.title as theme_title,
+             (SELECT COUNT(*) FROM song_requests d 
+              WHERE d.title = sr.title AND d.artist = sr.artist 
+              AND d.id != sr.id AND d.theme_id = sr.theme_id 
+              AND d.status != 'deleted') as duplicate_count
+      FROM song_requests sr
+      LEFT JOIN monthly_themes mt ON sr.theme_id = mt.id
+      WHERE 1=1
+    `;
+    const params: any[] = [];
+
     if (status && status !== 'all') {
-      result = await sql`
-        SELECT sr.*, mt.title as theme_title 
-        FROM song_requests sr
-        LEFT JOIN monthly_themes mt ON sr.theme_id = mt.id
-        WHERE sr.status = ${status}
-        ORDER BY sr.created_at DESC
-      `;
+      params.push(status);
+      queryStr += ` AND sr.status = $${params.length}`;
+      if (status === 'deleted') {
+         queryStr += ` AND sr.deleted_at IS NOT NULL`;
+      } else {
+         queryStr += ` AND sr.deleted_at IS NULL`;
+      }
     } else {
-      result = await sql`
-        SELECT sr.*, mt.title as theme_title 
-        FROM song_requests sr
-        LEFT JOIN monthly_themes mt ON sr.theme_id = mt.id
-        ORDER BY sr.created_at DESC
-      `;
+      // For 'all', exclude soft-deleted items unless 'all' includes them.
+      // Usually 'all' in a CMS means 'all active'. Let's exclude deleted from 'all'.
+      queryStr += ` AND sr.deleted_at IS NULL`;
     }
+
+    if (search) {
+      params.push(`%${search}%`);
+      queryStr += ` AND (sr.title ILIKE $${params.length} OR sr.artist ILIKE $${params.length} OR sr.requester_name ILIKE $${params.length})`;
+    }
+
+    if (startDate) {
+      params.push(startDate);
+      queryStr += ` AND sr.created_at >= $${params.length}`;
+    }
+
+    if (endDate) {
+      params.push(endDate);
+      queryStr += ` AND sr.created_at <= $${params.length}`;
+    }
+
+    queryStr += ` ORDER BY sr.created_at DESC`;
+
+    const result = await sql.query(queryStr, params);
     return NextResponse.json(result.rows);
   } catch (error: any) {
+    console.error('Requests fetch error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -44,9 +75,13 @@ export async function PATCH(req: Request) {
 
     if (status) {
       const approved_at = status === 'approved' ? new Date().toISOString() : null;
+      const deleted_at = status === 'deleted' ? new Date().toISOString() : null;
+      
       await sql`
         UPDATE song_requests 
-        SET status = ${status}, approved_at = ${approved_at}
+        SET status = ${status}, 
+            approved_at = CASE WHEN ${status} = 'approved' THEN ${approved_at} ELSE approved_at END,
+            deleted_at = CASE WHEN ${status} = 'deleted' THEN ${deleted_at} ELSE NULL END
         WHERE id = ${id}
       `;
       await logAudit(`Changed request status to ${status}`, 'song_requests', id);
@@ -63,6 +98,7 @@ export async function PATCH(req: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
+    console.error('Request PATCH error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

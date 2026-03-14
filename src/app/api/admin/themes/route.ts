@@ -33,12 +33,12 @@ export async function POST(req: Request) {
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    const { title, theme_month, description, tracks } = await req.json();
+    const { title, theme_month, description, start_date, end_date, tracks } = await req.json();
 
     // Insert theme
     const themeRes = await sql`
-      INSERT INTO monthly_themes (title, theme_month, description)
-      VALUES (${title}, ${theme_month}, ${description})
+      INSERT INTO monthly_themes (title, theme_month, description, start_date, end_date)
+      VALUES (${title}, ${theme_month}, ${description}, ${start_date}, ${end_date})
       RETURNING id
     `;
     const themeId = themeRes.rows[0].id;
@@ -48,8 +48,8 @@ export async function POST(req: Request) {
       for (let i = 0; i < tracks.length; i++) {
         const track = tracks[i];
         await sql`
-          INSERT INTO theme_tracks (theme_id, title, artist, order_index)
-          VALUES (${themeId}, ${track.title}, ${track.artist}, ${i})
+          INSERT INTO theme_tracks (theme_id, title, artist, youtube_url, order_index)
+          VALUES (${themeId}, ${track.title}, ${track.artist}, ${track.youtube_url}, ${i})
         `;
       }
     }
@@ -58,6 +58,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, id: themeId });
   } catch (error: any) {
+    console.error('Theme POST error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -67,7 +68,7 @@ export async function PATCH(req: Request) {
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    const { id, title, theme_month, description, tracks, is_active } = await req.json();
+    const { id, title, theme_month, description, start_date, end_date, tracks, is_active } = await req.json();
 
     if (is_active !== undefined) {
       if (is_active) {
@@ -78,12 +79,14 @@ export async function PATCH(req: Request) {
       await logAudit(`Set theme active status to ${is_active}`, 'monthly_themes', id);
     }
 
-    if (title || theme_month || description !== undefined) {
+    if (title || theme_month || description !== undefined || start_date || end_date) {
       await sql`
         UPDATE monthly_themes 
         SET title = COALESCE(${title}, title), 
             theme_month = COALESCE(${theme_month}, theme_month),
-            description = COALESCE(${description}, description)
+            description = COALESCE(${description}, description),
+            start_date = COALESCE(${start_date}, start_date),
+            end_date = COALESCE(${end_date}, end_date)
         WHERE id = ${id}
       `;
       await logAudit('Updated theme details', 'monthly_themes', id, { title, theme_month });
@@ -95,8 +98,8 @@ export async function PATCH(req: Request) {
       for (let i = 0; i < tracks.length; i++) {
         const track = tracks[i];
         await sql`
-          INSERT INTO theme_tracks (theme_id, title, artist, order_index)
-          VALUES (${id}, ${track.title}, ${track.artist}, ${i})
+          INSERT INTO theme_tracks (theme_id, title, artist, youtube_url, order_index)
+          VALUES (${id}, ${track.title}, ${track.artist}, ${track.youtube_url}, ${i})
         `;
       }
       await logAudit('Synchronized theme tracks', 'monthly_themes', id, { trackCount: tracks.length });
@@ -104,6 +107,7 @@ export async function PATCH(req: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
+    console.error('Theme PATCH error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

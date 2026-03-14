@@ -15,6 +15,8 @@ CREATE TABLE monthly_themes (
     title TEXT NOT NULL,
     description TEXT,
     theme_month DATE NOT NULL UNIQUE, -- Store as YYYY-MM-01
+    start_date DATE,
+    end_date DATE,
     is_active BOOLEAN DEFAULT false,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,

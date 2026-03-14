@@ -99,38 +99,54 @@ export default function ThemesPage() {
 
       <div className="grid grid-cols-1 gap-6">
         {loading ? (
-          <div className="text-center py-20 uppercase font-black tracking-widest text-hyundai-gray-200">Loading Themes...</div>
+          <div className="text-center py-20 uppercase font-black tracking-widest text-hyundai-gray-200 animate-pulse">Synchronizing Themes...</div>
+        ) : themes.length === 0 ? (
+          <div className="text-center py-20 text-hyundai-gray-400 italic">No themes created yet.</div>
         ) : (
           themes.map(theme => (
-            <div key={theme.id} className={`card p-6 border-l-8 ${theme.is_active ? 'border-hyundai-emerald' : 'border-hyundai-gray-200'}`}>
-              <div className="flex justify-between items-start">
-                <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-xs font-bold text-hyundai-emerald bg-hyundai-emerald/10 px-2 py-1 rounded tracking-tighter uppercase">
+            <div key={theme.id} className={`card p-0 overflow-hidden border-none shadow-xl transition-all hover:scale-[1.01] ${theme.is_active ? 'ring-2 ring-hyundai-emerald ring-offset-4 ring-offset-hyundai-gray-100' : ''}`}>
+              <div className="flex flex-col md:flex-row">
+                <div className={`p-8 md:w-2/3 ${theme.is_active ? 'bg-white' : 'bg-hyundai-gray-100/50'}`}>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-[10px] font-black tracking-widest text-hyundai-emerald bg-hyundai-emerald/5 px-3 py-1.5 rounded-full border border-hyundai-emerald/20 uppercase">
                       {new Date(theme.theme_month).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long' })}
                     </span>
-                    {theme.is_active && <span className="text-[10px] font-black bg-hyundai-gold text-white px-2 py-1 rounded">ACTIVE</span>}
+                    {theme.is_active && (
+                      <span className="flex items-center gap-1 text-[10px] font-black bg-hyundai-gold text-white px-3 py-1.5 rounded-full shadow-lg shadow-hyundai-gold/20 italic animate-pulse">
+                        <span className="w-2 h-2 rounded-full bg-white opacity-75"></span>
+                        ON AIR
+                      </span>
+                    )}
                   </div>
-                  <h3 className="text-xl font-bold text-hyundai-black">{theme.title}</h3>
-                  <p className="text-sm text-hyundai-gray-500 mt-1">{theme.description || '설명이 없습니다.'}</p>
+                  <h3 className="text-2xl font-black text-hyundai-black mb-2">{theme.title}</h3>
+                  <p className="text-sm text-hyundai-gray-500 font-medium leading-relaxed">{theme.description || 'No description provided.'}</p>
+                  
+                  {(theme.start_date || theme.end_date) && (
+                    <div className="mt-6 flex items-center gap-4 text-xs font-bold text-hyundai-gray-400">
+                      <div className="flex items-center gap-1.5">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        OPERATIONAL PERIOD: {theme.start_date ? new Date(theme.start_date).toLocaleDateString() : 'N/A'} ~ {theme.end_date ? new Date(theme.end_date).toLocaleDateString() : 'N/A'}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
-                <div className="flex gap-2">
+                <div className="p-8 md:w-1/3 bg-hyundai-black flex flex-col justify-center gap-3">
                   <button 
                     onClick={() => handleToggleActive(theme.id, theme.is_active)}
-                    className={`px-4 py-2 rounded-lg text-sm font-bold border transition-all ${
+                    className={`w-full py-3 rounded-xl text-xs font-black transition-all uppercase tracking-widest ${
                       theme.is_active 
-                        ? 'bg-hyundai-gray-100 text-hyundai-gray-500 border-hyundai-gray-200' 
-                        : 'bg-hyundai-emerald text-white border-hyundai-emerald'
+                        ? 'bg-hyundai-gray-800 text-hyundai-gray-400 hover:text-white' 
+                        : 'bg-hyundai-emerald text-white hover:bg-white hover:text-hyundai-emerald shadow-lg shadow-hyundai-emerald/20'
                     }`}
                   >
-                    {theme.is_active ? '비활성화' : '이달의 테마로 설정'}
+                    {theme.is_active ? 'OFFLINE' : 'SET AS CURRENT'}
                   </button>
                   <button 
                     onClick={() => handleEdit(theme)}
-                    className="p-2 border border-hyundai-gray-200 rounded-lg hover:bg-hyundai-gray-100 text-hyundai-gray-500 transition-all"
+                    className="w-full py-3 bg-white/10 text-white rounded-xl text-xs font-black hover:bg-white hover:text-hyundai-black transition-all uppercase tracking-widest border border-white/20"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                    REFINE CONTENT
                   </button>
                 </div>
               </div>
@@ -140,108 +156,181 @@ export default function ThemesPage() {
       </div>
 
       {editingTheme && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-6 z-[100] backdrop-blur-sm">
-          <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-auto">
-            <form onSubmit={handleSave}>
-              <div className="p-8 border-b border-hyundai-gray-100">
-                <h3 className="font-bold text-2xl">테마 편집</h3>
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-6 z-[100] backdrop-blur-md">
+          <div className="bg-white rounded-3xl w-full max-w-3xl shadow-2xl animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-hidden flex flex-col">
+            <form onSubmit={handleSave} className="flex flex-col h-full">
+              <div className="p-8 border-b border-hyundai-gray-100 flex justify-between items-center bg-hyundai-gray-100/30">
+                <h3 className="font-black text-2xl text-hyundai-black uppercase tracking-tight">Theme Orchestration</h3>
+                <button type="button" onClick={() => setEditingTheme(null)} className="text-hyundai-gray-400 hover:text-red-500">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
               </div>
               
-              <div className="p-8 space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-bold text-hyundai-black mb-2">테마명</label>
-                    <input
-                      type="text"
-                      required
-                      className="w-full px-4 py-3 border border-hyundai-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-hyundai-emerald/20 focus:border-hyundai-emerald"
-                      value={editingTheme.title}
-                      onChange={(e) => setEditingTheme({ ...editingTheme, title: e.target.value })}
-                    />
+              <div className="p-8 space-y-8 overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-hyundai-gray-200">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-6 md:col-span-2">
+                    <div>
+                      <label className="block text-[10px] font-black text-hyundai-gray-400 uppercase tracking-[0.2em] mb-2">Theme Title</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="EX: SPRING WHISPERS"
+                        className="w-full px-5 py-4 bg-hyundai-gray-100/50 border border-hyundai-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-hyundai-emerald/10 focus:border-hyundai-emerald transition-all font-black text-lg text-hyundai-black"
+                        value={editingTheme.title}
+                        onChange={(e) => setEditingTheme({ ...editingTheme, title: e.target.value })}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black text-hyundai-gray-400 uppercase tracking-[0.2em] mb-2">Detailed Narrative</label>
+                      <textarea
+                        className="w-full px-5 py-4 bg-hyundai-gray-100/50 border border-hyundai-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-hyundai-emerald/10 focus:border-hyundai-emerald transition-all min-h-[100px] text-sm font-medium"
+                        placeholder="Provide background context for this theme..."
+                        value={editingTheme.description}
+                        onChange={(e) => setEditingTheme({ ...editingTheme, description: e.target.value })}
+                      />
+                    </div>
                   </div>
+
                   <div>
-                    <label className="block text-sm font-bold text-hyundai-black mb-2">적용 월</label>
+                    <label className="block text-[10px] font-black text-hyundai-gray-400 uppercase tracking-[0.2em] mb-2">Target Month</label>
                     <input
                       type="date"
                       required
-                      className="w-full px-4 py-3 border border-hyundai-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-hyundai-emerald/20 focus:border-hyundai-emerald"
-                      value={editingTheme.theme_month}
+                      className="w-full px-5 py-4 bg-hyundai-gray-100/50 border border-hyundai-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-hyundai-emerald/10 focus:border-hyundai-emerald transition-all text-sm font-bold"
+                      value={editingTheme.theme_month ? new Date(editingTheme.theme_month).toISOString().split('T')[0] : ''}
                       onChange={(e) => setEditingTheme({ ...editingTheme, theme_month: e.target.value })}
                     />
                   </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold text-hyundai-black mb-2">테마 설명</label>
-                  <textarea
-                    className="w-full px-4 py-3 border border-hyundai-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-hyundai-emerald/20 focus:border-hyundai-emerald min-h-[100px]"
-                    value={editingTheme.description}
-                    onChange={(e) => setEditingTheme({ ...editingTheme, description: e.target.value })}
-                  />
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[10px] font-black text-hyundai-gray-400 uppercase tracking-[0.2em] mb-2">Start Date</label>
+                      <input
+                        type="date"
+                        className="w-full px-4 py-4 bg-hyundai-gray-100/50 border border-hyundai-gray-200 rounded-2xl outline-none text-xs font-bold"
+                        value={editingTheme.start_date || ''}
+                        onChange={(e) => setEditingTheme({ ...editingTheme, start_date: e.target.value })}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black text-hyundai-gray-400 uppercase tracking-[0.2em] mb-2">End Date</label>
+                      <input
+                        type="date"
+                        className="w-full px-4 py-4 bg-hyundai-gray-100/50 border border-hyundai-gray-200 rounded-2xl outline-none text-xs font-bold"
+                        value={editingTheme.end_date || ''}
+                        onChange={(e) => setEditingTheme({ ...editingTheme, end_date: e.target.value })}
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <label className="text-sm font-bold text-hyundai-black">기본 플레이리스트</label>
+                  <div className="flex justify-between items-center border-b-2 border-hyundai-black pb-4">
+                    <label className="text-[10px] font-black text-hyundai-black uppercase tracking-[0.2em]">Curated Playlist</label>
                     <button 
                       type="button"
-                      onClick={() => setTracks([...tracks, { title: '', artist: '' }])}
-                      className="text-xs font-bold text-hyundai-emerald hover:underline"
+                      onClick={() => setTracks([...tracks, { title: '', artist: '', youtube_url: '' }])}
+                      className="px-4 py-2 bg-hyundai-emerald text-white text-[10px] font-black rounded-lg shadow-md hover:scale-105 transition-all uppercase tracking-widest"
                     >
-                      + 곡 추가
+                      + ADD TRACK
                     </button>
                   </div>
                   
-                  <div className="space-y-3">
+                  <div className="space-y-4">
+                    {tracks.length === 0 && (
+                      <p className="text-center py-10 text-hyundai-gray-400 text-xs italic">No tracks added to this theme.</p>
+                    )}
                     {tracks.map((track, i) => (
-                      <div key={i} className="flex gap-2 items-center">
-                        <span className="text-xs font-mono text-hyundai-gray-300 w-4">{i + 1}</span>
-                        <input
-                          placeholder="곡명"
-                          className="flex-grow px-3 py-2 border border-hyundai-gray-200 rounded-lg text-sm"
-                          value={track.title}
-                          onChange={(e) => {
-                            const newTracks = [...tracks];
-                            newTracks[i].title = e.target.value;
-                            setTracks(newTracks);
-                          }}
-                        />
-                        <input
-                          placeholder="아티스트"
-                          className="w-32 px-3 py-2 border border-hyundai-gray-200 rounded-lg text-sm"
-                          value={track.artist}
-                          onChange={(e) => {
-                            const newTracks = [...tracks];
-                            newTracks[i].artist = e.target.value;
-                            setTracks(newTracks);
-                          }}
-                        />
-                        <button 
-                          type="button"
-                          onClick={() => setTracks(tracks.filter((_, idx) => idx !== i))}
-                          className="p-2 text-red-300 hover:text-red-500 transition-colors"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                        </button>
+                      <div key={i} className="flex flex-col gap-3 p-5 bg-hyundai-gray-100/50 rounded-2xl border border-hyundai-gray-200 relative group/track">
+                        <div className="flex gap-3 items-center">
+                          <span className="text-[10px] font-black bg-hyundai-black text-white w-6 h-6 rounded flex items-center justify-center shrink-0">{i + 1}</span>
+                          <input
+                            placeholder="TRACK TITLE"
+                            className="flex-grow px-4 py-3 bg-white border border-hyundai-gray-200 rounded-xl text-xs font-black uppercase tracking-tight outline-none focus:border-hyundai-emerald transition-all"
+                            value={track.title}
+                            onChange={(e) => {
+                              const newTracks = [...tracks];
+                              newTracks[i].title = e.target.value;
+                              setTracks(newTracks);
+                            }}
+                          />
+                          <input
+                            placeholder="ARTIST"
+                            className="w-48 px-4 py-3 bg-white border border-hyundai-gray-200 rounded-xl text-xs font-bold outline-none focus:border-hyundai-emerald transition-all"
+                            value={track.artist}
+                            onChange={(e) => {
+                              const newTracks = [...tracks];
+                              newTracks[i].artist = e.target.value;
+                              setTracks(newTracks);
+                            }}
+                          />
+                          <div className="flex gap-1 shrink-0">
+                            <button 
+                              type="button"
+                              disabled={i === 0}
+                              onClick={() => {
+                                const newTracks = [...tracks];
+                                [newTracks[i-1], newTracks[i]] = [newTracks[i], newTracks[i-1]];
+                                setTracks(newTracks);
+                              }}
+                              className="p-2 bg-white text-hyundai-gray-400 hover:text-hyundai-emerald rounded-lg shadow-sm border border-hyundai-gray-100 disabled:opacity-30"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7"/></svg>
+                            </button>
+                            <button 
+                              type="button"
+                              disabled={i === tracks.length - 1}
+                              onClick={() => {
+                                const newTracks = [...tracks];
+                                [newTracks[i+1], newTracks[i]] = [newTracks[i], newTracks[i+1]];
+                                setTracks(newTracks);
+                              }}
+                              className="p-2 bg-white text-hyundai-gray-400 hover:text-hyundai-emerald rounded-lg shadow-sm border border-hyundai-gray-100 disabled:opacity-30"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <button 
+                              type="button"
+                              onClick={() => setTracks(tracks.filter((_, idx) => idx !== i))}
+                              className="p-2 bg-red-50 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition-all"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                           <div className="w-6 shrink-0 flex justify-center">
+                             <svg className="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                           </div>
+                           <input
+                            placeholder="YOUTUBE SOURCE URL (OPTIONAL)"
+                            className="flex-grow px-4 py-2.5 bg-white border border-hyundai-gray-200 rounded-lg text-[10px] font-bold outline-none focus:border-red-400 transition-all text-hyundai-gray-500"
+                            value={track.youtube_url || ''}
+                            onChange={(e) => {
+                              const newTracks = [...tracks];
+                              newTracks[i].youtube_url = e.target.value;
+                              setTracks(newTracks);
+                            }}
+                          />
+                        </div>
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
               
-              <div className="p-8 bg-hyundai-gray-100 rounded-b-2xl flex justify-end gap-3">
+              <div className="p-8 bg-hyundai-black flex justify-end gap-3 shrink-0">
                 <button 
                   type="button"
                   onClick={() => setEditingTheme(null)}
-                  className="px-6 py-3 font-bold text-hyundai-gray-500 hover:bg-hyundai-gray-200 rounded-xl transition-all"
+                  className="px-8 py-4 text-xs font-black text-hyundai-gray-400 hover:text-white transition-all uppercase tracking-widest"
                 >
-                  취소
+                  DISCARD
                 </button>
                 <button 
                   type="submit"
-                  className="px-10 py-3 bg-hyundai-emerald text-white font-bold rounded-xl shadow-lg hover:opacity-90 transition-all"
+                  className="px-12 py-4 bg-hyundai-emerald text-white text-xs font-black rounded-2xl shadow-2xl hover:scale-105 transition-all uppercase tracking-[0.2em]"
                 >
-                  저장하기
+                  DEPLOY THEME
                 </button>
               </div>
             </form>

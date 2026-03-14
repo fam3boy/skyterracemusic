@@ -22,6 +22,18 @@
 - **Auth**: NextAuth.js (Credentials Provider)
 - **Language**: TypeScript
 
+## 🔐 관리자 접속 및 초기 설정
+
+### [초기 데이터 생성]
+1. Vercel Postgres 콘솔에서 `vercel_schema.sql`의 내용을 실행하여 테이블을 생성합니다.
+2. `seed.sql`을 실행하여 기본 관리자 계정(`admin@skyterrace.com` / `admin123`)과 샘플 데이터를 생성합니다.
+
+### [관리자 로그인]
+- **접속 주소**: `https://your-deployment-url/admin/login`
+- **초기 계정**: `admin@skyterrace.com`
+- **초기 비밀번호**: `admin123`
+- *로그인 후 반드시 관리자 비밀번호를 업데이트하거나 새로운 계정을 생성하는 것을 권장합니다.*
+
 ## ⚙️ 설정 방법 (Environment Variables)
 
 `.env.local` 파일에 다음 항목을 설정해야 합니다:
