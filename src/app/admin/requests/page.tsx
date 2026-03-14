@@ -1,3 +1,5 @@
+'use client';
+
 import AdminLayout from '@/components/AdminLayout';
 import { useEffect, useState } from 'react';
 
@@ -129,7 +131,7 @@ export default function RequestsManagementPage() {
                     <p className="text-hyundai-gray-300">{new Date(req.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                   </td>
                   <td className="px-6 py-4 text-center">
-                    <span className={`px-2 py-1 rounded-full text-[10px] font-black uppercase border ${statusColors[req.status] || ''}`}>
+                    <span className={`px-2 py-1 rounded-full text-[10px] font-black uppercase border ${statusColors[req.status as keyof typeof statusColors] || ''}`}>
                       {req.status === 'pending' ? '대기' : req.status === 'approved' ? '승인' : req.status === 'hold' ? '보류' : '삭제'}
                     </span>
                   </td>

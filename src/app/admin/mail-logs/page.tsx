@@ -1,3 +1,5 @@
+'use client';
+
 import AdminLayout from '@/components/AdminLayout';
 import { useEffect, useState } from 'react';
 
