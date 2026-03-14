@@ -2,10 +2,11 @@
 -- Initialize basic themes and sample requests
 
 -- 1. Insert Sample Admin (Password: admin123)
--- Hash generated for 'admin123' using bcrypt
+-- Hash: $2a$10$Dr4j3r88sMdfSo433Yxs/u4mmbAlOaNN.rkh2Vk0sa96b7IaZD8eW
 INSERT INTO admins (email, password_hash, nickname)
-VALUES ('admin@skyterrace.com', '$2a$10$px6p6qY6G7G6G6G6G6G6G.6G6G6G6G6G6G6G6G6G6G6G6G6G6G6G6', 'Chief Admin')
-ON CONFLICT (email) DO NOTHING;
+VALUES ('admin@skyterrace.com', '$2a$10$Dr4j3r88sMdfSo433Yxs/u4mmbAlOaNN.rkh2Vk0sa96b7IaZD8eW', 'Chief Admin')
+ON CONFLICT (email) DO UPDATE 
+SET password_hash = EXCLUDED.password_hash, nickname = EXCLUDED.nickname;
 
 -- 2. Insert Sample Theme (March 2026)
 INSERT INTO monthly_themes (title, theme_month, description, start_date, end_date, is_active)

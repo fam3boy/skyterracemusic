@@ -57,11 +57,11 @@ export default function MailLogsPage() {
 
       <div className="card overflow-hidden">
         <table className="w-full text-left">
-          <thead className="bg-hyundai-gray-100 text-hyundai-gray-500 text-xs uppercase font-bold border-b border-hyundai-gray-200">
+          <thead className="bg-hyundai-black text-white text-xs uppercase font-bold">
             <tr>
-              <th className="px-6 py-4">발송 일시</th>
-              <th className="px-6 py-4">수신자</th>
-              <th className="px-6 py-4">제목</th>
+              <th className="px-6 py-4">집계 기간 & 발송시각</th>
+              <th className="px-6 py-4">수신자 & 제목</th>
+              <th className="px-6 py-4 text-center">상태</th>
               <th className="px-6 py-4 text-center">곡 수</th>
               <th className="px-6 py-4 text-right">관리</th>
             </tr>
@@ -73,15 +73,35 @@ export default function MailLogsPage() {
               <tr><td colSpan={5} className="text-center py-20 text-hyundai-gray-500 italic">발송 이력이 없습니다.</td></tr>
             ) : (
               logs.map(log => (
-                <tr key={log.id} className="hover:bg-hyundai-gray-500/5 transition-colors">
+                <tr key={log.id} className="hover:bg-hyundai-gray-50 transition-colors">
                   <td className="px-6 py-4 text-sm">
-                    <p className="font-bold text-hyundai-black">{new Date(log.sent_at).toLocaleDateString()}</p>
-                    <p className="text-xs text-hyundai-gray-500">{new Date(log.sent_at).toLocaleTimeString()}</p>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-bold text-hyundai-emerald bg-hyundai-emerald/5 px-2 py-0.5 rounded w-fit mb-1">
+                        {log.period_start ? `${new Date(log.period_start).toLocaleDateString()} - ${new Date(log.period_end).toLocaleDateString()}` : 'Manual/Unknown'}
+                      </span>
+                      <p className="font-bold text-hyundai-black">{new Date(log.sent_at).toLocaleString()}</p>
+                    </div>
                   </td>
-                  <td className="px-6 py-4 text-sm text-hyundai-gray-500">{log.recipient_email}</td>
-                  <td className="px-6 py-4 text-sm font-medium text-hyundai-black truncate max-w-xs">{log.subject}</td>
+                  <td className="px-6 py-4 text-sm">
+                    <p className="text-hyundai-gray-500 text-xs">{log.recipient_email}</p>
+                    <p className="font-medium text-hyundai-black truncate max-w-xs">{log.subject}</p>
+                  </td>
                   <td className="px-6 py-4 text-center">
-                    <span className="bg-hyundai-emerald/10 text-hyundai-emerald px-2 py-1 rounded-md font-bold text-xs border border-hyundai-emerald/20">
+                    {log.status === 'success' ? (
+                      <span className="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded">SUCCESS</span>
+                    ) : (
+                      <div className="flex flex-col items-center gap-1">
+                        <span className="bg-red-100 text-red-700 text-[10px] font-bold px-2 py-1 rounded">FAILED</span>
+                        {log.error_message && (
+                          <span className="text-[9px] text-red-400 max-w-[100px] truncate" title={log.error_message}>
+                            {log.error_message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <span className="bg-hyundai-black/5 text-hyundai-black px-2 py-1 rounded-md font-bold text-xs border border-hyundai-black/10">
                       {log.request_ids?.length || 0}곡
                     </span>
                   </td>
@@ -92,10 +112,10 @@ export default function MailLogsPage() {
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                         resending === log.id 
                           ? 'bg-hyundai-gray-200 text-hyundai-gray-400 cursor-not-allowed'
-                          : 'bg-white border border-hyundai-emerald text-hyundai-emerald hover:bg-hyundai-emerald hover:text-white'
+                          : 'bg-hyundai-black text-white hover:bg-hyundai-gray-800 shadow-sm'
                       }`}
                     >
-                      {resending === log.id ? '재발송 중...' : '수동 재발송'}
+                      {resending === log.id ? '발송 중...' : '즉시 재발송'}
                     </button>
                   </td>
                 </tr>

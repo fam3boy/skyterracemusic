@@ -4,13 +4,16 @@ import AdminLayout from '@/components/AdminLayout';
 import { useEffect, useState } from 'react';
 
 export default function DashboardPage() {
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<any>({
     pending: 0,
     approved: 0,
     hold: 0,
     deleted: 0,
     total: 0,
     weeklyApproved: 0,
+    weeklyPeriodStart: null,
+    weeklyPeriodEnd: null,
+    lastMail: null
   });
   const [activeTheme, setActiveTheme] = useState<any>(null);
 
@@ -20,14 +23,7 @@ export default function DashboardPage() {
         const res = await fetch('/api/admin/stats');
         if (res.ok) {
           const data = await res.json();
-          setStats({
-            pending: data.pending,
-            approved: data.approved,
-            hold: data.hold,
-            deleted: data.deleted,
-            total: data.total,
-            weeklyApproved: data.weeklyApproved
-          });
+          setStats(data);
           setActiveTheme(data.activeTheme);
         }
       } catch (err) {
@@ -60,20 +56,40 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="card p-6 border-l-4 border-l-hyundai-emerald">
-          <p className="text-sm font-bold text-hyundai-gray-500 mb-1">이번 주 승인 예정</p>
+        <div className="card p-6 border-l-4 border-l-hyundai-emerald bg-hyundai-emerald/5">
+          <p className="text-sm font-bold text-hyundai-emerald mb-1">이번 주 집계 미리보기</p>
           <p className="text-4xl font-black text-hyundai-black">{stats.weeklyApproved}</p>
-          <div className="mt-4 flex justify-end">
-            <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-1 rounded">READY TO MAIL</span>
+          <p className="text-[10px] text-hyundai-gray-400 mt-2 font-mono">{new Date(stats.weeklyPeriodStart).toLocaleDateString()} ~ {new Date(stats.weeklyPeriodEnd).toLocaleDateString()}</p>
+          <div className="mt-4 flex justify-between items-center">
+             <button 
+               onClick={async () => {
+                 if(confirm('지금 즉시 주간 리포트를 발송하시겠습니까?')) {
+                   const res = await fetch('/api/cron/weekly-mail');
+                   if(res.ok) alert('발송 완료'); else alert('발송 실패');
+                   window.location.reload();
+                 }
+               }}
+               className="text-[9px] font-black text-hyundai-emerald hover:underline uppercase tracking-tighter"
+             >
+               Send Now
+             </button>
+             <span className="text-[10px] font-bold bg-hyundai-emerald text-white px-2 py-1 rounded">READY</span>
           </div>
         </div>
 
         <div className="card p-6 border-l-4 border-l-hyundai-gold">
-          <p className="text-sm font-bold text-hyundai-gray-500 mb-1">활성화 테마</p>
-          <p className="text-lg font-bold text-hyundai-black truncate">{activeTheme?.title || '없음'}</p>
-          <p className="text-xs text-hyundai-gray-500 mt-1 uppercase tracking-tighter">{activeTheme?.theme_month ? new Date(activeTheme.theme_month).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long' }) : '-'}</p>
+          <p className="text-sm font-bold text-hyundai-gray-500 mb-1">자동 발송 상태</p>
+          <div className="flex items-center gap-2">
+            <div className={`w-3 h-3 rounded-full ${stats.lastMail?.status === 'success' ? 'bg-hyundai-emerald animate-pulse' : 'bg-red-500'}`}></div>
+            <p className="text-lg font-black text-hyundai-black uppercase">{stats.lastMail?.status || 'NO DATA'}</p>
+          </div>
+          <p className="text-[10px] text-hyundai-gray-400 mt-1 uppercase tracking-tighter">
+            Last: {stats.lastMail?.sent_at ? new Date(stats.lastMail.sent_at).toLocaleString() : 'N/A'}
+          </p>
           <div className="mt-4 flex justify-end">
-             <span className="text-[10px] font-bold bg-hyundai-gold/10 text-hyundai-gold px-2 py-1 rounded italic">ON AIR</span>
+             <span className={`text-[10px] font-bold px-2 py-1 rounded italic ${stats.lastMail?.status === 'success' ? 'bg-hyundai-emerald/10 text-hyundai-emerald' : 'bg-red-100 text-red-600'}`}>
+               {stats.lastMail?.status === 'success' ? 'SYSTEM OK' : 'CHECK LOGS'}
+             </span>
           </div>
         </div>
       </div>

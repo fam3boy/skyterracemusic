@@ -29,6 +29,7 @@ CREATE TABLE theme_tracks (
     theme_id UUID REFERENCES monthly_themes(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
     artist TEXT NOT NULL,
+    youtube_url TEXT,
     order_index INTEGER DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
@@ -53,10 +54,14 @@ CREATE TABLE song_requests (
 CREATE TABLE weekly_mail_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     sent_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    period_start TIMESTAMP WITH TIME ZONE,
+    period_end TIMESTAMP WITH TIME ZONE,
     recipient_email TEXT NOT NULL,
     subject TEXT NOT NULL,
     body_text TEXT,
-    request_ids JSONB -- Storing as JSONB for better compatibility in some Postgres environments
+    request_ids JSONB,
+    status TEXT DEFAULT 'success',
+    error_message TEXT
 );
 
 -- 6. Audit Logs

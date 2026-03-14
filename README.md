@@ -26,7 +26,8 @@
 
 ### [초기 데이터 생성]
 1. Vercel Postgres 콘솔에서 `vercel_schema.sql`의 내용을 실행하여 테이블을 생성합니다.
-2. `seed.sql`을 실행하여 기본 관리자 계정(`admin@skyterrace.com` / `admin123`)과 샘플 데이터를 생성합니다.
+2. **기존 사용자의 경우**: `migration.sql`을 먼저 실행하여 누락된 컬럼(start_date, youtube_url 등)을 추가합니다.
+3. `seed.sql`을 실행하여 기본 관리자 계정(`admin@skyterrace.com` / `admin123`)과 샘플 데이터를 생성합니다.
 
 ### [관리자 로그인]
 - **접속 주소**: `https://your-deployment-url/admin/login`
@@ -52,10 +53,16 @@ POSTGRES_DATABASE=...
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your_nextauth_secret (Generate with: openssl rand -base64 32)
 
-# Automation Settings
+# Automation & Mail Settings
 CRON_SECRET=your_random_string (Security for API routes)
-WEEKLY_MAIL_RECIPIENT=broadcasting@hyundai.com (Mail destination)
+WEEKLY_MAIL_RECIPIENT=broadcasting@hyundai.com
+RESEND_API_KEY=re_123456789 (Get from resend.com)
 ```
+
+### [주간 리포트 테스트 및 연동]
+- **자동 발송**: Vercel Cron Job 설정을 통해 매주 목요일 19:00에 `/api/cron/weekly-mail`을 호출합니다. (Authorization 헤더에 `Bearer [CRON_SECRET]` 필요)
+- **수동 발송**: 관리자 대시보드 또는 메일 로그 페이지에서 '즉시 재발송' 버튼을 클릭하여 현재 시점 기준의 리포트를 즉시 발송할 수 있습니다.
+- **메일 템플릿**: HTML 형식의 테이블 리포트가 발송되며, 관리자 메모가 있는 경우 함께 포함됩니다.
 
 
 ## 📅 스케줄링 및 집계 구조

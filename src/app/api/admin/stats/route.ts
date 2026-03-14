@@ -62,11 +62,22 @@ export async function GET() {
       AND approved_at < ${nextThursday.toISOString()}
     `;
 
+    // 4. Last Mail Log
+    const lastMailRes = await sql`
+      SELECT status, sent_at 
+      FROM weekly_mail_logs 
+      ORDER BY sent_at DESC 
+      LIMIT 1
+    `;
+
     return NextResponse.json({
       ...counts,
       approvedTotal: counts.approved, // For backward compatibility
       weeklyApproved: weeklyApprovedRes.rows[0].count,
-      activeTheme: activeThemeRes.rows[0] || null
+      activeTheme: activeThemeRes.rows[0] || null,
+      weeklyPeriodStart: startOfWindow.toISOString(),
+      weeklyPeriodEnd: nextThursday.toISOString(),
+      lastMail: lastMailRes.rows[0] || null
     });
   } catch (error: any) {
     console.error('Stats fetch error:', error);
