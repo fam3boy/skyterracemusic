@@ -72,9 +72,20 @@ export default function AdminLayout({
         isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="h-24 px-8 flex items-center justify-between border-b border-white/5">
-          <Link href="/admin/dashboard" className="flex flex-col gap-0.5 group">
-             <span className="text-hyundai-gold text-[12px] font-bold tracking-normal uppercase block group-hover:text-white transition-colors">운영 시스템</span>
-             <h2 className="text-2xl font-bold tracking-tighter text-white">SKYTERRACE MUSIC</h2>
+          <Link href="/admin/dashboard" className="flex items-center gap-3 group">
+             <div className="relative h-10 flex items-center">
+               <img 
+                 src="/logo.png" 
+                 alt="THE HYUNDAI" 
+                 className="h-full w-auto object-contain hidden"
+                 onError={(e) => (e.currentTarget.style.display = 'none')}
+                 onLoad={(e) => (e.currentTarget.style.display = 'block')}
+               />
+               <div className="flex flex-col gap-0.5">
+                 <span className="text-hyundai-gold text-[12px] font-bold tracking-normal uppercase block group-hover:text-white transition-colors">운영 시스템</span>
+                 <h2 className="text-xl font-bold tracking-tighter text-white">SKYTERRACE</h2>
+               </div>
+             </div>
           </Link>
           <button 
             className="lg:hidden p-2 text-white hover:bg-white/10 rounded-lg"

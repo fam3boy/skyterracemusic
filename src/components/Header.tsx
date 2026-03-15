@@ -36,30 +36,29 @@ export default function Header() {
   return (
     <header className={cn(
       "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-      isScrolled ? "bg-white/95 backdrop-blur-xl shadow-sm translate-y-[-44px]" : "bg-white"
+      isScrolled ? "bg-white/95 backdrop-blur-xl shadow-sm" : "bg-white"
     )}>
-      {/* Utility Bar (Level 1) */}
-      <div className="border-b border-hyundai-gray-100">
-        <div className="portal-container h-11 flex justify-end items-center gap-8">
-           {topNavItems.map((item) => (
-             <Link key={item.name} href={item.href} className="text-[12px] font-bold text-hyundai-gray-400 hover:text-hyundai-black transition-colors uppercase tracking-normal">
-               {item.name}
-             </Link>
-           ))}
-           <div className="h-3 w-px bg-hyundai-gray-200"></div>
-           <Link href="/admin/login" className="text-[12px] font-bold text-hyundai-gray-400 hover:text-hyundai-black transition-colors uppercase tracking-normal">관리자 포털</Link>
-        </div>
-      </div>
-
-      {/* Main Bar (Level 2) */}
+      {/* Main Bar */}
       <div className="border-b border-hyundai-gray-200">
         <div className="portal-container h-24 flex justify-between items-center">
           {/* Brand Logo */}
-          <Link href="/" className="flex flex-col group">
-            <span className="text-2xl font-bold text-hyundai-black tracking-[-0.05em] leading-none">THE HYUNDAI</span>
-            <div className="flex items-center gap-2 mt-1">
-               <span className="w-1 h-1 rounded-full bg-hyundai-gold"></span>
-               <span className="text-[11px] font-bold text-hyundai-gray-400 tracking-normal uppercase">SKY TERRACE</span>
+          <Link href="/" className="flex items-center gap-4 group">
+            <div className="relative h-12 flex items-center">
+              {/* Image Logo (Hidden if file missing, handled by browser/fallback structure) */}
+              <img 
+                src="/logo.png" 
+                alt="THE HYUNDAI" 
+                className="h-full w-auto object-contain hidden"
+                onError={(e) => (e.currentTarget.style.display = 'none')}
+                onLoad={(e) => (e.currentTarget.style.display = 'block')}
+              />
+              <div className="flex flex-col first-letter:group-hover:opacity-80 transition-opacity">
+                <span className="text-2xl font-bold text-hyundai-black tracking-[-0.05em] leading-none">THE HYUNDAI</span>
+                <div className="flex items-center gap-2 mt-1">
+                   <span className="w-1 h-1 rounded-full bg-hyundai-gold"></span>
+                   <span className="text-[11px] font-bold text-hyundai-gray-400 tracking-normal uppercase">SKY TERRACE</span>
+                </div>
+              </div>
             </div>
           </Link>
 
