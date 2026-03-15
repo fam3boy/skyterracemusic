@@ -56,23 +56,41 @@ export default function DashboardPage() {
     }
   }
 
-  const exportCSV = () => {
-    if (!stats) return;
-    let csv = '\uFEFF'; // BOM for Excel
-    csv += '지표,값\n';
-    csv += `전체 신청 수,${stats.kpis.total}\n`;
-    csv += `승인 완료,${stats.kpis.approved}\n`;
-    csv += `승인율,${stats.kpis.approvalRate.toFixed(2)}%\n`;
-    csv += `링크 입력 수,${stats.kpis.with_link}\n\n`;
-    
-    csv += '일별 트렌드\n날짜,신청 수,승인 수\n';
-    stats.trends.forEach((t: any) => csv += `${t.date},${t.count},${t.approved_count}\n`);
-    
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `skyterrace_report_${new Date().toISOString().split('T')[0]}.csv`;
-    link.click();
+  const downloadWeeklyReport = async () => {
+    setLoading(true);
+    try {
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      const today = new Date();
+      
+      const params = new URLSearchParams({ 
+        status: 'approved',
+        start: weekAgo.toISOString().split('T')[0],
+        end: today.toISOString().split('T')[0]
+      });
+      
+      const res = await fetch(`/api/admin/requests?${params.toString()}`);
+      if (res.ok) {
+        const songs = await res.json();
+        
+        let csv = '\uFEFF'; // BOM for Excel
+        csv += '제목,아티스트,신청자,사연/메모,신청일시\n';
+        songs.forEach((s: any) => {
+          csv += `"${s.title}","${s.artist}","${s.requester_name || '익명'}","${(s.story || '') + (s.admin_memo ? ` [메모: ${s.admin_memo}]` : '')}","${new Date(s.created_at).toLocaleString()}"\n`;
+        });
+        
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `skyterrace_weekly_report_${today.toISOString().split('T')[0]}.csv`;
+        link.click();
+      }
+    } catch (err) {
+      console.error('Failed to download report', err);
+      alert('다운로드 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const COLORS = ['#10B981', '#FACC15', '#3B82F6', '#EF4444'];
@@ -96,12 +114,12 @@ export default function DashboardPage() {
         </div>
         
         <div className="flex items-center gap-4">
-           <button 
-             onClick={exportCSV}
+            <button 
+             onClick={() => stats && downloadWeeklyReport()}
              className="flex items-center gap-3 px-8 py-4 bg-white border border-hyundai-gray-200 text-hyundai-black rounded-sm text-[14px] font-bold uppercase tracking-tight hover:bg-hyundai-gray-50 transition-all shadow-sm"
            >
              <Download className="w-4 h-4" />
-             리포트 내보내기
+             주간 리포트 다운로드
            </button>
         </div>
       </div>
@@ -202,17 +220,12 @@ export default function DashboardPage() {
              <FileText className="w-5 h-5 text-hyundai-gold" />
            </div>
             <div>
-              <p className="text-sm font-bold text-white mb-6">현재 승인된 {stats?.kpis?.approved ?? 0}곡을 <br />보고서로 즉시 발송합니다.</p>
+              <p className="text-sm font-bold text-white mb-6">현재 승인된 {stats?.kpis?.approved ?? 0}곡을 <br />CSV 파일로 즉시 다운로드합니다.</p>
               <button 
-                onClick={async () => {
-                  if (confirm('주간 리포트를 즉시 발송하시겠습니까?')) {
-                    const res = await fetch('/api/cron/weekly-mail?forceCurrent=true');
-                    if (res.ok) alert('성공적으로 발송되었습니다.'); else alert('발송 중 오류가 발생했습니다.');
-                  }
-                }}
+                onClick={downloadWeeklyReport}
                 className="w-full py-4 bg-hyundai-gold text-hyundai-black text-[14px] font-bold uppercase tracking-tight hover:bg-white transition-all shadow-lg shadow-hyundai-gold/10"
               >
-                주간 리포트 즉시 발송
+                주간 리포트 다운로드
               </button>
            </div>
         </div>

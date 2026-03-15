@@ -253,9 +253,8 @@ export default function RequestsManagementPage() {
                   </div>
                 </th>
                 <th className="px-8 py-6 text-[12px] uppercase font-bold tracking-tight text-hyundai-gray-400">곡 상세 정보</th>
-                <th className="px-8 py-6 text-[12px] uppercase font-bold tracking-tight text-hyundai-gray-400">운영 정책 추천</th>
                 <th className="px-8 py-6 text-[12px] uppercase font-bold tracking-tight text-hyundai-gray-400">신청자 프로필</th>
-                <th className="px-8 py-6 text-[12px] uppercase font-bold tracking-tight text-hyundai-gray-400 text-right">상태 변경 작업</th>
+                <th className="px-8 py-6 text-[12px] uppercase font-bold tracking-tight text-hyundai-gray-400 text-right">처리 및 상태 제어</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-hyundai-gray-100">
@@ -303,21 +302,7 @@ export default function RequestsManagementPage() {
                          </div>
                       </div>
                     </td>
-                    <td className="px-8 py-6">
-                      <div className="flex flex-col items-start gap-2">
-                         <div className={cn(
-                            "px-3 py-1 border text-[10px] font-bold uppercase tracking-tight flex items-center gap-1.5",
-                            recommendationBadges[req.auto_recommendation as keyof typeof recommendationBadges] || "bg-gray-50 text-gray-400 border-gray-100"
-                         )}>
-                            <div className="w-1 h-1 rounded-full bg-current"></div>
-                            {getBadgeLabel(req.auto_recommendation)}
-                         </div>
-                         <p className="text-[12px] font-bold text-hyundai-gray-400 leading-tight flex items-start gap-1.5">
-                            <ChevronDown className="w-3.5 h-3.5 rotate-[-90deg] shrink-0 mt-0.5" />
-                            {req.auto_reason}
-                         </p>
-                      </div>
-                    </td>
+
                     <td className="px-8 py-6">
                       <div className="flex flex-col">
                          <div className="flex items-center gap-2 mb-1.5">
@@ -330,25 +315,49 @@ export default function RequestsManagementPage() {
                       </div>
                     </td>
                     <td className="px-8 py-6 text-right">
-                      <div className="flex justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                         <button onClick={() => { setMemoOpen(req.id); setMemoText(req.admin_memo || ''); }} className="h-9 w-9 flex items-center justify-center bg-white border border-hyundai-gray-200 text-hyundai-gray-400 hover:text-hyundai-black hover:border-hyundai-black transition-all">
-                            <StickyNote className="w-4 h-4" />
-                         </button>
-                         <button onClick={() => updateStatus(req.id, 'approved')} className="h-9 w-9 flex items-center justify-center bg-hyundai-emerald text-white hover:bg-hyundai-emerald/80 transition-all">
-                            <Check className="w-4 h-4" />
-                         </button>
-                         <button onClick={() => updateStatus(req.id, 'deleted')} className="h-9 w-9 flex items-center justify-center bg-red-600 text-white hover:bg-red-700 transition-all">
-                            <Trash2 className="w-4 h-4" />
-                         </button>
-                      </div>
-                      {/* Fixed Icons for when not hovered */}
-                      <div className="flex justify-end gap-2 group-hover:hidden">
-                         <div className={cn(
-                            "w-2 h-2 rounded-full",
-                            req.status === 'approved' ? "bg-hyundai-emerald" : 
-                            req.status === 'deleted' ? "bg-red-600" :
-                            req.status === 'hold' ? "bg-blue-600" : "bg-hyundai-gray-200"
-                         )}></div>
+                      <div className="flex flex-col items-end gap-3">
+                        <div className="flex items-center gap-2">
+                          {req.status === 'pending' && <span className="text-[10px] font-bold bg-hyundai-gray-100 text-hyundai-gray-500 px-2 py-1 uppercase tracking-tight">대기 중</span>}
+                          {req.status === 'approved' && <span className="text-[10px] font-bold bg-hyundai-emerald text-white px-2 py-1 uppercase tracking-tight">승인 완료</span>}
+                          {req.status === 'hold' && <span className="text-[10px] font-bold bg-blue-600 text-white px-2 py-1 uppercase tracking-tight">보류 중</span>}
+                          {req.status === 'deleted' && <span className="text-[10px] font-bold bg-red-600 text-white px-2 py-1 uppercase tracking-tight">삭제됨</span>}
+                        </div>
+                        
+                        <div className="flex justify-end gap-1">
+                          <button 
+                            onClick={() => { setMemoOpen(req.id); setMemoText(req.admin_memo || ''); }} 
+                            className="h-8 px-2 flex items-center gap-1 bg-white border border-hyundai-gray-200 text-hyundai-gray-400 hover:text-hyundai-black hover:border-hyundai-black transition-all text-[10px] font-bold uppercase"
+                          >
+                             <StickyNote className="w-3 h-3" /> 메모
+                          </button>
+                          
+                          {req.status !== 'approved' && (
+                            <button 
+                              onClick={() => updateStatus(req.id, 'approved')} 
+                              className="h-8 px-3 flex items-center gap-1 bg-hyundai-emerald text-white hover:bg-hyundai-emerald/80 transition-all text-[10px] font-bold uppercase"
+                            >
+                               <Check className="w-3 h-3" /> 승인
+                            </button>
+                          )}
+                          
+                          {req.status !== 'hold' && req.status !== 'deleted' && (
+                            <button 
+                              onClick={() => updateStatus(req.id, 'hold')} 
+                              className="h-8 px-3 flex items-center gap-1 bg-blue-600 text-white hover:bg-blue-700 transition-all text-[10px] font-bold uppercase"
+                            >
+                               <Clock className="w-3 h-3" /> 보류
+                            </button>
+                          )}
+                          
+                          {req.status !== 'deleted' && (
+                            <button 
+                              onClick={() => updateStatus(req.id, 'deleted')} 
+                              className="h-8 px-3 flex items-center gap-1 bg-red-600 text-white hover:bg-red-700 transition-all text-[10px] font-bold uppercase"
+                            >
+                               <Trash2 className="w-3 h-3" /> 삭제
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </td>
                   </tr>
