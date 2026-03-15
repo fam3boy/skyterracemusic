@@ -27,11 +27,11 @@ export default function PortalSection({ title, subtitle, moreHref, children, bgG
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-10 mb-16 md:mb-24">
           <div className="space-y-4 max-w-2xl">
             {subtitle && (
-              <span className="text-hyundai-gold text-[12px] font-black tracking-[0.4em] uppercase block animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <span className="text-hyundai-gold text-[13px] font-bold tracking-[0.4em] uppercase block animate-in fade-in slide-in-from-bottom-2 duration-500">
                 {subtitle}
               </span>
             )}
-            <h2 className="text-4xl md:text-6xl font-black text-hyundai-black tracking-[-0.03em] leading-tight uppercase animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <h2 className="text-4xl md:text-6xl font-bold text-hyundai-black tracking-[-0.03em] leading-tight uppercase animate-in fade-in slide-in-from-bottom-4 duration-700">
               {title}
             </h2>
           </div>

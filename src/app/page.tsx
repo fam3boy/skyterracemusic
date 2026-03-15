@@ -63,8 +63,8 @@ export default async function Home() {
         <div className="portal-container relative z-10">
            <div className="max-w-4xl space-y-10">
               <div className="space-y-4">
-                 <span className="text-hyundai-gold text-[13px] font-black tracking-[0.6em] uppercase block animate-in fade-in slide-in-from-bottom-4 duration-700">이달의 테라스 선율</span>
-                 <h1 className="text-6xl md:text-[100px] font-black text-hyundai-black tracking-[-0.06em] leading-[0.85] uppercase animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                 <span className="text-hyundai-gold text-[13px] font-bold tracking-[0.6em] uppercase block animate-in fade-in slide-in-from-bottom-4 duration-700">이달의 테라스 선율</span>
+                 <h1 className="text-6xl md:text-[100px] font-bold text-hyundai-black tracking-[-0.06em] leading-[0.85] uppercase animate-in fade-in slide-in-from-bottom-8 duration-1000">
                     {activeTheme ? activeTheme.title : "SEASONAL CURATION"}
                  </h1>
               </div>
@@ -72,8 +72,8 @@ export default async function Home() {
                  {activeTheme?.description || "현대프리미엄아울렛 대전점 스카이테라스의 공간에 영감을 불어넣는 공식 컬렉션입니다."}
               </p>
               <div className="flex gap-4 pt-4 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
-                 <Link href="/request" className="btn-portal-primary h-20 flex items-center justify-center min-w-[240px]">음악 신청하기</Link>
-                 <Link href="/status" className="btn-portal-outline h-20 flex items-center justify-center min-w-[240px]">현황 조회</Link>
+                 <Link href="/request" className="btn-portal-primary h-20 flex items-center justify-center min-w-[260px]">음악 신청하기</Link>
+                 <Link href="/status" className="btn-portal-outline h-20 flex items-center justify-center min-w-[260px]">현황 조회</Link>
               </div>
            </div>
         </div>
@@ -98,13 +98,13 @@ export default async function Home() {
                  <div className="absolute inset-0 bg-hyundai-black/0 group-hover:bg-hyundai-black/40 transition-all flex items-center justify-center">
                     <PlayCircle className="w-16 h-16 text-white opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-out" strokeWidth={1} />
                  </div>
-                 <div className="absolute top-6 left-6 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="text-[10px] font-black text-white uppercase tracking-widest px-3 py-1 border border-white/20">Track {(i+1).toString().padStart(2, '0')}</span>
-                 </div>
+                  <div className="absolute top-6 left-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-[12px] font-bold text-white uppercase tracking-widest px-4 py-1.5 border border-white/20">Track {(i+1).toString().padStart(2, '0')}</span>
+                  </div>
               </div>
               <div className="py-8 space-y-2">
-                <h4 className="text-xl font-black text-hyundai-black truncate uppercase tracking-tighter">{track.title}</h4>
-                <p className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest">{track.artist}</p>
+                <h4 className="text-xl font-bold text-hyundai-black truncate uppercase tracking-tighter">{track.title}</h4>
+                <p className="text-[14px] font-bold text-hyundai-gray-400 uppercase tracking-widest">{track.artist}</p>
               </div>
             </div>
           ))}
@@ -123,16 +123,16 @@ export default async function Home() {
              {requestedTracks.map((track, i) => (
                <div key={i} className="group flex items-center justify-between px-12 py-10 hover:bg-hyundai-gray-50 transition-all duration-500">
                  <div className="flex items-center gap-14">
-                    <span className="text-3xl font-black text-hyundai-gray-100 w-12 group-hover:text-hyundai-gold transition-colors duration-500 italic">{(i+1).toString().padStart(2, '0')}</span>
+                    <span className="text-3xl font-bold text-hyundai-gray-100 w-12 group-hover:text-hyundai-gold transition-colors duration-500 italic">{(i+1).toString().padStart(2, '0')}</span>
                     <div className="space-y-1">
-                       <h5 className="text-2xl font-black text-hyundai-black uppercase tracking-tight group-hover:translate-x-1 transition-transform duration-500">{track.title}</h5>
-                       <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-[0.2em]">{track.artist}</p>
+                       <h5 className="text-2xl font-bold text-hyundai-black uppercase tracking-tight group-hover:translate-x-1 transition-transform duration-500">{track.title}</h5>
+                       <p className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-[0.2em]">{track.artist}</p>
                     </div>
                  </div>
-                 <div className="flex items-center gap-10">
-                    <div className="hidden md:flex flex-col items-end gap-1">
-                       <span className="text-[9px] font-black text-hyundai-gray-300 uppercase tracking-widest">방송 예정</span>
-                       <span className="text-[11px] font-black text-hyundai-black">{ new Date(track.approved_at).toLocaleDateString() }</span>
+                  <div className="flex items-center gap-10">
+                    <div className="hidden md:flex flex-col items-end gap-1.5">
+                       <span className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-widest">방송 예정</span>
+                       <span className="text-[13px] font-bold text-hyundai-black">{ new Date(track.approved_at).toLocaleDateString() }</span>
                     </div>
                     <div className="h-10 w-px bg-hyundai-gray-100 hidden md:block"></div>
                     <div className="w-12 h-12 rounded-full border border-hyundai-gray-200 flex items-center justify-center group-hover:bg-hyundai-black group-hover:text-white transition-all">
@@ -152,25 +152,25 @@ export default async function Home() {
           {/* Hall of Fame (5 cols) */}
           <div className="lg:col-span-12 xl:col-span-5 space-y-16">
             <div className="space-y-6">
-              <span className="text-hyundai-gold text-[12px] font-black tracking-[0.4em] uppercase block">인기 신청곡</span>
-              <h3 className="text-5xl font-black text-hyundai-black uppercase tracking-tighter leading-none">명예의 전당</h3>
+              <span className="text-hyundai-gold text-[14px] font-bold tracking-[0.4em] uppercase block">인기 신청곡</span>
+              <h3 className="text-5xl font-bold text-hyundai-black uppercase tracking-tighter leading-none">명예의 전당</h3>
             </div>
             <div className="grid grid-cols-1 gap-px bg-hyundai-gray-100 border border-hyundai-gray-100">
               {popularTracks.map((track, i) => (
                 <div key={i} className="flex items-center gap-8 group p-8 bg-white hover:bg-hyundai-gray-50 transition-all duration-500">
                    <div className="relative">
                       <div className="w-16 h-16 bg-hyundai-black text-white flex items-center justify-center p-4">
-                        <span className="text-xl font-black italic">0{i + 1}</span>
+                        <span className="text-xl font-bold italic">0{i + 1}</span>
                       </div>
                       {i === 0 && <Star className="absolute -top-2 -right-2 w-5 h-5 text-hyundai-gold fill-hyundai-gold shadow-sm" />}
                    </div>
                    <div className="flex-grow space-y-1">
-                      <h6 className="text-lg font-black text-hyundai-black uppercase tracking-tight truncate max-w-[200px]">{track.title}</h6>
-                      <p className="text-[10px] font-bold text-hyundai-gray-400 uppercase tracking-widest">{track.artist}</p>
+                      <h6 className="text-lg font-bold text-hyundai-black uppercase tracking-tight truncate max-w-[200px]">{track.title}</h6>
+                      <p className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest">{track.artist}</p>
                    </div>
                    <div className="text-right flex flex-col items-end">
-                      <span className="text-[8px] font-black text-hyundai-gray-300 uppercase tracking-widest mb-1">DATA COUNT</span>
-                      <p className="text-xl font-black text-hyundai-black italic">{track.request_count}</p>
+                      <span className="text-[10px] font-bold text-hyundai-gray-300 uppercase tracking-widest mb-1">신청 횟수</span>
+                      <p className="text-2xl font-bold text-hyundai-black italic">{track.request_count}</p>
                    </div>
                 </div>
               ))}
@@ -182,8 +182,8 @@ export default async function Home() {
           {/* FAQ / Info (6 style) */}
           <div className="lg:col-span-12 xl:col-span-6 space-y-16">
             <div className="space-y-6">
-              <span className="text-hyundai-gold text-[12px] font-black tracking-[0.4em] uppercase block">서비스 안내</span>
-              <h3 className="text-5xl font-black text-hyundai-black uppercase tracking-tighter leading-none">운영 가이드</h3>
+              <span className="text-hyundai-gold text-[14px] font-bold tracking-[0.4em] uppercase block">서비스 안내</span>
+              <h3 className="text-5xl font-bold text-hyundai-black uppercase tracking-tighter leading-none">운영 가이드</h3>
             </div>
             <div className="grid grid-cols-1 gap-4">
               {[
@@ -193,7 +193,7 @@ export default async function Home() {
               ].map((item, i) => (
                 <div key={i} className="p-10 bg-white border border-hyundai-gray-100 hover:border-hyundai-black transition-all cursor-pointer group hover:shadow-2xl hover:shadow-black/[0.03]">
                   <div className="flex justify-between items-center">
-                    <h6 className="text-lg font-black text-hyundai-black uppercase tracking-tight transition-colors group-hover:text-hyundai-gold">{item.q}</h6>
+                    <h6 className="text-lg font-bold text-hyundai-black uppercase tracking-tight transition-colors group-hover:text-hyundai-gold">{item.q}</h6>
                     <div className="w-10 h-10 border border-hyundai-gray-100 flex items-center justify-center group-hover:bg-hyundai-black group-hover:text-white transition-all">
                        <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                     </div>
@@ -216,18 +216,18 @@ export default async function Home() {
            <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-hyundai-gold rounded-full blur-[180px] opacity-20"></div>
         </div>
         <div className="portal-container relative z-10 flex flex-col items-center">
-            <span className="text-hyundai-gold text-[13px] font-black tracking-[0.6em] uppercase mb-10 block animate-in fade-in duration-1000">당신의 음악을 들려주세요</span>
-            <h2 className="text-5xl md:text-[80px] font-black tracking-[-0.05em] max-w-6xl mx-auto leading-[1.1] uppercase mb-16 animate-in fade-in slide-in-from-bottom-10 duration-[1200ms] delay-300">
+             <span className="text-hyundai-gold text-[16px] font-bold tracking-[0.6em] uppercase mb-10 block animate-in fade-in duration-1000">당신의 음악을 들려주세요</span>
+            <h2 className="text-5xl md:text-[80px] font-bold tracking-[-0.05em] max-w-6xl mx-auto leading-[1.1] uppercase mb-16 animate-in fade-in slide-in-from-bottom-10 duration-[1200ms] delay-300">
               현대의 감성으로 <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/20">완성하는 테라스의 선율</span>
             </h2>
             <p className="text-white/60 text-lg font-medium max-w-2xl mx-auto mb-20 leading-relaxed uppercase tracking-[0.1em]">현대프리미엄아울렛 대전점 스카이테라스에서 <br />당신의 특별한 선율을 들려주세요.</p>
            
            <div className="flex flex-col sm:flex-row gap-6 justify-center w-full max-w-2xl">
-              <Link href="/request" className="flex-1 h-20 bg-white text-hyundai-black flex items-center justify-center text-[12px] font-black uppercase tracking-[0.3em] hover:bg-hyundai-gold transition-all transform hover:-translate-y-1 active:scale-95">
+              <Link href="/request" className="flex-1 h-20 bg-white text-hyundai-black flex items-center justify-center text-[15px] font-bold uppercase tracking-[0.3em] hover:bg-hyundai-gold transition-all transform hover:-translate-y-1 active:scale-95">
                 신청곡 등록하기
               </Link>
-              <Link href="/status" className="flex-1 h-20 border border-white/20 text-white flex items-center justify-center text-[12px] font-black uppercase tracking-[0.3em] hover:bg-white hover:text-hyundai-black transition-all transform hover:-translate-y-1 active:scale-95">
+              <Link href="/status" className="flex-1 h-20 border border-white/20 text-white flex items-center justify-center text-[15px] font-bold uppercase tracking-[0.3em] hover:bg-white hover:text-hyundai-black transition-all transform hover:-translate-y-1 active:scale-95">
                 신청 현황 확인
               </Link>
            </div>

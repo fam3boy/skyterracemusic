@@ -42,12 +42,12 @@ export default function Header() {
       <div className="border-b border-hyundai-gray-100">
         <div className="portal-container h-11 flex justify-end items-center gap-8">
            {topNavItems.map((item) => (
-             <Link key={item.name} href={item.href} className="text-[10px] font-black text-hyundai-gray-400 hover:text-hyundai-black transition-colors uppercase tracking-[0.1em]">
+             <Link key={item.name} href={item.href} className="text-[12px] font-bold text-hyundai-gray-400 hover:text-hyundai-black transition-colors uppercase tracking-[0.1em]">
                {item.name}
              </Link>
            ))}
            <div className="h-3 w-px bg-hyundai-gray-200"></div>
-           <Link href="/admin/login" className="text-[10px] font-black text-hyundai-gray-400 hover:text-hyundai-black transition-colors uppercase tracking-[0.1em]">관리자</Link>
+           <Link href="/admin/login" className="text-[12px] font-bold text-hyundai-gray-400 hover:text-hyundai-black transition-colors uppercase tracking-[0.1em]">관리자 포털</Link>
         </div>
       </div>
 
@@ -56,10 +56,10 @@ export default function Header() {
         <div className="portal-container h-24 flex justify-between items-center">
           {/* Brand Logo */}
           <Link href="/" className="flex flex-col group">
-            <span className="text-2xl font-black text-hyundai-black tracking-[-0.05em] leading-none">THE HYUNDAI</span>
+            <span className="text-2xl font-bold text-hyundai-black tracking-[-0.05em] leading-none">THE HYUNDAI</span>
             <div className="flex items-center gap-2 mt-1">
                <span className="w-1 h-1 rounded-full bg-hyundai-gold"></span>
-               <span className="text-[10px] font-black text-hyundai-gray-400 tracking-[0.4em] uppercase">SKY TERRACE</span>
+               <span className="text-[11px] font-bold text-hyundai-gray-400 tracking-[0.4em] uppercase">SKY TERRACE</span>
             </div>
           </Link>
 
@@ -70,7 +70,7 @@ export default function Header() {
                 key={item.name} 
                 href={item.href}
                 className={cn(
-                  "text-[13px] font-black tracking-tighter transition-all relative py-2 group uppercase",
+                  "text-[15px] font-bold tracking-tighter transition-all relative py-2 group uppercase",
                   pathname === item.href ? "text-hyundai-black" : "text-hyundai-gray-500 hover:text-hyundai-black"
                 )}
               >
@@ -96,7 +96,7 @@ export default function Header() {
             </button>
             <Link 
               href="/request" 
-              className="hidden lg:flex h-12 items-center px-8 bg-hyundai-black text-white text-[10px] font-black uppercase tracking-[0.2em] hover:bg-hyundai-gold hover:text-hyundai-black transition-all"
+              className="hidden lg:flex h-12 items-center px-8 bg-hyundai-black text-white text-[12px] font-bold uppercase tracking-[0.2em] hover:bg-hyundai-gold hover:text-hyundai-black transition-all"
             >
               음악 신청 서비스
             </Link>

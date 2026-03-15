@@ -118,7 +118,7 @@ export default function AdminSettingsPage() {
     <AdminLayout>
       <div className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h2 className="text-3xl font-black text-hyundai-black tracking-tight">시스템 통합 설정</h2>
+          <h2 className="text-3xl font-bold text-hyundai-black tracking-tight">시스템 통합 설정</h2>
           <p className="text-hyundai-gray-500 mt-1 font-medium">관리자 계정, 메일 수신 및 자동화 규칙 관리</p>
         </div>
         
@@ -131,7 +131,7 @@ export default function AdminSettingsPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all ${activeTab === tab.id ? 'bg-white text-hyundai-black shadow-sm' : 'text-hyundai-gray-400 hover:text-hyundai-gray-600'}`}
+              className={`px-6 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === tab.id ? 'bg-white text-hyundai-black shadow-sm' : 'text-hyundai-gray-400 hover:text-hyundai-gray-600'}`}
             >
               {tab.label}
             </button>
@@ -143,19 +143,19 @@ export default function AdminSettingsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 animate-in fade-in duration-500">
           {/* Banned Patterns (same as before) */}
           <div className="card-premium p-8">
-            <h3 className="text-xl font-black mb-6 flex items-center gap-3">
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-3">
               <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
               금칙어 / 링크 필터 관리
             </h3>
             <div className="flex gap-2 mb-6">
-              <select value={patternType} onChange={(e) => setPatternType(e.target.value)} className="bg-hyundai-gray-50 border-none rounded-xl text-xs font-black px-4"><option value="WORD">단어</option><option value="ARTIST">아티스트</option><option value="LINK">링크/URL</option></select>
+              <select value={patternType} onChange={(e) => setPatternType(e.target.value)} className="bg-hyundai-gray-50 border-none rounded-xl text-sm font-bold px-4"><option value="WORD">단어</option><option value="ARTIST">아티스트</option><option value="LINK">링크/URL</option></select>
               <input type="text" placeholder="검색 또는 차단할 패턴 입력..." className="flex-grow bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-500/10 outline-none" value={newPattern} onChange={(e) => setNewPattern(e.target.value)} />
-              <button onClick={handleAddPattern} className="px-6 bg-hyundai-black text-white text-[10px] font-black rounded-xl uppercase">필터 추가</button>
+              <button onClick={handleAddPattern} className="px-6 bg-hyundai-black text-white text-[11px] font-bold rounded-xl uppercase">필터 추가</button>
             </div>
             <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
               {patterns.map(p => (
                 <div key={p.id} className="flex items-center justify-between p-4 bg-hyundai-gray-50 rounded-2xl group">
-                  <div className="flex items-center gap-3"><span className="text-[9px] font-black bg-red-100 text-red-600 px-2 py-0.5 rounded">{p.type}</span><span className="text-sm font-bold text-hyundai-black">{p.pattern}</span></div>
+                  <div className="flex items-center gap-3"><span className="text-[11px] font-bold bg-red-100 text-red-600 px-2 py-0.5 rounded">{p.type}</span><span className="text-sm font-bold text-hyundai-black">{p.pattern}</span></div>
                   <button onClick={() => handleDelete(p.id, 'banned_patterns')} className="opacity-0 group-hover:opacity-100 p-2 text-hyundai-gray-300 hover:text-red-500"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
                 </div>
               ))}
@@ -164,23 +164,23 @@ export default function AdminSettingsPage() {
 
           {/* Templates (same as before) */}
           <div className="card-premium p-8">
-            <h3 className="text-xl font-black mb-6 flex items-center gap-3"><div className="w-2.5 h-2.5 rounded-full bg-hyundai-emerald"></div>심사 메모 템플릿</h3>
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-3"><div className="w-2.5 h-2.5 rounded-full bg-hyundai-emerald"></div>심사 메모 템플릿</h3>
             <div className="space-y-4 mb-8">
               <div className="flex gap-4">
                 <input type="text" placeholder="템플릿 제목..." className="flex-grow bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm" value={newTemplate.title} onChange={(e) => setNewTemplate({ ...newTemplate, title: e.target.value })} />
-                <select value={newTemplate.type} onChange={(e) => setNewTemplate({ ...newTemplate, type: e.target.value })} className="bg-hyundai-gray-50 border-none rounded-xl text-xs font-black px-4"><option value="HOLD">보류용</option><option value="DELETED">삭제용</option></select>
+                <select value={newTemplate.type} onChange={(e) => setNewTemplate({ ...newTemplate, type: e.target.value })} className="bg-hyundai-gray-50 border-none rounded-xl text-sm font-bold px-4"><option value="HOLD">보류용</option><option value="DELETED">삭제용</option></select>
               </div>
               <textarea placeholder="내용..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm min-h-[100px]" value={newTemplate.content} onChange={(e) => setNewTemplate({ ...newTemplate, content: e.target.value })} />
-              <button onClick={handleAddTemplate} className="w-full py-4 bg-hyundai-black text-white text-[10px] font-black rounded-xl">템플릿 생성</button>
+              <button onClick={handleAddTemplate} className="w-full py-4 bg-hyundai-black text-white text-[12px] font-bold rounded-xl">템플릿 생성</button>
             </div>
             <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
               {templates.map(t => (
                 <div key={t.id} className="p-5 bg-hyundai-gray-50 rounded-3xl group relative">
                   <div className="flex justify-between mb-2">
-                    <span className={`text-[9px] font-black px-2 py-0.5 rounded-full ${t.type === 'HOLD' ? 'bg-blue-100 text-blue-600' : 'bg-red-100 text-red-600'}`}>{t.type}</span>
+                    <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${t.type === 'HOLD' ? 'bg-blue-100 text-blue-600' : 'bg-red-100 text-red-600'}`}>{t.type}</span>
                     <button onClick={() => handleDelete(t.id, 'admin_templates')} className="opacity-0 group-hover:opacity-100 text-hyundai-gray-300 hover:text-red-500"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
                   </div>
-                  <p className="text-sm font-black text-hyundai-black mb-1">{t.title}</p>
+                  <p className="text-sm font-bold text-hyundai-black mb-1">{t.title}</p>
                   <p className="text-xs text-hyundai-gray-400 font-medium line-clamp-2">{t.content}</p>
                 </div>
               ))}
@@ -193,24 +193,24 @@ export default function AdminSettingsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="lg:col-span-1 space-y-8">
             <div className="card-premium p-8">
-              <h3 className="text-lg font-black mb-6">수신자 추가</h3>
+              <h3 className="text-lg font-bold mb-6">수신자 추가</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="text-[10px] font-black text-hyundai-gray-400 uppercase tracking-widest block mb-2">이메일 주소</label>
+                  <label className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest block mb-2">이메일 주소</label>
                   <input type="email" value={newRecipient.email} onChange={(e) => setNewRecipient({...newRecipient, email: e.target.value})} className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-hyundai-emerald/10 outline-none" placeholder="example@hyundai.com" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[10px] font-black text-hyundai-gray-400 uppercase tracking-widest block mb-2">역할</label>
-                    <select value={newRecipient.role} onChange={(e) => setNewRecipient({...newRecipient, role: e.target.value})} className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-xs font-black">
+                    <label className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest block mb-2">역할</label>
+                    <select value={newRecipient.role} onChange={(e) => setNewRecipient({...newRecipient, role: e.target.value})} className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm font-bold">
                       <option value="TO">수신 (TO)</option>
                       <option value="CC">참조 (CC)</option>
                       <option value="BCC">숨은참조 (BCC)</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-[10px] font-black text-hyundai-gray-400 uppercase tracking-widest block mb-2">발송 요일</label>
-                    <select value={newRecipient.send_day} onChange={(e) => setNewRecipient({...newRecipient, send_day: parseInt(e.target.value)})} className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-xs font-black">
+                    <label className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest block mb-2">발송 요일</label>
+                    <select value={newRecipient.send_day} onChange={(e) => setNewRecipient({...newRecipient, send_day: parseInt(e.target.value)})} className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm font-bold">
                       <option value={4}>목요일 (시스템 기본)</option>
                       <option value={1}>월요일</option>
                       <option value={5}>금요일</option>
@@ -218,17 +218,17 @@ export default function AdminSettingsPage() {
                     </select>
                   </div>
                 </div>
-                <button onClick={handleAddRecipient} className="w-full py-4 bg-hyundai-black text-white text-[10px] font-black rounded-xl uppercase tracking-widest mt-4">수신자 등록</button>
+                <button onClick={handleAddRecipient} className="w-full py-4 bg-hyundai-black text-white text-[11px] font-bold rounded-xl uppercase tracking-widest mt-4">수신자 등록</button>
               </div>
             </div>
           </div>
 
           <div className="lg:col-span-2 card-premium p-8 overflow-hidden">
-            <h3 className="text-lg font-black mb-6">수신 리스트</h3>
+            <h3 className="text-lg font-bold mb-6">수신 리스트</h3>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="text-[10px] font-black text-hyundai-gray-400 uppercase border-b border-hyundai-gray-100">
+                  <tr className="text-[12px] font-bold text-hyundai-gray-400 uppercase border-b border-hyundai-gray-100">
                     <th className="pb-4 text-left">이메일</th>
                     <th className="pb-4 text-center">역할</th>
                     <th className="pb-4 text-center">발송 요일</th>
@@ -240,7 +240,7 @@ export default function AdminSettingsPage() {
                     <tr key={r.id} className="text-sm">
                       <td className="py-4 font-bold text-hyundai-black">{r.email}</td>
                       <td className="py-4 text-center">
-                        <span className={`px-2 py-0.5 rounded text-[9px] font-black ${r.role === 'TO' ? 'bg-hyundai-emerald/10 text-hyundai-emerald' : 'bg-blue-50 text-blue-500'}`}>{r.role}</span>
+                        <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${r.role === 'TO' ? 'bg-hyundai-emerald/10 text-hyundai-emerald' : 'bg-blue-50 text-blue-500'}`}>{r.role}</span>
                       </td>
                       <td className="py-4 text-center font-bold text-hyundai-gray-500">{r.send_day === 4 ? '목요일' : r.send_day === 1 ? '월요일' : '기타'}</td>
                       <td className="py-4 text-right">
@@ -258,13 +258,13 @@ export default function AdminSettingsPage() {
       {activeTab === 'accounts' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 animate-in fade-in slide-in-from-right-4 duration-500">
           <div className="lg:col-span-1 card-premium p-8">
-            <h3 className="text-lg font-black mb-6">신규 관리자 추가</h3>
+            <h3 className="text-lg font-bold mb-6">신규 관리자 추가</h3>
             <div className="space-y-4">
               <input type="email" placeholder="관리자 이메일 계정..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm" value={newAdmin.email} onChange={(e) => setNewAdmin({...newAdmin, email: e.target.value})} />
               <input type="text" placeholder="관리자 이름 (닉네임)..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm" value={newAdmin.nickname} onChange={(e) => setNewAdmin({...newAdmin, nickname: e.target.value})} />
               <input type="password" placeholder="초기 비밀번호..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm" value={newAdmin.password} onChange={(e) => setNewAdmin({...newAdmin, password: e.target.value})} />
-              <select className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-xs font-black" value={newAdmin.role} onChange={(e) => setNewAdmin({...newAdmin, role: e.target.value})}><option value="admin">일반 운영자 (admin)</option><option value="administrator">시스템 관리자 (administrator)</option></select>
-              <button onClick={handleCreateAdmin} className="w-full py-4 bg-hyundai-black text-white text-[10px] font-black rounded-xl uppercase tracking-widest">새 운영 계정 생성</button>
+              <select className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm font-bold" value={newAdmin.role} onChange={(e) => setNewAdmin({...newAdmin, role: e.target.value})}><option value="admin">일반 운영자 (admin)</option><option value="administrator">시스템 관리자 (administrator)</option></select>
+              <button onClick={handleCreateAdmin} className="w-full py-4 bg-hyundai-black text-white text-[11px] font-bold rounded-xl uppercase tracking-widest">새 운영 계정 생성</button>
             </div>
           </div>
 
@@ -275,8 +275,8 @@ export default function AdminSettingsPage() {
                 <div key={a.id} className="flex items-center justify-between p-5 bg-hyundai-gray-50 rounded-2xl group">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-black text-hyundai-black">{a.nickname}</span>
-                      <span className="text-[9px] font-black px-2 py-0.5 bg-hyundai-black text-white rounded uppercase">{a.role}</span>
+                      <span className="font-bold text-hyundai-black">{a.nickname}</span>
+                      <span className="text-[11px] font-bold px-2 py-0.5 bg-hyundai-black text-white rounded uppercase">{a.role}</span>
                     </div>
                     <p className="text-xs text-hyundai-gray-400">{a.email}</p>
                   </div>
@@ -294,11 +294,11 @@ export default function AdminSettingsPage() {
       {editingAdmin && (
         <div className="fixed inset-0 bg-hyundai-black/60 flex items-center justify-center z-[200] p-6 backdrop-blur-md">
           <div className="bg-white rounded-[2rem] w-full max-w-md p-8 shadow-3xl">
-            <h3 className="text-xl font-black mb-6">비밀번호 변경</h3>
+            <h3 className="text-xl font-bold mb-6">비밀번호 변경</h3>
             <input type="password" placeholder="새 비밀번호 입력..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-4 text-sm mb-6 outline-none focus:ring-2 focus:ring-hyundai-black/5" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
             <div className="flex gap-4">
-              <button onClick={() => setEditingAdmin(null)} className="flex-1 py-4 text-xs font-black text-hyundai-gray-400 uppercase tracking-widest">취소</button>
-              <button onClick={() => handleChangePassword(editingAdmin)} className="flex-1 py-4 bg-hyundai-black text-white text-xs font-black rounded-xl uppercase tracking-widest shadow-lg shadow-hyundai-black/20">변경하기</button>
+              <button onClick={() => setEditingAdmin(null)} className="flex-1 py-4 text-[13px] font-bold text-hyundai-gray-400 uppercase tracking-widest">취소</button>
+              <button onClick={() => handleChangePassword(editingAdmin)} className="flex-1 py-4 bg-hyundai-black text-white text-[13px] font-bold rounded-xl uppercase tracking-widest shadow-lg shadow-hyundai-black/20">변경하기</button>
             </div>
           </div>
         </div>

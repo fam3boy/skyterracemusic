@@ -66,8 +66,8 @@ export default function AdminLayout({
       <aside className="w-72 bg-hyundai-black text-white shrink-0 flex flex-col border-r border-white/10 z-50">
         <div className="h-24 px-8 flex items-center border-b border-white/5">
           <Link href="/admin/dashboard" className="flex flex-col gap-0.5 group">
-             <span className="text-hyundai-gold text-[10px] font-black tracking-[0.4em] uppercase block group-hover:text-white transition-colors">운영 시스템</span>
-             <h2 className="text-xl font-black tracking-tighter text-white">SKYTERRACE MUSIC</h2>
+             <span className="text-hyundai-gold text-[12px] font-bold tracking-[0.4em] uppercase block group-hover:text-white transition-colors">운영 시스템</span>
+             <h2 className="text-2xl font-bold tracking-tighter text-white">SKYTERRACE MUSIC</h2>
           </Link>
         </div>
         
@@ -79,13 +79,13 @@ export default function AdminLayout({
                 key={item.href}
                 href={item.href} 
                 className={cn(
-                  "flex items-center gap-4 px-4 py-3.5 transition-all text-sm font-bold uppercase tracking-tight",
+                  "flex items-center gap-4 px-4 py-4 transition-all text-[15px] font-bold uppercase tracking-tight",
                   isActive 
                     ? "bg-hyundai-gold text-hyundai-black shadow-lg shadow-hyundai-gold/20" 
                     : "text-hyundai-gray-400 hover:text-white hover:bg-white/5"
                 )}
               >
-                <item.icon className={cn("w-4 h-4", isActive ? "text-hyundai-black" : "text-current")} />
+                <item.icon className={cn("w-5 h-5", isActive ? "text-hyundai-black" : "text-current")} />
                 {item.name}
                 {isActive && <ChevronRight className="ml-auto w-4 h-4 text-hyundai-black/40" />}
               </Link>
@@ -96,20 +96,20 @@ export default function AdminLayout({
         <div className="p-4 border-t border-white/5 space-y-2">
            <div className="p-4 bg-white/5 rounded-sm">
              <div className="flex items-center gap-3">
-               <div className="w-8 h-8 rounded-full bg-hyundai-gold flex items-center justify-center text-hyundai-black font-black text-xs uppercase">
+               <div className="w-10 h-10 rounded-full bg-hyundai-gold flex items-center justify-center text-hyundai-black font-bold text-sm uppercase">
                  {session.user?.email?.[0] || 'A'}
                </div>
                <div className="overflow-hidden">
-                 <p className="text-xs font-black text-white truncate">{session.user?.email}</p>
-                  <p className="text-[10px] font-bold text-hyundai-gray-400 uppercase tracking-widest leading-none mt-1">시스템 관리자</p>
+                 <p className="text-sm font-bold text-white truncate">{session.user?.email}</p>
+                  <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest leading-none mt-1">시스템 관리자</p>
                </div>
              </div>
            </div>
            <button 
             onClick={() => signOut({ callbackUrl: '/admin/login' })}
-            className="w-full flex items-center gap-4 px-4 py-3.5 text-xs font-black text-red-400 hover:bg-red-400/10 transition-all uppercase tracking-widest"
+            className="w-full flex items-center gap-4 px-4 py-4 text-sm font-bold text-red-400 hover:bg-red-400/10 transition-all uppercase tracking-widest"
           >
-             <LogOut className="w-4 h-4" />
+             <LogOut className="w-5 h-5" />
              로그아웃
            </button>
         </div>
@@ -120,31 +120,31 @@ export default function AdminLayout({
         {/* Global Operate Header */}
         <header className="h-24 bg-white border-b border-hyundai-gray-200 shrink-0 px-10 flex items-center justify-between z-40">
            <div className="flex items-center gap-4">
-              <div className="w-1 h-6 bg-hyundai-black"></div>
+              <div className="w-1.5 h-8 bg-hyundai-black"></div>
                <div>
-                 <h3 className="text-[11px] font-black text-hyundai-gray-400 uppercase tracking-widest mb-0.5">운영 워크스페이스</h3>
-                 <p className="text-sm font-black text-hyundai-black uppercase">{navItems.find(i => i.href === pathname)?.name || '관리자 영역'}</p>
+                 <h3 className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest mb-0.5">운영 워크스페이스</h3>
+                 <p className="text-lg font-bold text-hyundai-black uppercase">{navItems.find(i => i.href === pathname)?.name || '관리자 영역'}</p>
                </div>
            </div>
 
            <div className="flex items-center gap-8">
               <div className="flex items-center gap-2 text-hyundai-gray-300">
-                <Search className="w-4 h-4" />
-                 <span className="text-[10px] font-black uppercase tracking-widest hidden md:block">Cmd + K로 빠른 메뉴 검색</span>
+                <Search className="w-5 h-5" />
+                 <span className="text-[11px] font-bold uppercase tracking-widest hidden md:block">Cmd + K로 빠른 메뉴 검색</span>
               </div>
-              <div className="w-px h-6 bg-hyundai-gray-100 hidden md:block"></div>
+              <div className="w-px h-8 bg-hyundai-gray-100 hidden md:block"></div>
               <div className="flex items-center gap-6">
                  <button className="relative text-hyundai-gray-400 hover:text-hyundai-black transition-colors">
-                    <Bell className="w-5 h-5" />
-                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-hyundai-gold rounded-full"></span>
+                    <Bell className="w-6 h-6" />
+                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-hyundai-gold rounded-full"></span>
                  </button>
                  <div className="flex items-center gap-3">
                     <div className="text-right hidden sm:block">
-                        <p className="text-[10px] font-black text-hyundai-black leading-none mb-1 capitalize">{session.user?.name || '관리자'}</p>
-                        <p className="text-[9px] font-bold text-hyundai-gray-400 leading-none">내부 보안 접속 중</p>
+                        <p className="text-[12px] font-bold text-hyundai-black leading-none mb-1 capitalize">{session.user?.name || '관리자'}</p>
+                        <p className="text-[10px] font-bold text-hyundai-gray-400 leading-none">내부 보안 접속 중</p>
                     </div>
-                    <div className="w-10 h-10 bg-hyundai-gray-50 border border-hyundai-gray-100 flex items-center justify-center text-hyundai-gray-400">
-                       <User className="w-6 h-6" />
+                    <div className="w-12 h-12 bg-hyundai-gray-50 border border-hyundai-gray-100 flex items-center justify-center text-hyundai-gray-400">
+                       <User className="w-7 h-7" />
                     </div>
                  </div>
               </div>

@@ -99,9 +99,9 @@ export default function PlaylistPage() {
     <AdminLayout>
       <div className="flex justify-between items-center mb-10">
         <div>
-          <h2 className="text-3xl font-black text-hyundai-black tracking-tight flex items-center gap-3">
+          <h2 className="text-3xl font-bold text-hyundai-black tracking-tight flex items-center gap-3">
             현재 플레이리스트 관리
-            {theme && <span className="text-xs bg-hyundai-gold text-white px-2 py-1 rounded-md uppercase font-bold tracking-widest">{theme.title}</span>}
+            {theme && <span className="text-[11px] bg-hyundai-gold text-white px-2 py-1 rounded-md uppercase font-bold tracking-widest">{theme.title}</span>}
           </h2>
           <p className="text-hyundai-gray-500 mt-2 font-medium">홈페이지 메인 및 현장 방송에 사용되는 리스트를 실시간으로 조정합니다.</p>
         </div>
@@ -109,7 +109,7 @@ export default function PlaylistPage() {
         <div className="flex gap-3">
           <button 
             onClick={addTrack}
-            className="flex items-center gap-2 px-6 py-3 bg-hyundai-black text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-xl"
+            className="flex items-center gap-2 px-6 py-4 bg-hyundai-black text-white rounded-2xl text-[12px] font-bold uppercase tracking-widest hover:scale-105 transition-all shadow-xl"
           >
             <Plus className="w-4 h-4" />
             곡 추가
@@ -117,7 +117,7 @@ export default function PlaylistPage() {
           <button 
             onClick={handleSaveAll}
             disabled={saving}
-            className="flex items-center gap-2 px-6 py-3 bg-hyundai-emerald text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-xl disabled:opacity-50"
+            className="flex items-center gap-2 px-6 py-4 bg-hyundai-emerald text-white rounded-2xl text-[12px] font-bold uppercase tracking-widest hover:scale-105 transition-all shadow-xl disabled:opacity-50"
           >
             {saving ? '저장 중...' : <><Save className="w-4 h-4" /> 변경사항 저장</>}
           </button>
@@ -127,8 +127,8 @@ export default function PlaylistPage() {
       {!theme && !loading && (
         <div className="card-premium p-20 text-center">
           <Music className="w-16 h-16 text-hyundai-gray-200 mx-auto mb-6" />
-          <h3 className="text-xl font-black text-hyundai-black">활성화된 테마가 없습니다.</h3>
-          <p className="text-hyundai-gray-400 mt-2">먼저 [월별 테마 설정]에서 테마를 생성하고 활성화해주세요.</p>
+          <h3 className="text-xl font-bold text-hyundai-black">활성화된 테마가 없습니다.</h3>
+          <p className="text-hyundai-gray-400 mt-2 font-medium">먼저 [월별 테마 설정]에서 테마를 생성하고 활성화해주세요.</p>
         </div>
       )}
 
@@ -138,7 +138,7 @@ export default function PlaylistPage() {
         </div>
       ) : theme && (
         <div className="space-y-4">
-          <div className="bg-hyundai-gray-100/50 p-4 rounded-2xl border border-hyundai-gray-200 flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-hyundai-gray-400 mb-2">
+          <div className="bg-hyundai-gray-100/50 p-4 rounded-2xl border border-hyundai-gray-200 flex items-center justify-between text-[11px] font-bold uppercase tracking-widest text-hyundai-gray-400 mb-2">
             <div className="flex gap-10">
               <span className="w-8 ml-2">#</span>
               <span className="w-64">음원 상세 정보 (곡명 / 아티스트)</span>
@@ -156,13 +156,13 @@ export default function PlaylistPage() {
           {tracks.map((track, i) => (
             <div key={track.id} className="card-premium p-6 group/track hover:border-hyundai-emerald/30 transition-all flex items-center justify-between">
               <div className="flex items-center gap-6 flex-grow">
-                 <span className="text-2xl font-black text-hyundai-gray-200 w-8 group-hover/track:text-hyundai-emerald transition-colors">{(i + 1).toString().padStart(2, '0')}</span>
+                 <span className="text-2xl font-bold text-hyundai-gray-200 w-8 group-hover/track:text-hyundai-emerald transition-colors">{(i + 1).toString().padStart(2, '0')}</span>
                  
                  <div className="flex flex-col md:flex-row gap-4 flex-grow max-w-2xl">
                     <input 
                       type="text"
                       placeholder="곡 제목"
-                      className="bg-hyundai-gray-50 border-none px-4 py-2.5 rounded-xl text-sm font-black text-hyundai-black focus:ring-2 focus:ring-hyundai-emerald/20 transition-all outline-none flex-grow"
+                      className="bg-hyundai-gray-50 border-none px-4 py-3 rounded-xl text-sm font-bold text-hyundai-black focus:ring-2 focus:ring-hyundai-emerald/20 transition-all outline-none flex-grow"
                       value={track.title}
                       onChange={(e) => {
                         const newTracks = [...tracks];
@@ -234,7 +234,7 @@ export default function PlaylistPage() {
            <ListMusic className="w-6 h-6" />
         </div>
         <div>
-          <h4 className="font-black text-hyundai-black mb-1">플레이리스트 실시간 동기화</h4>
+          <h4 className="font-bold text-hyundai-black mb-1">플레이리스트 실시간 동기화</h4>
           <p className="text-sm text-hyundai-gray-500 font-medium leading-relaxed">
             여기에서 변경한 사항은 저장 시 즉시 홈페이지 메인에 반영됩니다. <br />
             곡의 순서를 바꾼 뒤 상단의 **[변경사항 저장]** 버튼을 반드시 눌러주세요.

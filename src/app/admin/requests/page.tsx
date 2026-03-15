@@ -146,24 +146,24 @@ export default function RequestsManagementPage() {
         {/* Top Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div>
-            <h2 className="text-3xl font-black text-hyundai-black tracking-tighter uppercase font-sans">
+            <h2 className="text-3xl font-bold text-hyundai-black tracking-tighter uppercase font-sans">
                신청 곡 처리 센터
             </h2>
-            <p className="text-[10px] font-black text-hyundai-gray-400 mt-1 uppercase tracking-[0.2em]">데이터 검증 및 처리 작업 대기열</p>
+            <p className="text-[12px] font-bold text-hyundai-gray-400 mt-1 uppercase tracking-[0.2em]">데이터 검증 및 처리 작업 대기열</p>
           </div>
           
           <div className="flex flex-wrap items-center gap-3">
             <button 
               onClick={() => setIsGrouped(!isGrouped)}
               className={cn(
-                 "h-11 px-6 text-[10px] font-black uppercase tracking-widest border transition-all",
+                 "h-12 px-8 text-[12px] font-bold uppercase tracking-widest border transition-all",
                  isGrouped ? "bg-hyundai-black text-white border-hyundai-black" : "bg-white text-hyundai-black border-hyundai-gray-200 hover:bg-hyundai-gray-50"
               )}
             >
               {isGrouped ? '그룹화 보기 해제' : '동일 곡 그룹화 보기'}
             </button>
             
-            <div className="flex bg-white h-11 border border-hyundai-gray-200 p-1 shrink-0">
+            <div className="flex bg-white h-12 border border-hyundai-gray-200 p-1 shrink-0">
               {[
                 { id: 'all', label: '전체' },
                 { id: 'pending', label: '대기' },
@@ -175,7 +175,7 @@ export default function RequestsManagementPage() {
                   key={f.id}
                   onClick={() => setFilter(f.id as any)}
                   className={cn(
-                    "px-4 h-full text-[9px] font-black tracking-widest transition-all uppercase",
+                    "px-6 h-full text-[11px] font-bold tracking-widest transition-all uppercase",
                     filter === f.id ? "bg-hyundai-gold text-hyundai-black" : "text-hyundai-gray-400 hover:text-hyundai-black"
                   )}
                 >
@@ -189,19 +189,19 @@ export default function RequestsManagementPage() {
         {/* Bulk Action Strip */}
         {selectedIds.length > 0 && (
           <div className="sticky top-0 z-[60] bg-hyundai-black text-white px-8 py-4 flex items-center justify-between shadow-2xl animate-in slide-in-from-top-4">
-             <div className="flex items-center gap-8">
+             <div className="flex items-center gap-10">
                 <div className="flex items-center gap-3">
-                   <div className="w-2 h-2 rounded-full bg-hyundai-gold animate-pulse"></div>
-                   <span className="text-[10px] font-black tracking-widest uppercase">{selectedIds.length}건 선택됨</span>
+                   <div className="w-2.5 h-2.5 rounded-full bg-hyundai-gold animate-pulse"></div>
+                   <span className="text-[12px] font-bold tracking-widest uppercase">{selectedIds.length}건 선택됨</span>
                 </div>
-                <div className="h-4 w-px bg-white/20"></div>
-                <div className="flex gap-2">
-                   <button onClick={() => handleBulkStatus('approved')} className="h-8 px-4 bg-hyundai-emerald hover:bg-hyundai-emerald/80 text-[9px] font-black uppercase tracking-widest transition-colors">일괄 승인</button>
-                   <button onClick={() => handleBulkStatus('hold')} className="h-8 px-4 bg-blue-600 hover:bg-blue-600/80 text-[9px] font-black uppercase tracking-widest transition-colors">일괄 보류</button>
-                   <button onClick={() => handleBulkStatus('deleted')} className="h-8 px-4 bg-red-600 hover:bg-red-600/80 text-[9px] font-black uppercase tracking-widest transition-colors">일괄 삭제 / 폐기</button>
+                <div className="h-6 w-px bg-white/20"></div>
+                <div className="flex gap-3">
+                   <button onClick={() => handleBulkStatus('approved')} className="h-10 px-6 bg-hyundai-emerald hover:bg-hyundai-emerald/80 text-[11px] font-bold uppercase tracking-widest transition-colors">일괄 승인</button>
+                   <button onClick={() => handleBulkStatus('hold')} className="h-10 px-6 bg-blue-600 hover:bg-blue-600/80 text-[11px] font-bold uppercase tracking-widest transition-colors">일괄 보류</button>
+                   <button onClick={() => handleBulkStatus('deleted')} className="h-10 px-6 bg-red-600 hover:bg-red-600/80 text-[11px] font-bold uppercase tracking-widest transition-colors">일괄 삭제 / 폐기</button>
                 </div>
              </div>
-             <button onClick={() => setSelectedIds([])} className="text-[9px] font-black text-hyundai-gray-400 hover:text-white uppercase tracking-widest transition-colors">선택 해제</button>
+             <button onClick={() => setSelectedIds([])} className="text-[11px] font-bold text-hyundai-gray-400 hover:text-white uppercase tracking-widest transition-colors">선택 해제</button>
           </div>
         )}
 
@@ -212,7 +212,7 @@ export default function RequestsManagementPage() {
              <input 
                type="text" 
                placeholder="제목, 아티스트, 또는 신청자명으로 검색..." 
-               className="w-full bg-hyundai-gray-50 border-none px-12 py-3 text-[10px] font-black uppercase tracking-widest focus:ring-1 focus:ring-hyundai-black/5 outline-none"
+               className="w-full bg-hyundai-gray-50 border-none px-12 py-4 text-[13px] font-bold uppercase tracking-widest focus:ring-1 focus:ring-hyundai-black/5 outline-none"
                value={search}
                onChange={(e) => setSearch(e.target.value)}
              />
@@ -221,14 +221,14 @@ export default function RequestsManagementPage() {
              <Calendar className="w-4 h-4 text-hyundai-gray-300 ml-3" />
              <input 
                type="date" 
-               className="bg-transparent border-none text-[9px] font-black p-2 outline-none uppercase focus:ring-0"
+               className="bg-transparent border-none text-[12px] font-bold p-2 outline-none uppercase focus:ring-0"
                value={startDate}
                onChange={(e) => setStartDate(e.target.value)}
              />
-             <span className="text-hyundai-gray-200 text-xs">/</span>
+             <span className="text-hyundai-gray-200 text-sm">/</span>
              <input 
                type="date" 
-               className="bg-transparent border-none text-[9px] font-black p-2 outline-none uppercase focus:ring-0"
+               className="bg-transparent border-none text-[12px] font-bold p-2 outline-none uppercase focus:ring-0"
                value={endDate}
                onChange={(e) => setEndDate(e.target.value)}
              />
@@ -253,17 +253,17 @@ export default function RequestsManagementPage() {
                      />
                   </div>
                 </th>
-                <th className="px-8 py-5 text-[10px] uppercase font-black tracking-[0.2em] text-hyundai-gray-400">곡 상세 정보</th>
-                <th className="px-8 py-5 text-[10px] uppercase font-black tracking-[0.2em] text-hyundai-gray-400">운영 정책 추천</th>
-                <th className="px-8 py-5 text-[10px] uppercase font-black tracking-[0.2em] text-hyundai-gray-400">신청자 프로필</th>
-                <th className="px-8 py-5 text-[10px] uppercase font-black tracking-[0.2em] text-hyundai-gray-400 text-right">상태 변경 작업</th>
+                <th className="px-8 py-6 text-[11px] uppercase font-bold tracking-[0.2em] text-hyundai-gray-400">곡 상세 정보</th>
+                <th className="px-8 py-6 text-[11px] uppercase font-bold tracking-[0.2em] text-hyundai-gray-400">운영 정책 추천</th>
+                <th className="px-8 py-6 text-[11px] uppercase font-bold tracking-[0.2em] text-hyundai-gray-400">신청자 프로필</th>
+                <th className="px-8 py-6 text-[11px] uppercase font-bold tracking-[0.2em] text-hyundai-gray-400 text-right">상태 변경 작업</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-hyundai-gray-100">
               {loading ? (
                 <tr><td colSpan={5} className="py-40 text-center"><div className="animate-spin h-8 w-8 border-t-2 border-hyundai-black rounded-full mx-auto"></div></td></tr>
               ) : requests.length === 0 ? (
-                <tr><td colSpan={5} className="py-40 text-center text-[10px] font-black text-hyundai-gray-300 uppercase tracking-widest">일치하는 신청 내역이 데이터베이스에 존재하지 않습니다</td></tr>
+                <tr><td colSpan={5} className="py-40 text-center text-sm font-bold text-hyundai-gray-300 uppercase tracking-widest">일치하는 신청 내역이 데이터베이스에 존재하지 않습니다</td></tr>
               ) : (
                 requests.map(req => (
                   <tr key={req.id} className={cn(
@@ -289,16 +289,16 @@ export default function RequestsManagementPage() {
                             <Music className="w-5 h-5" />
                          </div>
                          <div className="flex flex-col gap-1 min-w-0">
-                            <p className="font-black text-hyundai-black text-sm uppercase tracking-tight truncate max-w-[300px]">{req.title}</p>
-                            <p className="text-[10px] font-bold text-hyundai-gray-400 uppercase tracking-widest">{req.artist}</p>
-                            <div className="flex items-center gap-3 mt-2">
+                            <p className="font-bold text-hyundai-black text-[15px] uppercase tracking-tight truncate max-w-[300px]">{req.title}</p>
+                            <p className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest">{req.artist}</p>
+                            <div className="flex items-center gap-4 mt-2">
                                {req.youtube_url && (
-                                 <a href={req.youtube_url} target="_blank" className="flex items-center gap-1 text-[8px] font-black text-hyundai-gray-300 hover:text-red-600 uppercase transition-colors">
-                                    <Youtube className="w-3.5 h-3.5" /> 미디어 링크
+                                 <a href={req.youtube_url} target="_blank" className="flex items-center gap-1.5 text-[10px] font-bold text-hyundai-gray-300 hover:text-red-600 uppercase transition-colors">
+                                    <Youtube className="w-4 h-4" /> 미디어 링크
                                  </a>
                                )}
                                {req.group_count > 1 && (
-                                 <span className="text-[8px] font-black bg-hyundai-black text-white px-2 py-0.5 uppercase tracking-widest">중복 신청 ({req.group_count}건)</span>
+                                 <span className="text-[10px] font-bold bg-hyundai-black text-white px-2.5 py-1 uppercase tracking-widest">중복 신청 ({req.group_count}건)</span>
                                )}
                             </div>
                          </div>
@@ -307,25 +307,25 @@ export default function RequestsManagementPage() {
                     <td className="px-8 py-6">
                       <div className="flex flex-col items-start gap-2">
                          <div className={cn(
-                            "px-2 py-0.5 border text-[8px] font-black uppercase tracking-widest flex items-center gap-1.5",
+                            "px-3 py-1 border text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5",
                             recommendationBadges[req.auto_recommendation as keyof typeof recommendationBadges] || "bg-gray-50 text-gray-400 border-gray-100"
                          )}>
                             <div className="w-1 h-1 rounded-full bg-current"></div>
                             {getBadgeLabel(req.auto_recommendation)}
                          </div>
-                         <p className="text-[10px] font-bold text-hyundai-gray-400 leading-tight flex items-start gap-1.5">
-                            <ChevronDown className="w-3 h-3 rotate-[-90deg] shrink-0 mt-0.5" />
+                         <p className="text-[12px] font-bold text-hyundai-gray-400 leading-tight flex items-start gap-1.5">
+                            <ChevronDown className="w-3.5 h-3.5 rotate-[-90deg] shrink-0 mt-0.5" />
                             {req.auto_reason}
                          </p>
                       </div>
                     </td>
                     <td className="px-8 py-6">
                       <div className="flex flex-col">
-                         <div className="flex items-center gap-2 mb-1">
-                            <User className="w-3 h-3 text-hyundai-gray-300" />
-                            <p className="text-[10px] font-black text-hyundai-black uppercase">{req.requester_name}</p>
+                         <div className="flex items-center gap-2 mb-1.5">
+                            <User className="w-3.5 h-3.5 text-hyundai-gray-300" />
+                            <p className="text-sm font-bold text-hyundai-black uppercase">{req.requester_name}</p>
                          </div>
-                         <p className="text-hyundai-gray-400 font-bold uppercase tracking-widest text-[9px] pl-5">
+                         <p className="text-hyundai-gray-400 font-bold uppercase tracking-widest text-[11px] pl-5">
                             {new Date(req.created_at).toLocaleDateString()} • {new Date(req.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                          </p>
                       </div>
@@ -365,8 +365,8 @@ export default function RequestsManagementPage() {
             <div className="bg-white border border-hyundai-gray-200 w-full max-w-xl shadow-3xl overflow-hidden animate-in zoom-in-95 duration-300">
               <div className="px-10 py-8 border-b border-hyundai-gray-100 flex justify-between items-center">
                 <div>
-                  <h3 className="text-sm font-black uppercase tracking-[0.2em] text-hyundai-black">검사 인텔리전스</h3>
-                  <p className="text-[9px] font-bold text-hyundai-gray-400 uppercase tracking-widest mt-1">운영 메모 및 응대 템플릿</p>
+                  <h3 className="text-lg font-bold uppercase tracking-[0.2em] text-hyundai-black">검사 인텔리전스</h3>
+                  <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest mt-1">운영 메모 및 응대 템플릿</p>
                 </div>
                 <button onClick={() => setMemoOpen(null)} className="h-10 w-10 flex items-center justify-center hover:bg-hyundai-gray-50 transition-colors">
                   <XCircle className="w-6 h-6 text-hyundai-gray-300" />
@@ -375,14 +375,14 @@ export default function RequestsManagementPage() {
               
               <div className="p-10 space-y-8">
                 {templates.length > 0 && (
-                  <div className="space-y-3">
-                     <p className="text-[9px] font-black text-hyundai-gray-300 uppercase tracking-widest">사용 가능한 템플릿</p>
-                     <div className="flex flex-wrap gap-2">
+                  <div className="space-y-4">
+                     <p className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-widest">사용 가능한 템플릿</p>
+                     <div className="flex flex-wrap gap-3">
                         {templates.map(t => (
                           <button 
                             key={t.id} 
                             onClick={() => setMemoText(t.content)}
-                            className="px-4 py-2 border border-hyundai-gray-200 hover:border-hyundai-black text-[9px] font-black uppercase tracking-widest transition-all"
+                            className="px-5 py-3 border border-hyundai-gray-200 hover:border-hyundai-black text-[11px] font-bold uppercase tracking-widest transition-all"
                           >
                             {t.title}
                           </button>
@@ -391,8 +391,8 @@ export default function RequestsManagementPage() {
                   </div>
                 )}
                 
-                <div className="space-y-3">
-                   <p className="text-[9px] font-black text-hyundai-gray-300 uppercase tracking-widest">내부 운영 메모 / 피드백</p>
+                <div className="space-y-4">
+                   <p className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-widest">내부 운영 메모 / 피드백</p>
                    <textarea
                      className="w-full px-8 py-6 bg-hyundai-gray-50 border-none outline-none min-h-[180px] text-xs font-bold leading-relaxed focus:bg-white focus:ring-1 focus:ring-hyundai-black transition-all"
                      placeholder="이 기록에 대한 관리자 노트를 입력하십시오..."
@@ -405,13 +405,13 @@ export default function RequestsManagementPage() {
               <div className="px-10 py-8 bg-hyundai-gray-50 border-t border-hyundai-gray-100 flex justify-end gap-3">
                 <button 
                    onClick={() => setMemoOpen(null)}
-                   className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-hyundai-gray-400 hover:text-hyundai-black transition-colors"
+                   className="px-8 py-4 text-[12px] font-bold uppercase tracking-widest text-hyundai-gray-400 hover:text-hyundai-black transition-colors"
                 >
                    취소
                 </button>
                 <button 
                   onClick={() => handleSaveMemo(memoOpen)}
-                  className="px-10 py-4 bg-hyundai-black text-white text-[10px] font-black uppercase tracking-widest hover:bg-hyundai-gold hover:text-hyundai-black transition-all"
+                  className="px-10 py-4 bg-hyundai-black text-white text-[12px] font-bold uppercase tracking-widest hover:bg-hyundai-gold hover:text-hyundai-black transition-all"
                 >
                   변경 사항 확정
                 </button>

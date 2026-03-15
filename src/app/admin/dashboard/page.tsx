@@ -88,19 +88,19 @@ export default function DashboardPage() {
       {/* 1. Header Area */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
         <div>
-          <h2 className="text-3xl font-black text-hyundai-black tracking-tighter uppercase flex items-center gap-3">
+          <h2 className="text-3xl font-bold text-hyundai-black tracking-tighter uppercase flex items-center gap-3">
              운영 통계 인사이트
-             <span className="w-2 h-2 rounded-full bg-hyundai-gold animate-pulse"></span>
+             <span className="w-2.5 h-2.5 rounded-full bg-hyundai-gold animate-pulse"></span>
           </h2>
-          <p className="text-xs font-bold text-hyundai-gray-400 mt-1 uppercase tracking-widest">실시간 운영 데이터 및 성과 지표 대시보드</p>
+          <p className="text-sm font-bold text-hyundai-gray-400 mt-1 uppercase tracking-widest">실시간 운영 데이터 및 성과 지표 대시보드</p>
         </div>
         
         <div className="flex items-center gap-4">
            <button 
              onClick={exportCSV}
-             className="flex items-center gap-2 px-6 py-3 bg-white border border-hyundai-gray-200 text-hyundai-black rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-hyundai-gray-50 transition-all shadow-sm"
+             className="flex items-center gap-3 px-8 py-4 bg-white border border-hyundai-gray-200 text-hyundai-black rounded-sm text-[12px] font-bold uppercase tracking-widest hover:bg-hyundai-gray-50 transition-all shadow-sm"
            >
-             <Download className="w-3.5 h-3.5" />
+             <Download className="w-4 h-4" />
              리포트 내보내기
            </button>
         </div>
@@ -111,15 +111,15 @@ export default function DashboardPage() {
         <div className="absolute top-0 left-0 w-1 h-full bg-hyundai-black"></div>
         
         <div className="flex items-center gap-3 text-hyundai-black">
-          <Filter className="w-4 h-4" />
-          <span className="text-[10px] font-black uppercase tracking-[0.2em]">데이터 필터 터미널</span>
+          <Filter className="w-5 h-5" />
+          <span className="text-[12px] font-bold uppercase tracking-[0.2em]">데이터 필터 터미널</span>
         </div>
 
-        <div className="flex items-center gap-10 flex-1">
-          <div className="space-y-1.5">
-             <label className="text-[9px] font-black text-hyundai-gray-300 uppercase tracking-widest block">테마 선택</label>
+        <div className="flex items-center gap-12 flex-1">
+          <div className="space-y-2">
+             <label className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-widest block">테마 선택</label>
              <select 
-               className="bg-transparent border-none text-xs font-black text-hyundai-black p-0 outline-none cursor-pointer focus:ring-0 uppercase"
+               className="bg-transparent border-none text-[14px] font-bold text-hyundai-black p-0 outline-none cursor-pointer focus:ring-0 uppercase"
                value={themeId}
                onChange={(e) => setThemeId(e.target.value)}
              >
@@ -128,29 +128,29 @@ export default function DashboardPage() {
              </select>
           </div>
 
-          <div className="space-y-1.5">
-             <label className="text-[9px] font-black text-hyundai-gray-300 uppercase tracking-widest block">조회 기간 설정</label>
-             <div className="flex items-center gap-3">
+          <div className="space-y-2">
+             <label className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-widest block">조회 기간 설정</label>
+             <div className="flex items-center gap-4">
                <input 
                  type="date" 
-                 className="bg-transparent border-none text-[10px] font-black p-0 outline-none focus:ring-0 uppercase" 
+                 className="bg-transparent border-none text-[14px] font-bold p-0 outline-none focus:ring-0 uppercase" 
                  value={startDate}
                  onChange={(e) => setStartDate(e.target.value)}
                />
-               <span className="text-hyundai-gray-200 text-xs">/</span>
+               <span className="text-hyundai-gray-200 text-sm">/</span>
                <input 
                  type="date" 
-                 className="bg-transparent border-none text-[10px] font-black p-0 outline-none focus:ring-0 uppercase" 
+                 className="bg-transparent border-none text-[14px] font-bold p-0 outline-none focus:ring-0 uppercase" 
                  value={endDate}
                  onChange={(e) => setEndDate(e.target.value)}
                />
              </div>
           </div>
 
-          <div className="space-y-1.5">
-             <label className="text-[9px] font-black text-hyundai-gray-300 uppercase tracking-widest block">처리 상태 필터</label>
+          <div className="space-y-2">
+             <label className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-widest block">처리 상태 필터</label>
              <select 
-               className="bg-transparent border-none text-xs font-black text-hyundai-black p-0 outline-none cursor-pointer focus:ring-0 uppercase"
+               className="bg-transparent border-none text-[14px] font-bold text-hyundai-black p-0 outline-none cursor-pointer focus:ring-0 uppercase"
                value={status}
                onChange={(e) => setStatus(e.target.value)}
              >
@@ -166,7 +166,7 @@ export default function DashboardPage() {
         {(themeId !== 'all' || startDate || endDate || status !== 'all') && (
           <button 
             onClick={() => { setThemeId('all'); setStartDate(''); setEndDate(''); setStatus('all'); }}
-            className="text-[9px] font-black text-red-500 uppercase tracking-widest hover:underline"
+            className="text-[11px] font-bold text-red-500 uppercase tracking-widest hover:underline"
           >
             Clear All Filters
           </button>
@@ -180,7 +180,7 @@ export default function DashboardPage() {
             <AlertTriangle className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-[10px] font-black text-red-900 tracking-widest uppercase mb-0.5">운영 알림: 퍼포먼스 이슈 감지</p>
+            <p className="text-[12px] font-bold text-red-900 tracking-widest uppercase mb-0.5">운영 알림: 퍼포먼스 이슈 감지</p>
             <p className="text-xs font-bold text-red-600 leading-tight">
               {stats.kpis.approvalRate < 20 ? `승인율이 ${stats.kpis.approvalRate.toFixed(1)}%로 임계치 미달입니다. ` : ''}
               {stats.kpis.deletionRate > 30 ? `삭제율이 ${stats.kpis.deletionRate.toFixed(1)}%로 비정상 유입이 의심됩니다.` : ''}
@@ -198,11 +198,11 @@ export default function DashboardPage() {
         {/* Instant Action */}
         <div className="bg-hyundai-black p-8 flex flex-col justify-between group">
            <div className="flex justify-between items-start">
-             <span className="text-[9px] font-black text-hyundai-gray-400 uppercase tracking-widest">일괄 처리 프로세스</span>
-             <FileText className="w-4 h-4 text-hyundai-gold" />
+             <span className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest">일괄 처리 프로세스</span>
+             <FileText className="w-5 h-5 text-hyundai-gold" />
            </div>
            <div>
-              <p className="text-xs font-bold text-white mb-4">현재 승인된 {stats?.kpis.approved}곡을 <br />보고서로 즉시 발송합니다.</p>
+              <p className="text-sm font-bold text-white mb-6">현재 승인된 {stats?.kpis.approved}곡을 <br />보고서로 즉시 발송합니다.</p>
               <button 
                 onClick={async () => {
                   if (confirm('주간 리포트를 즉시 발송하시겠습니까?')) {
@@ -210,7 +210,7 @@ export default function DashboardPage() {
                     if (res.ok) alert('성공적으로 발송되었습니다.'); else alert('발송 중 오류가 발생했습니다.');
                   }
                 }}
-                className="w-full py-3 bg-hyundai-gold text-hyundai-black text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all shadow-lg shadow-hyundai-gold/10"
+                className="w-full py-4 bg-hyundai-gold text-hyundai-black text-[12px] font-bold uppercase tracking-widest hover:bg-white transition-all shadow-lg shadow-hyundai-gold/10"
               >
                 주간 리포트 즉시 발송
               </button>
@@ -224,13 +224,13 @@ export default function DashboardPage() {
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={stats?.trends}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F1F1" />
-              <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 900, fill: '#999'}} dy={10} />
-              <YAxis axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 900, fill: '#999'}} />
+              <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 700, fill: '#999'}} dy={10} />
+              <YAxis axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 700, fill: '#999'}} />
               <Tooltip 
-                contentStyle={{borderRadius: '0', border: '1px solid #eee', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontWeight: 900}}
-                itemStyle={{fontSize: '11px', textTransform: 'uppercase'}}
+                contentStyle={{borderRadius: '0', border: '1px solid #eee', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontWeight: 700}}
+                itemStyle={{fontSize: '12px', textTransform: 'uppercase'}}
               />
-              <Legend verticalAlign="top" align="right" height={36} iconType="rect" wrapperStyle={{fontSize: '9px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em'}} />
+              <Legend verticalAlign="top" align="right" height={36} iconType="rect" wrapperStyle={{fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em'}} />
               <Line type="step" name="신청 수" dataKey="count" stroke="#000000" strokeWidth={3} dot={false} activeDot={{r: 6, strokeWidth: 0}} />
               <Line type="step" name="승인 수" dataKey="approved_count" stroke="#D4AF37" strokeWidth={3} dot={false} />
             </LineChart>
@@ -253,7 +253,7 @@ export default function DashboardPage() {
                 ))}
               </Pie>
               <Tooltip />
-              <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{fontSize: '9px', fontWeight: 900, textTransform: 'uppercase'}} />
+              <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{fontSize: '11px', fontWeight: 700, textTransform: 'uppercase'}} />
             </PieChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -263,7 +263,7 @@ export default function DashboardPage() {
             <BarChart data={stats?.topArtists} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#F1F1F1" />
               <XAxis type="number" hide />
-              <YAxis dataKey="artist" type="category" axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 900, fill: '#000'}} width={100} />
+              <YAxis dataKey="artist" type="category" axisLine={false} tickLine={false} tick={{fontSize: 11, fontWeight: 700, fill: '#000'}} width={120} />
               <Tooltip />
               <Bar dataKey="count" fill="#000000" radius={[0, 4, 4, 0]} barSize={16} />
             </BarChart>
@@ -274,8 +274,8 @@ export default function DashboardPage() {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={stats?.hourlyDist}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F1F1" />
-              <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 900, fill: '#000'}} />
-              <YAxis axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 900, fill: '#999'}} />
+              <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 700, fill: '#000'}} />
+              <YAxis axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 700, fill: '#999'}} />
               <Tooltip />
               <Bar dataKey="count" fill="#D4AF37" radius={[4, 4, 0, 0]} barSize={24} />
             </BarChart>
@@ -287,19 +287,19 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-px bg-hyundai-gray-200 border border-hyundai-gray-200">
         <div className="bg-white p-10">
           <div className="flex justify-between items-center mb-10">
-             <h3 className="text-sm font-black flex items-center gap-3 uppercase tracking-widest text-hyundai-black">
-                <Music className="w-4 h-4 text-hyundai-gold" /> 최다 신청곡 순위
+             <h3 className="text-lg font-bold flex items-center gap-3 uppercase tracking-widest text-hyundai-black">
+                <Music className="w-5 h-5 text-hyundai-gold" /> 최다 신청곡 순위
              </h3>
-             <span className="text-[9px] font-black text-white bg-hyundai-black px-2 py-1 uppercase tracking-widest">TOP 10 랭킹</span>
+             <span className="text-[11px] font-bold text-white bg-hyundai-black px-3 py-1.5 uppercase tracking-widest">TOP 10 랭킹</span>
           </div>
           <div className="space-y-2">
             {stats?.topSongs.map((song: any, i: number) => (
               <div key={i} className="flex items-center justify-between p-4 bg-hyundai-gray-50 border border-hyundai-gray-100 hover:bg-white hover:shadow-xl hover:shadow-black/5 hover:-translate-y-0.5 transition-all group">
                 <div className="flex items-center gap-5">
-                  <span className="text-lg font-black text-hyundai-gray-200 w-6 group-hover:text-hyundai-gold transition-colors">{(i + 1).toString().padStart(2, '0')}</span>
+                  <span className="text-xl font-bold text-hyundai-gray-200 w-8 group-hover:text-hyundai-gold transition-colors">{(i + 1).toString().padStart(2, '0')}</span>
                   <div>
-                    <p className="font-black text-hyundai-black text-xs uppercase tracking-tight">{song.title}</p>
-                    <p className="text-[9px] font-bold text-hyundai-gray-400 uppercase tracking-widest leading-none mt-1">{song.artist}</p>
+                    <p className="font-bold text-hyundai-black text-sm uppercase tracking-tight">{song.title}</p>
+                    <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest leading-none mt-1">{song.artist}</p>
                   </div>
                 </div>
                 <div className="text-right">
@@ -312,16 +312,16 @@ export default function DashboardPage() {
 
         <div className="bg-white p-10">
           <div className="flex justify-between items-center mb-10">
-             <h3 className="text-sm font-black flex items-center gap-3 uppercase tracking-widest text-hyundai-black">
-                <Layers className="w-4 h-4 text-hyundai-gold" /> 테마 선호도 맵핑
+             <h3 className="text-lg font-bold flex items-center gap-3 uppercase tracking-widest text-hyundai-black">
+                <Layers className="w-5 h-5 text-hyundai-gold" /> 테마 선호도 맵핑
              </h3>
-             <Activity className="w-4 h-4 text-hyundai-gray-200" />
+             <Activity className="w-5 h-5 text-hyundai-gray-200" />
           </div>
           <div className="h-[450px]">
             <ResponsiveContainer width="100%" height="100%">
                <BarChart data={stats?.themeDist} layout="vertical">
                  <XAxis type="number" hide />
-                 <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 900, fill: '#000'}} width={120} />
+                 <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{fontSize: 11, fontWeight: 700, fill: '#000'}} width={120} />
                  <Tooltip />
                  <Bar dataKey="value" fill="#000000" radius={[0, 4, 4, 0]} barSize={20} />
                </BarChart>
@@ -331,8 +331,8 @@ export default function DashboardPage() {
              <div className="flex items-center gap-4 bg-hyundai-gray-50 p-6">
                 <TrendingUp className="w-8 h-8 text-hyundai-gold" />
                 <div>
-                   <p className="text-[10px] font-black text-hyundai-black uppercase tracking-widest">운영 제언 및 피드백</p>
-                   <p className="text-xs font-bold text-hyundai-gray-400 leading-tight mt-1">현재 '{stats?.themeDist[0]?.name}' 장르의 신청 비중이 가장 높습니다. <br />해당 테마의 오우라(Aura) 강화를 추천합니다.</p>
+                   <p className="text-[12px] font-bold text-hyundai-black uppercase tracking-widest">운영 제언 및 피드백</p>
+                   <p className="text-sm font-bold text-hyundai-gray-400 leading-tight mt-1.5">현재 '{stats?.themeDist[0]?.name}' 장르의 신청 비중이 가장 높습니다. <br />해당 테마의 오우라(Aura) 강화를 추천합니다.</p>
                 </div>
              </div>
           </div>
@@ -346,11 +346,11 @@ function KPIItem({ label, value, icon, trend }: any) {
   return (
     <div className="bg-white p-8 group overflow-hidden relative">
       <div className="flex justify-between items-start mb-6">
-        <span className="text-[9px] font-black text-hyundai-gray-400 uppercase tracking-[0.2em]">{label}</span>
+        <span className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-[0.2em]">{label}</span>
         <div className="text-hyundai-gray-200 group-hover:text-hyundai-gold transition-colors">{icon}</div>
       </div>
       <div className="flex items-baseline gap-2">
-        <p className="text-4xl font-black tracking-tighter text-hyundai-black">{value}</p>
+        <p className="text-5xl font-bold tracking-tighter text-hyundai-black">{value}</p>
         <div className="flex items-center">
            {trend === 'up' && <ArrowUpRight className="w-4 h-4 text-hyundai-gold" />}
            {trend === 'down' && <ArrowDownRight className="w-4 h-4 text-red-500" />}
@@ -366,7 +366,7 @@ function ChartCard({ title, children, className }: any) {
     <div className={`bg-white border border-hyundai-gray-200 shadow-sm p-10 flex flex-col ${className}`}>
       <div className="flex items-center gap-3 mb-10">
         <div className="w-1.5 h-6 bg-hyundai-black"></div>
-        <h3 className="text-[11px] font-black text-hyundai-black uppercase tracking-[0.2em]">
+        <h3 className="text-[14px] font-bold text-hyundai-black uppercase tracking-[0.2em]">
           {title}
         </h3>
       </div>
