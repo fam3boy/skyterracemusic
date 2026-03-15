@@ -60,9 +60,14 @@ export async function GET(req: Request) {
 
       // Check Banned
       const matchedBanned = bannedPatterns.find(p => {
-        if (p.type === 'WORD' && (row.title.includes(p.pattern) || row.artist.includes(p.pattern) || row.story?.includes(p.pattern))) return true;
-        if (p.type === 'ARTIST' && row.artist.toLowerCase() === p.pattern.toLowerCase()) return true;
-        if (p.type === 'LINK' && row.youtube_url?.includes(p.pattern)) return true;
+        const title = row.title || '';
+        const artist = row.artist || '';
+        const story = row.story || '';
+        const youtubeUrl = row.youtube_url || '';
+
+        if (p.type === 'WORD' && (title.includes(p.pattern) || artist.includes(p.pattern) || story.includes(p.pattern))) return true;
+        if (p.type === 'ARTIST' && artist.toLowerCase() === p.pattern.toLowerCase()) return true;
+        if (p.type === 'LINK' && youtubeUrl.includes(p.pattern)) return true;
         return false;
       });
 

@@ -46,10 +46,32 @@ export async function GET(req: NextRequest) {
     `;
 
     const songs = result.rows;
-    const recipient = process.env.WEEKLY_MAIL_RECIPIENT || 'broadcasting@hyundai.com';
+    if (songs.length === 0 && !forceCurrent) {
+      return NextResponse.json({ success: true, count: 0, message: 'No songs to report' });
+    }
+
+    // Fetch Recipients from DB
+    let recipientQuery = `SELECT * FROM mail_recipients WHERE is_active = true`;
+    if (!forceCurrent) {
+      recipientQuery += ` AND send_day = ${dayOfWeek}`;
+    }
+    const recipientRes = await sql.query(recipientQuery);
+    const recipientsList = recipientRes.rows;
+
+    if (recipientsList.length === 0) {
+      // Fallback to Env if DB is empty or no match (optional)
+      const fallback = process.env.WEEKLY_MAIL_RECIPIENT;
+      if (fallback) recipientsList.push({ email: fallback, role: 'TO' });
+      else return NextResponse.json({ success: true, count: songs.length, message: 'No recipients configured' });
+    }
+
+    const toEmails = recipientsList.filter(r => r.role === 'TO').map(r => r.email);
+    const ccEmails = recipientsList.filter(r => r.role === 'CC').map(r => r.email);
+    const bccEmails = recipientsList.filter(r => r.role === 'BCC').map(r => r.email);
+
     const subject = `[SKY TERRACE 주간 신청곡 리포트] ${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
 
-    // HTML Table Generation
+    // ... (HTML Table Generation remains same)
     const tableRows = songs.map(s => `
       <tr style="border-bottom: 1px solid #edf2f7;">
         <td style="padding: 12px; font-weight: bold; color: #1a202c;">${s.title}</td>
@@ -96,20 +118,27 @@ export async function GET(req: NextRequest) {
     let mailStatus = 'success';
     let errorMessage = null;
 
-    if (songs.length > 0) {
-      const mailResult = await sendWeeklyReport({ to: recipient, subject, html, text });
+    if (songs.length > 0 && toEmails.length > 0) {
+      const mailResult = await sendWeeklyReport({ 
+        to: toEmails.join(','), 
+        cc: ccEmails.length > 0 ? ccEmails.join(',') : undefined,
+        bcc: bccEmails.length > 0 ? bccEmails.join(',') : undefined,
+        subject, 
+        html, 
+        text 
+      });
       if (!mailResult.success) {
         mailStatus = 'fail';
         errorMessage = JSON.stringify(mailResult.error);
       }
     }
 
-    // Log the event
+    // Log the event (consolidated log for the batch)
     await sql`
       INSERT INTO weekly_mail_logs (
         recipient_email, subject, body_text, request_ids, status, error_message, period_start, period_end
       ) VALUES (
-        ${recipient}, 
+        ${toEmails.join(', ')}, 
         ${subject}, 
         ${text}, 
         ${JSON.stringify(songs.map(s => s.id))},

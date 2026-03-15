@@ -2,11 +2,15 @@ import { Resend } from 'resend';
 
 export async function sendWeeklyReport({
   to,
+  cc,
+  bcc,
   subject,
   html,
   text
 }: {
   to: string;
+  cc?: string;
+  bcc?: string;
   subject: string;
   html: string;
   text: string;
@@ -21,8 +25,10 @@ export async function sendWeeklyReport({
 
   try {
     const data = await resend.emails.send({
-      from: 'Sky Terrace <onboarding@resend.dev>', // In production, use registered domain
-      to: [to],
+      from: 'Sky Terrace <onboarding@resend.dev>',
+      to: to.split(',').map(e => e.trim()),
+      cc: cc ? cc.split(',').map(e => e.trim()) : undefined,
+      bcc: bcc ? bcc.split(',').map(e => e.trim()) : undefined,
       subject: subject,
       html: html,
       text: text,
