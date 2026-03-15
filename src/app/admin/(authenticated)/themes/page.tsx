@@ -3,7 +3,7 @@
 import AdminLayout from '@/components/AdminLayout';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, Music, ListMusic, CalendarDays, ClipboardList, Settings2, Plus, X, Trash2, ArrowUp, ArrowDown, Image as ImageIcon, Search } from 'lucide-react';
+import { LayoutDashboard, Music, ListMusic, CalendarDays, ClipboardList, Settings2, Plus, X, Trash2, ArrowUp, ArrowDown, Image as ImageIcon, Search, AlertCircle } from 'lucide-react';
 
 export default function ThemesPage() {
   const [themes, setThemes] = useState<any[]>([]);
@@ -16,6 +16,7 @@ export default function ThemesPage() {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [searching, setSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
   const [searchTargetIndex, setSearchTargetIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -120,10 +121,17 @@ export default function ThemesPage() {
       const res = await fetch(`/api/youtube-metadata?url=${encodeURIComponent(url)}`);
       if (res.ok) {
         const data = await res.json();
-        const newTracks = [...tracks];
-        newTracks[index].title = data.title;
-        if (!newTracks[index].artist) newTracks[index].artist = data.author || '';
-        setTracks(newTracks);
+        setTracks(prev => {
+          const newTracks = [...prev];
+          if (newTracks[index]) {
+            newTracks[index] = {
+              ...newTracks[index],
+              title: newTracks[index].title || data.title,
+              artist: newTracks[index].artist || data.author || ''
+            };
+          }
+          return newTracks;
+        });
       }
     } catch (err) {
       console.error('Failed to fetch youtube title', err);
@@ -134,13 +142,18 @@ export default function ThemesPage() {
     e.preventDefault();
     if (!searchKeyword) return;
     setSearching(true);
+    setSearchError(null);
     try {
       const res = await fetch(`/api/admin/music-search?keyword=${encodeURIComponent(searchKeyword)}`);
       if (res.ok) {
         setSearchResults(await res.json());
+      } else {
+        const err = await res.json();
+        setSearchError(err.error || '검색 중 오류가 발생했습니다.');
       }
     } catch (err) {
       console.error('Search failed', err);
+      setSearchError('네트워크 오류가 발생했습니다.');
     } finally {
       setSearching(false);
     }
@@ -148,17 +161,22 @@ export default function ThemesPage() {
 
   const selectTrack = (result: any) => {
     if (searchTargetIndex === null) return;
-    const newTracks = [...tracks];
-    newTracks[searchTargetIndex] = {
-      ...newTracks[searchTargetIndex],
-      title: result.title,
-      artist: result.artist
-    };
-    setTracks(newTracks);
+    setTracks(prev => {
+      const newTracks = [...prev];
+      if (newTracks[searchTargetIndex]) {
+        newTracks[searchTargetIndex] = {
+          ...newTracks[searchTargetIndex],
+          title: result.title,
+          artist: result.artist
+        };
+      }
+      return newTracks;
+    });
     setSearchOpen(false);
     setSearchTargetIndex(null);
     setSearchResults([]);
     setSearchKeyword('');
+    setSearchError(null);
   };
 
   return (
@@ -493,8 +511,15 @@ export default function ThemesPage() {
                   </button>
                </form>
 
+               {searchError && (
+                 <div className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-500 text-xs font-bold uppercase tracking-tight">
+                    <AlertCircle className="w-4 h-4" />
+                    {searchError}
+                 </div>
+               )}
+
                <div className="flex-grow overflow-y-auto space-y-2 pr-2 custom-scrollbar min-h-[300px]">
-                  {searchResults.length === 0 && !searching && (
+                  {searchResults.length === 0 && !searching && !searchError && (
                     <div className="py-20 text-center text-hyundai-gray-300 font-bold uppercase tracking-widest text-[11px]">검색 결과가 없습니다</div>
                   )}
                   {searchResults.map((result, i) => (
