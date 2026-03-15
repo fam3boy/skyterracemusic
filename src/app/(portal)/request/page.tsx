@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { isValidYouTubeUrl } from '@/utils/youtube';
 import { useRouter } from 'next/navigation';
-import { Search, Youtube, Music, User, Send, CheckCircle, Copy, ArrowLeft, AlertCircle, Sparkles, ChevronRight, Info, Disc, Clock } from 'lucide-react';
+import { Search, Youtube, Music, User, Send, CheckCircle, Copy, ArrowLeft, AlertCircle, Sparkles, ChevronRight, Info, Disc, Clock, X } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -41,6 +41,13 @@ export default function RequestPage() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [duplicateFound, setDuplicateFound] = useState(false);
   const [activeTheme, setActiveTheme] = useState<any>(null);
+
+  // Search states
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searching, setSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
   const debouncedTitle = useDebounce(formData.title, 500);
   const debouncedArtist = useDebounce(formData.artist, 500);
@@ -106,6 +113,57 @@ export default function RequestPage() {
   const selectSuggestion = (s: any) => {
     setFormData(prev => ({ ...prev, title: s.title, artist: s.artist }));
     setShowSuggestions(false);
+  };
+
+  const handleYoutubeBlur = async (url: string) => {
+    if (!url || (!url.includes('youtube.com') && !url.includes('youtu.be'))) return;
+    if (formData.title) return;
+
+    try {
+      const res = await fetch(`/api/youtube-metadata?url=${encodeURIComponent(url)}`);
+      if (res.ok) {
+        const data = await res.json();
+        setFormData(prev => ({
+          ...prev,
+          title: prev.title || data.title,
+          artist: prev.artist || data.author || ''
+        }));
+      }
+    } catch (err) {
+      console.error('Youtube metadata fetch failed', err);
+    }
+  };
+
+  const handleMusicSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchKeyword) return;
+    setSearching(true);
+    setSearchError(null);
+    try {
+      // Direct call to admin music-search API (public allowed for this specific search)
+      const res = await fetch(`/api/admin/music-search?keyword=${encodeURIComponent(searchKeyword)}`);
+      if (res.ok) {
+        setSearchResults(await res.json());
+      } else {
+        setSearchError('검색 중 오류가 발생했습니다.');
+      }
+    } catch (err) {
+      setSearchError('네트워크 오류가 발생했습니다.');
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const selectMusicResult = (result: any) => {
+    setFormData(prev => ({
+      ...prev,
+      title: result.title,
+      artist: result.artist
+    }));
+    setSearchOpen(false);
+    setSearchResults([]);
+    setSearchKeyword('');
+    setSearchError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -273,7 +331,16 @@ export default function RequestPage() {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                            <div className="space-y-4 relative">
-                              <label className="text-[11px] font-black text-hyundai-gray-400 uppercase tracking-[0.3em]">곡 제목</label>
+                              <div className="flex justify-between items-end">
+                                 <label className="text-[11px] font-black text-hyundai-gray-400 uppercase tracking-[0.3em]">곡 제목</label>
+                                 <button 
+                                   type="button" 
+                                   onClick={() => { setSearchKeyword(formData.title); setSearchOpen(true); }}
+                                   className="text-[10px] font-black text-hyundai-gold hover:text-hyundai-black uppercase tracking-widest flex items-center gap-1 transition-colors"
+                                 >
+                                    <Search className="w-3 h-3" /> 음악 검색 (KOREAN)
+                                 </button>
+                              </div>
                              <input 
                                type="text" 
                                placeholder="예) 봄이 좋냐"
@@ -415,6 +482,70 @@ export default function RequestPage() {
            </form>
         </div>
       </div>
+
+      {/* Music Search Modal */}
+      {searchOpen && (
+        <div className="fixed inset-0 bg-hyundai-black/90 flex items-center justify-center p-6 z-[200] backdrop-blur-xl">
+          <div className="bg-white border-2 border-hyundai-black w-full max-w-2xl shadow-3xl animate-in zoom-in-95 duration-200 overflow-hidden flex flex-col max-h-[80vh]">
+            <div className="p-10 border-b border-hyundai-gray-100 flex justify-between items-center bg-hyundai-gray-50">
+               <div className="space-y-2">
+                  <h4 className="font-black text-3xl text-hyundai-black uppercase tracking-tighter">MUSIC DATABASE</h4>
+                  <p className="text-[11px] font-black text-hyundai-gray-400 uppercase tracking-widest flex items-center gap-2">
+                    <Sparkles className="w-3 h-3 text-hyundai-gold" />
+                    MANIADB GLOBAL INDEXING
+                  </p>
+               </div>
+               <button onClick={() => setSearchOpen(false)} className="text-hyundai-gray-300 hover:text-hyundai-black transition-colors"><X className="w-8 h-8" /></button>
+            </div>
+            
+            <div className="p-10 space-y-10 flex flex-col min-h-0">
+               <form onSubmit={handleMusicSearch} className="flex gap-2">
+                  <input 
+                    autoFocus
+                    type="text" 
+                    placeholder="아티스트 또는 곡명..." 
+                    className="flex-grow h-20 px-8 bg-hyundai-gray-100 border-none text-lg font-black uppercase tracking-tight outline-none focus:ring-4 focus:ring-hyundai-black/5 transition-all"
+                    value={searchKeyword}
+                    onChange={(e) => setSearchKeyword(e.target.value)}
+                  />
+                  <button type="submit" disabled={searching} className="px-10 bg-hyundai-black text-white text-[14px] font-black uppercase tracking-widest disabled:opacity-50 hover:bg-hyundai-gold hover:text-hyundai-black transition-all">
+                    {searching ? 'SEARCHING' : 'SEARCH'}
+                  </button>
+               </form>
+
+               {searchError && (
+                 <div className="p-6 bg-red-50 border-l-4 border-red-600 flex items-center gap-4 text-red-600 text-sm font-black uppercase tracking-tight">
+                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                    {searchError}
+                 </div>
+               )}
+
+               <div className="flex-grow overflow-y-auto space-y-2 pr-4 custom-scrollbar min-h-[300px]">
+                  {searchResults.length === 0 && !searching && !searchError && (
+                    <div className="py-24 text-center text-hyundai-gray-200 font-black uppercase tracking-[0.5em] text-[12px] italic">NO RESULTS FOUND</div>
+                  )}
+                  {searchResults.map((result, i) => (
+                    <button 
+                      key={i} 
+                      onClick={() => selectMusicResult(result)}
+                      className="w-full flex items-center gap-6 p-6 text-left hover:bg-hyundai-gray-50 transition-all border border-transparent hover:border-hyundai-gray-200 group relative"
+                    >
+                       <div className="w-16 h-16 bg-hyundai-gray-200 shrink-0 overflow-hidden relative">
+                          {result.image ? <img src={result.image} alt="" className="w-full h-full object-cover" /> : <Music className="w-full h-full p-5 text-hyundai-gray-400" />}
+                          <div className="absolute inset-0 bg-hyundai-black/0 group-hover:bg-hyundai-black/20 transition-all"></div>
+                       </div>
+                       <div className="flex-grow min-w-0">
+                          <p className="font-black text-hyundai-black text-xl uppercase tracking-tighter truncate group-hover:text-hyundai-gold transition-colors">{result.title}</p>
+                          <p className="text-[12px] font-bold text-hyundai-gray-400 truncate uppercase mt-1 tracking-widest">{result.artist} • {result.album}</p>
+                       </div>
+                       <ChevronRight className="w-6 h-6 text-hyundai-gray-200 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                    </button>
+                  ))}
+               </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

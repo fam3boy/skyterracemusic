@@ -19,7 +19,8 @@ import {
   Check,
   ChevronDown,
   ExternalLink,
-  Music
+  Music,
+  X
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -42,6 +43,14 @@ export default function RequestsManagementPage() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isGrouped, setIsGrouped] = useState(false);
   const [templates, setTemplates] = useState<any[]>([]);
+
+  // Music Search States
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searching, setSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [searchTargetId, setSearchTargetId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchRequests();
@@ -137,6 +146,48 @@ export default function RequestsManagementPage() {
       case 'REVIEW_CAUTION': return '주의 필요';
       case 'REJECT': return '제외 추천';
       default: return status;
+    }
+  };
+
+  const handleMusicSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchKeyword) return;
+    setSearching(true);
+    setSearchError(null);
+    try {
+      const res = await fetch(`/api/admin/music-search?keyword=${encodeURIComponent(searchKeyword)}`);
+      if (res.ok) {
+        setSearchResults(await res.json());
+      } else {
+        setSearchError('검색 중 오류가 발생했습니다.');
+      }
+    } catch (err) {
+      setSearchError('네트워크 오류가 발생했습니다.');
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const selectMusicResult = async (result: any) => {
+    if (!searchTargetId) return;
+    try {
+      const res = await fetch('/api/admin/requests', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          id: searchTargetId, 
+          title: result.title, 
+          artist: result.artist 
+        }),
+      });
+
+      if (res.ok) {
+        fetchRequests();
+        setSearchOpen(false);
+        setSearchTargetId(null);
+      }
+    } catch (err) {
+      console.error('Failed to update music info', err);
     }
   };
 
@@ -423,6 +474,68 @@ export default function RequestsManagementPage() {
                 >
                   변경 사항 확정
                 </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Music Search / Correction Modal */}
+        {searchOpen && (
+          <div className="fixed inset-0 bg-hyundai-black/60 backdrop-blur-sm flex items-center justify-center p-6 z-[100] animate-in fade-in duration-300">
+            <div className="bg-white border border-hyundai-gray-200 w-full max-w-2xl shadow-3xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[80vh]">
+              <div className="px-10 py-8 border-b border-hyundai-gray-100 flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg font-bold uppercase tracking-tight text-hyundai-black">곡 정보 검색 및 수정</h3>
+                  <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-tight mt-1">Maniadb 데이터 기반 정보 자동 완성</p>
+                </div>
+                <button onClick={() => setSearchOpen(false)} className="h-10 w-10 flex items-center justify-center hover:bg-hyundai-gray-50 transition-colors">
+                  <X className="w-6 h-6 text-hyundai-gray-300" />
+                </button>
+              </div>
+              
+              <div className="p-10 space-y-8 flex flex-col min-h-0">
+                 <form onSubmit={handleMusicSearch} className="flex gap-2">
+                    <input 
+                      autoFocus
+                      type="text" 
+                      placeholder="아티스트 또는 곡명..." 
+                      className="flex-grow px-8 py-5 bg-hyundai-gray-50 border-none outline-none text-sm font-bold uppercase tracking-tight focus:bg-white focus:ring-1 focus:ring-hyundai-black transition-all"
+                      value={searchKeyword}
+                      onChange={(e) => setSearchKeyword(e.target.value)}
+                    />
+                    <button type="submit" disabled={searching} className="px-8 bg-hyundai-black text-white text-xs font-bold uppercase tracking-widest disabled:opacity-50 hover:bg-hyundai-gold hover:text-hyundai-black transition-all">
+                      {searching ? '검색 중...' : '검색'}
+                    </button>
+                 </form>
+
+                 {searchError && (
+                   <div className="p-4 bg-red-50 border border-red-100 rounded flex items-center gap-3 text-red-500 text-xs font-bold uppercase tracking-tight">
+                      <AlertCircle className="w-4 h-4" />
+                      {searchError}
+                   </div>
+                 )}
+
+                 <div className="flex-grow overflow-y-auto space-y-2 pr-2 custom-scrollbar min-h-[300px]">
+                    {searchResults.length === 0 && !searching && !searchError && (
+                      <div className="py-20 text-center text-hyundai-gray-200 font-bold uppercase tracking-widest text-[11px] italic">검색 결과가 없습니다</div>
+                    )}
+                    {searchResults.map((result, i) => (
+                      <button 
+                        key={i} 
+                        onClick={() => selectMusicResult(result)}
+                        className="w-full flex items-center gap-5 p-4 text-left hover:bg-hyundai-gray-50 transition-all border border-transparent hover:border-hyundai-gray-100 group"
+                      >
+                         <div className="w-12 h-12 bg-hyundai-gray-100 shrink-0 overflow-hidden">
+                            {result.image ? <img src={result.image} alt="" className="w-full h-full object-cover" /> : <Music className="w-full h-full p-3 text-hyundai-gray-300" />}
+                         </div>
+                         <div className="flex-grow min-w-0">
+                            <p className="font-bold text-hyundai-black text-sm uppercase tracking-tight truncate group-hover:text-hyundai-gold transition-colors">{result.title}</p>
+                            <p className="text-[11px] font-bold text-hyundai-gray-400 truncate uppercase mt-0.5 tracking-tight">{result.artist} • {result.album}</p>
+                         </div>
+                         <CheckCircle2 className="w-5 h-5 text-hyundai-emerald opacity-0 group-hover:opacity-100 transition-all" />
+                      </button>
+                    ))}
+                 </div>
               </div>
             </div>
           </div>
