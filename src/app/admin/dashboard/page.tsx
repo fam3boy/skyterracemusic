@@ -177,8 +177,31 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         <KPIItem label="전체 신청" value={stats?.kpis.total} icon={<Users />} color="black" />
         <KPIItem label="승인완료" value={stats?.kpis.approved} sub={`율 ${stats?.kpis.approvalRate.toFixed(1)}%`} icon={<CheckCircle />} color="emerald" />
-        <KPIItem label="평균 선곡 시간" value="2.4h" sub="전주 대비 -12%" icon={<Clock />} color="gold" />
-        <KPIItem label="링크 제공율" value={`${stats?.kpis.linkRate.toFixed(1)}%`} icon={<TrendingUp />} color="black" />
+        
+        {/* Instant Mail Card (Prominent) */}
+        <div className="card-premium p-8 border-l-4 border-l-hyundai-gold shadow-xl shadow-hyundai-gold/5 lg:col-span-2 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex-grow">
+            <div className="flex justify-between items-center mb-4">
+              <p className="text-xs font-black text-hyundai-gray-400 uppercase tracking-[0.2em]">주간 리포트 즉시 발송</p>
+              <FileText className="w-5 h-5 text-hyundai-gold" />
+            </div>
+            <p className="text-4xl font-black text-hyundai-black tracking-tighter">
+              {stats?.kpis.approved} <span className="text-sm font-bold text-hyundai-gray-400">곡 대기 중</span>
+            </p>
+            <p className="text-[10px] text-hyundai-gray-400 font-bold mt-2 uppercase">현재까지 승인된 모든 곡을 즉시 발송합니다.</p>
+          </div>
+          <button 
+            onClick={async () => {
+              if (confirm('현재까지 승인된 곡들을 포함하여 주간 리포트를 즉시 발송하시겠습니까?')) {
+                const res = await fetch('/api/cron/weekly-mail?forceCurrent=true');
+                if (res.ok) alert('성공적으로 발송되었습니다.'); else alert('발송 중 오류가 발생했습니다.');
+              }
+            }}
+            className="w-full md:w-auto px-8 py-4 bg-hyundai-gold text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-hyundai-gold/20"
+          >
+            지금 즉시 발송하기
+          </button>
+        </div>
       </div>
 
       {/* Charts Row 1 */}
