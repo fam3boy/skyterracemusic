@@ -4,7 +4,7 @@ import { sql } from '@vercel/postgres';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { title, artist, youtube_url, story, requester_name } = body;
+    const { title, artist, youtube_url, story, requester_name, requester_contact } = body;
 
     // Get active theme
     const themeRes = await sql`
@@ -14,9 +14,9 @@ export async function POST(req: Request) {
 
     const result = await sql`
       INSERT INTO song_requests (
-        theme_id, title, artist, youtube_url, story, requester_name, status
+        theme_id, title, artist, youtube_url, story, requester_name, requester_contact, status
       ) VALUES (
-        ${themeId}, ${title}, ${artist}, ${youtube_url}, ${story}, ${requester_name}, 'pending'
+        ${themeId}, ${title}, ${artist}, ${youtube_url}, ${story}, ${requester_name}, ${requester_contact}, 'pending'
       )
       RETURNING id
     `;

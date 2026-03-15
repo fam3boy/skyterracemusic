@@ -43,6 +43,7 @@ CREATE TABLE song_requests (
     youtube_url TEXT,
     story TEXT,
     requester_name TEXT,
+    requester_contact TEXT,
     status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'hold', 'deleted')),
     admin_memo TEXT,
     approved_at TIMESTAMP WITH TIME ZONE,
