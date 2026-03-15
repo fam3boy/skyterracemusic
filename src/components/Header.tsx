@@ -28,6 +28,14 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [mobileMenuOpen]);
+
   async function fetchBranding() {
     try {
       const res = await fetch('/api/admin/branding');
@@ -135,8 +143,8 @@ export default function Header() {
 
       {/* Mobile Menu Drawer */}
       <div className={cn(
-        "fixed inset-0 bg-white z-[100] transition-all duration-700 ease-[cubic-bezier(0.85,0,0.15,1)] lg:hidden",
-        mobileMenuOpen ? "translate-y-0" : "translate-y-full"
+        "fixed inset-0 bg-white z-[200] transition-all duration-700 ease-[cubic-bezier(0.85,0,0.15,1)] lg:hidden flex flex-col",
+        mobileMenuOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
       )}>
         <div className="p-8 flex justify-between items-center">
            <span className="text-xl font-black tracking-tighter">THE HYUNDAI</span>
