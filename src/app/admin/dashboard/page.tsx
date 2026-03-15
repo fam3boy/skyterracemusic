@@ -92,13 +92,13 @@ export default function DashboardPage() {
              운영 통계 인사이트
              <span className="w-2.5 h-2.5 rounded-full bg-hyundai-gold animate-pulse"></span>
           </h2>
-          <p className="text-sm font-bold text-hyundai-gray-400 mt-1 uppercase tracking-widest">실시간 운영 데이터 및 성과 지표 대시보드</p>
+          <p className="text-sm font-bold text-hyundai-gray-400 mt-1 uppercase tracking-normal">실시간 운영 데이터 및 성과 지표 대시보드</p>
         </div>
         
         <div className="flex items-center gap-4">
            <button 
              onClick={exportCSV}
-             className="flex items-center gap-3 px-8 py-4 bg-white border border-hyundai-gray-200 text-hyundai-black rounded-sm text-[12px] font-bold uppercase tracking-widest hover:bg-hyundai-gray-50 transition-all shadow-sm"
+             className="flex items-center gap-3 px-8 py-4 bg-white border border-hyundai-gray-200 text-hyundai-black rounded-sm text-[14px] font-bold uppercase tracking-tight hover:bg-hyundai-gray-50 transition-all shadow-sm"
            >
              <Download className="w-4 h-4" />
              리포트 내보내기
@@ -112,12 +112,12 @@ export default function DashboardPage() {
         
         <div className="flex items-center gap-3 text-hyundai-black">
           <Filter className="w-5 h-5" />
-          <span className="text-[12px] font-bold uppercase tracking-[0.2em]">데이터 필터 터미널</span>
+          <span className="text-[12px] font-bold uppercase tracking-normal">데이터 필터 터미널</span>
         </div>
 
         <div className="flex items-center gap-12 flex-1">
           <div className="space-y-2">
-             <label className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-widest block">테마 선택</label>
+             <label className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-normal block">테마 선택</label>
              <select 
                className="bg-transparent border-none text-[14px] font-bold text-hyundai-black p-0 outline-none cursor-pointer focus:ring-0 uppercase"
                value={themeId}
@@ -129,7 +129,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="space-y-2">
-             <label className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-widest block">조회 기간 설정</label>
+             <label className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-normal block">조회 기간 설정</label>
              <div className="flex items-center gap-4">
                <input 
                  type="date" 
@@ -148,7 +148,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="space-y-2">
-             <label className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-widest block">처리 상태 필터</label>
+             <label className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-normal block">처리 상태 필터</label>
              <select 
                className="bg-transparent border-none text-[14px] font-bold text-hyundai-black p-0 outline-none cursor-pointer focus:ring-0 uppercase"
                value={status}
@@ -210,7 +210,7 @@ export default function DashboardPage() {
                     if (res.ok) alert('성공적으로 발송되었습니다.'); else alert('발송 중 오류가 발생했습니다.');
                   }
                 }}
-                className="w-full py-4 bg-hyundai-gold text-hyundai-black text-[12px] font-bold uppercase tracking-widest hover:bg-white transition-all shadow-lg shadow-hyundai-gold/10"
+                className="w-full py-4 bg-hyundai-gold text-hyundai-black text-[14px] font-bold uppercase tracking-tight hover:bg-white transition-all shadow-lg shadow-hyundai-gold/10"
               >
                 주간 리포트 즉시 발송
               </button>
@@ -287,10 +287,10 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-px bg-hyundai-gray-200 border border-hyundai-gray-200">
         <div className="bg-white p-10">
           <div className="flex justify-between items-center mb-10">
-             <h3 className="text-lg font-bold flex items-center gap-3 uppercase tracking-widest text-hyundai-black">
+             <h3 className="text-lg font-bold flex items-center gap-3 uppercase tracking-tight text-hyundai-black">
                 <Music className="w-5 h-5 text-hyundai-gold" /> 최다 신청곡 순위
              </h3>
-             <span className="text-[11px] font-bold text-white bg-hyundai-black px-3 py-1.5 uppercase tracking-widest">TOP 10 랭킹</span>
+             <span className="text-[11px] font-bold text-white bg-hyundai-black px-3 py-1.5 uppercase tracking-normal">TOP 10 랭킹</span>
           </div>
           <div className="space-y-2">
             {stats?.topSongs.map((song: any, i: number) => (
@@ -299,7 +299,7 @@ export default function DashboardPage() {
                   <span className="text-xl font-bold text-hyundai-gray-200 w-8 group-hover:text-hyundai-gold transition-colors">{(i + 1).toString().padStart(2, '0')}</span>
                   <div>
                     <p className="font-bold text-hyundai-black text-sm uppercase tracking-tight">{song.title}</p>
-                    <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest leading-none mt-1">{song.artist}</p>
+                    <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-normal leading-none mt-1">{song.artist}</p>
                   </div>
                 </div>
                 <div className="text-right">
@@ -312,7 +312,7 @@ export default function DashboardPage() {
 
         <div className="bg-white p-10">
           <div className="flex justify-between items-center mb-10">
-             <h3 className="text-lg font-bold flex items-center gap-3 uppercase tracking-widest text-hyundai-black">
+             <h3 className="text-lg font-bold flex items-center gap-3 uppercase tracking-tight text-hyundai-black">
                 <Layers className="w-5 h-5 text-hyundai-gold" /> 테마 선호도 맵핑
              </h3>
              <Activity className="w-5 h-5 text-hyundai-gray-200" />
@@ -366,10 +366,10 @@ function ChartCard({ title, children, className }: any) {
     <div className={`bg-white border border-hyundai-gray-200 shadow-sm p-10 flex flex-col ${className}`}>
       <div className="flex items-center gap-3 mb-10">
         <div className="w-1.5 h-6 bg-hyundai-black"></div>
-        <h3 className="text-[14px] font-bold text-hyundai-black uppercase tracking-[0.2em]">
-          {title}
-        </h3>
-      </div>
+        <h3 className="text-[16px] font-bold text-hyundai-black uppercase tracking-tight">
+           {title}
+         </h3>
+       </div>
       <div className="flex-grow">
         {children}
       </div>

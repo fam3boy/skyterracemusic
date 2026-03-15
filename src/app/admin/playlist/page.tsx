@@ -101,7 +101,7 @@ export default function PlaylistPage() {
         <div>
           <h2 className="text-3xl font-bold text-hyundai-black tracking-tight flex items-center gap-3">
             현재 플레이리스트 관리
-            {theme && <span className="text-[11px] bg-hyundai-gold text-white px-2 py-1 rounded-md uppercase font-bold tracking-widest">{theme.title}</span>}
+            {theme && <span className="text-[11px] bg-hyundai-gold text-white px-2 py-1 rounded-md uppercase font-bold tracking-normal">{theme.title}</span>}
           </h2>
           <p className="text-hyundai-gray-500 mt-2 font-medium">홈페이지 메인 및 현장 방송에 사용되는 리스트를 실시간으로 조정합니다.</p>
         </div>
@@ -109,7 +109,7 @@ export default function PlaylistPage() {
         <div className="flex gap-3">
           <button 
             onClick={addTrack}
-            className="flex items-center gap-2 px-6 py-4 bg-hyundai-black text-white rounded-2xl text-[12px] font-bold uppercase tracking-widest hover:scale-105 transition-all shadow-xl"
+            className="flex items-center gap-2 px-6 py-4 bg-hyundai-black text-white rounded-2xl text-[14px] font-bold uppercase tracking-tight hover:scale-105 transition-all shadow-xl"
           >
             <Plus className="w-4 h-4" />
             곡 추가
@@ -117,7 +117,7 @@ export default function PlaylistPage() {
           <button 
             onClick={handleSaveAll}
             disabled={saving}
-            className="flex items-center gap-2 px-6 py-4 bg-hyundai-emerald text-white rounded-2xl text-[12px] font-bold uppercase tracking-widest hover:scale-105 transition-all shadow-xl disabled:opacity-50"
+            className="flex items-center gap-2 px-6 py-4 bg-hyundai-emerald text-white rounded-2xl text-[14px] font-bold uppercase tracking-tight hover:scale-105 transition-all shadow-xl disabled:opacity-50"
           >
             {saving ? '저장 중...' : <><Save className="w-4 h-4" /> 변경사항 저장</>}
           </button>
@@ -138,7 +138,7 @@ export default function PlaylistPage() {
         </div>
       ) : theme && (
         <div className="space-y-4">
-          <div className="bg-hyundai-gray-100/50 p-4 rounded-2xl border border-hyundai-gray-200 flex items-center justify-between text-[11px] font-bold uppercase tracking-widest text-hyundai-gray-400 mb-2">
+          <div className="bg-hyundai-gray-100/50 p-4 rounded-2xl border border-hyundai-gray-200 flex items-center justify-between text-[11px] font-bold uppercase tracking-normal text-hyundai-gray-400 mb-2">
             <div className="flex gap-10">
               <span className="w-8 ml-2">#</span>
               <span className="w-64">음원 상세 정보 (곡명 / 아티스트)</span>

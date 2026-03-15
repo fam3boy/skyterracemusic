@@ -149,14 +149,14 @@ export default function RequestsManagementPage() {
             <h2 className="text-3xl font-bold text-hyundai-black tracking-tighter uppercase font-sans">
                신청 곡 처리 센터
             </h2>
-            <p className="text-[12px] font-bold text-hyundai-gray-400 mt-1 uppercase tracking-[0.2em]">데이터 검증 및 처리 작업 대기열</p>
+            <p className="text-[12px] font-bold text-hyundai-gray-400 mt-1 uppercase tracking-normal">데이터 검증 및 처리 작업 대기열</p>
           </div>
           
           <div className="flex flex-wrap items-center gap-3">
             <button 
               onClick={() => setIsGrouped(!isGrouped)}
               className={cn(
-                 "h-12 px-8 text-[12px] font-bold uppercase tracking-widest border transition-all",
+                 "h-12 px-8 text-[14px] font-bold uppercase tracking-tight border transition-all",
                  isGrouped ? "bg-hyundai-black text-white border-hyundai-black" : "bg-white text-hyundai-black border-hyundai-gray-200 hover:bg-hyundai-gray-50"
               )}
             >
@@ -175,7 +175,7 @@ export default function RequestsManagementPage() {
                   key={f.id}
                   onClick={() => setFilter(f.id as any)}
                   className={cn(
-                    "px-6 h-full text-[11px] font-bold tracking-widest transition-all uppercase",
+                    "px-6 h-full text-[12px] font-bold tracking-tight transition-all uppercase",
                     filter === f.id ? "bg-hyundai-gold text-hyundai-black" : "text-hyundai-gray-400 hover:text-hyundai-black"
                   )}
                 >
@@ -192,16 +192,16 @@ export default function RequestsManagementPage() {
              <div className="flex items-center gap-10">
                 <div className="flex items-center gap-3">
                    <div className="w-2.5 h-2.5 rounded-full bg-hyundai-gold animate-pulse"></div>
-                   <span className="text-[12px] font-bold tracking-widest uppercase">{selectedIds.length}건 선택됨</span>
+                   <span className="text-[14px] font-bold tracking-tight uppercase">{selectedIds.length}건 선택됨</span>
                 </div>
                 <div className="h-6 w-px bg-white/20"></div>
                 <div className="flex gap-3">
-                   <button onClick={() => handleBulkStatus('approved')} className="h-10 px-6 bg-hyundai-emerald hover:bg-hyundai-emerald/80 text-[11px] font-bold uppercase tracking-widest transition-colors">일괄 승인</button>
-                   <button onClick={() => handleBulkStatus('hold')} className="h-10 px-6 bg-blue-600 hover:bg-blue-600/80 text-[11px] font-bold uppercase tracking-widest transition-colors">일괄 보류</button>
-                   <button onClick={() => handleBulkStatus('deleted')} className="h-10 px-6 bg-red-600 hover:bg-red-600/80 text-[11px] font-bold uppercase tracking-widest transition-colors">일괄 삭제 / 폐기</button>
+                   <button onClick={() => handleBulkStatus('approved')} className="h-10 px-6 bg-hyundai-emerald hover:bg-hyundai-emerald/80 text-[12px] font-bold uppercase tracking-tight transition-colors">일괄 승인</button>
+                   <button onClick={() => handleBulkStatus('hold')} className="h-10 px-6 bg-blue-600 hover:bg-blue-600/80 text-[12px] font-bold uppercase tracking-tight transition-colors">일괄 보류</button>
+                   <button onClick={() => handleBulkStatus('deleted')} className="h-10 px-6 bg-red-600 hover:bg-red-600/80 text-[12px] font-bold uppercase tracking-tight transition-colors">일괄 삭제 / 폐기</button>
                 </div>
              </div>
-             <button onClick={() => setSelectedIds([])} className="text-[11px] font-bold text-hyundai-gray-400 hover:text-white uppercase tracking-widest transition-colors">선택 해제</button>
+             <button onClick={() => setSelectedIds([])} className="text-[12px] font-bold text-hyundai-gray-400 hover:text-white uppercase tracking-tight transition-colors">선택 해제</button>
           </div>
         )}
 
@@ -212,7 +212,7 @@ export default function RequestsManagementPage() {
              <input 
                type="text" 
                placeholder="제목, 아티스트, 또는 신청자명으로 검색..." 
-               className="w-full bg-hyundai-gray-50 border-none px-12 py-4 text-[13px] font-bold uppercase tracking-widest focus:ring-1 focus:ring-hyundai-black/5 outline-none"
+               className="w-full bg-hyundai-gray-50 border-none px-12 py-4 text-[14px] font-bold uppercase tracking-tight focus:ring-1 focus:ring-hyundai-black/5 outline-none"
                value={search}
                onChange={(e) => setSearch(e.target.value)}
              />
@@ -253,10 +253,10 @@ export default function RequestsManagementPage() {
                      />
                   </div>
                 </th>
-                <th className="px-8 py-6 text-[11px] uppercase font-bold tracking-[0.2em] text-hyundai-gray-400">곡 상세 정보</th>
-                <th className="px-8 py-6 text-[11px] uppercase font-bold tracking-[0.2em] text-hyundai-gray-400">운영 정책 추천</th>
-                <th className="px-8 py-6 text-[11px] uppercase font-bold tracking-[0.2em] text-hyundai-gray-400">신청자 프로필</th>
-                <th className="px-8 py-6 text-[11px] uppercase font-bold tracking-[0.2em] text-hyundai-gray-400 text-right">상태 변경 작업</th>
+                <th className="px-8 py-6 text-[12px] uppercase font-bold tracking-tight text-hyundai-gray-400">곡 상세 정보</th>
+                <th className="px-8 py-6 text-[12px] uppercase font-bold tracking-tight text-hyundai-gray-400">운영 정책 추천</th>
+                <th className="px-8 py-6 text-[12px] uppercase font-bold tracking-tight text-hyundai-gray-400">신청자 프로필</th>
+                <th className="px-8 py-6 text-[12px] uppercase font-bold tracking-tight text-hyundai-gray-400 text-right">상태 변경 작업</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-hyundai-gray-100">
@@ -289,8 +289,8 @@ export default function RequestsManagementPage() {
                             <Music className="w-5 h-5" />
                          </div>
                          <div className="flex flex-col gap-1 min-w-0">
-                            <p className="font-bold text-hyundai-black text-[15px] uppercase tracking-tight truncate max-w-[300px]">{req.title}</p>
-                            <p className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest">{req.artist}</p>
+                            <p className="font-bold text-hyundai-black text-[16px] uppercase tracking-tight truncate max-w-[300px]">{req.title}</p>
+                            <p className="text-[13px] font-bold text-hyundai-gray-400 uppercase tracking-tight">{req.artist}</p>
                             <div className="flex items-center gap-4 mt-2">
                                {req.youtube_url && (
                                  <a href={req.youtube_url} target="_blank" className="flex items-center gap-1.5 text-[10px] font-bold text-hyundai-gray-300 hover:text-red-600 uppercase transition-colors">
@@ -298,7 +298,7 @@ export default function RequestsManagementPage() {
                                  </a>
                                )}
                                {req.group_count > 1 && (
-                                 <span className="text-[10px] font-bold bg-hyundai-black text-white px-2.5 py-1 uppercase tracking-widest">중복 신청 ({req.group_count}건)</span>
+                                 <span className="text-[10px] font-bold bg-hyundai-black text-white px-2.5 py-1 uppercase tracking-tight">중복 신청 ({req.group_count}건)</span>
                                )}
                             </div>
                          </div>
@@ -307,7 +307,7 @@ export default function RequestsManagementPage() {
                     <td className="px-8 py-6">
                       <div className="flex flex-col items-start gap-2">
                          <div className={cn(
-                            "px-3 py-1 border text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5",
+                            "px-3 py-1 border text-[10px] font-bold uppercase tracking-tight flex items-center gap-1.5",
                             recommendationBadges[req.auto_recommendation as keyof typeof recommendationBadges] || "bg-gray-50 text-gray-400 border-gray-100"
                          )}>
                             <div className="w-1 h-1 rounded-full bg-current"></div>
@@ -325,7 +325,7 @@ export default function RequestsManagementPage() {
                             <User className="w-3.5 h-3.5 text-hyundai-gray-300" />
                             <p className="text-sm font-bold text-hyundai-black uppercase">{req.requester_name}</p>
                          </div>
-                         <p className="text-hyundai-gray-400 font-bold uppercase tracking-widest text-[11px] pl-5">
+                         <p className="text-hyundai-gray-400 font-bold uppercase tracking-tight text-[11px] pl-5">
                             {new Date(req.created_at).toLocaleDateString()} • {new Date(req.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                          </p>
                       </div>
@@ -365,8 +365,8 @@ export default function RequestsManagementPage() {
             <div className="bg-white border border-hyundai-gray-200 w-full max-w-xl shadow-3xl overflow-hidden animate-in zoom-in-95 duration-300">
               <div className="px-10 py-8 border-b border-hyundai-gray-100 flex justify-between items-center">
                 <div>
-                  <h3 className="text-lg font-bold uppercase tracking-[0.2em] text-hyundai-black">검사 인텔리전스</h3>
-                  <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest mt-1">운영 메모 및 응대 템플릿</p>
+                  <h3 className="text-lg font-bold uppercase tracking-tight text-hyundai-black">검사 인텔리전스</h3>
+                  <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-tight mt-1">운영 메모 및 응대 템플릿</p>
                 </div>
                 <button onClick={() => setMemoOpen(null)} className="h-10 w-10 flex items-center justify-center hover:bg-hyundai-gray-50 transition-colors">
                   <XCircle className="w-6 h-6 text-hyundai-gray-300" />
@@ -382,7 +382,7 @@ export default function RequestsManagementPage() {
                           <button 
                             key={t.id} 
                             onClick={() => setMemoText(t.content)}
-                            className="px-5 py-3 border border-hyundai-gray-200 hover:border-hyundai-black text-[11px] font-bold uppercase tracking-widest transition-all"
+                            className="px-5 py-3 border border-hyundai-gray-200 hover:border-hyundai-black text-[12px] font-bold uppercase tracking-tight transition-all"
                           >
                             {t.title}
                           </button>
@@ -411,7 +411,7 @@ export default function RequestsManagementPage() {
                 </button>
                 <button 
                   onClick={() => handleSaveMemo(memoOpen)}
-                  className="px-10 py-4 bg-hyundai-black text-white text-[12px] font-bold uppercase tracking-widest hover:bg-hyundai-gold hover:text-hyundai-black transition-all"
+                  className="px-10 py-4 bg-hyundai-black text-white text-[14px] font-bold uppercase tracking-tight hover:bg-hyundai-gold hover:text-hyundai-black transition-all"
                 >
                   변경 사항 확정
                 </button>

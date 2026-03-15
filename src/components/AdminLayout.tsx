@@ -16,7 +16,9 @@ import {
   ChevronRight,
   User,
   Bell,
-  Search
+  Search,
+  Menu,
+  X
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -33,6 +35,8 @@ export default function AdminLayout({
   const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -63,23 +67,33 @@ export default function AdminLayout({
   return (
     <div className="flex min-h-screen bg-hyundai-gray-50 font-sans antialiased">
       {/* 1. Lateral Navigation (Operate Sidebar) */}
-      <aside className="w-72 bg-hyundai-black text-white shrink-0 flex flex-col border-r border-white/10 z-50">
-        <div className="h-24 px-8 flex items-center border-b border-white/5">
+      <aside className={cn(
+        "fixed inset-y-0 left-0 w-72 bg-hyundai-black text-white shrink-0 flex flex-col border-r border-white/10 z-[100] transition-transform duration-300 lg:relative lg:translate-x-0",
+        isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+      )}>
+        <div className="h-24 px-8 flex items-center justify-between border-b border-white/5">
           <Link href="/admin/dashboard" className="flex flex-col gap-0.5 group">
-             <span className="text-hyundai-gold text-[12px] font-bold tracking-[0.4em] uppercase block group-hover:text-white transition-colors">운영 시스템</span>
+             <span className="text-hyundai-gold text-[12px] font-bold tracking-normal uppercase block group-hover:text-white transition-colors">운영 시스템</span>
              <h2 className="text-2xl font-bold tracking-tighter text-white">SKYTERRACE MUSIC</h2>
           </Link>
+          <button 
+            className="lg:hidden p-2 text-white hover:bg-white/10 rounded-lg"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <X className="w-6 h-6" />
+          </button>
         </div>
         
-        <nav className="flex-1 py-8 px-4 space-y-1">
+        <nav className="flex-1 py-8 px-4 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link 
                 key={item.href}
-                href={item.href} 
+                href={item.href}
+                onClick={() => setIsMobileMenuOpen(false)} 
                 className={cn(
-                  "flex items-center gap-4 px-4 py-4 transition-all text-[15px] font-bold uppercase tracking-tight",
+                  "flex items-center gap-4 px-4 py-4 transition-all text-[16px] font-bold uppercase tracking-tight",
                   isActive 
                     ? "bg-hyundai-gold text-hyundai-black shadow-lg shadow-hyundai-gold/20" 
                     : "text-hyundai-gray-400 hover:text-white hover:bg-white/5"
@@ -101,13 +115,13 @@ export default function AdminLayout({
                </div>
                <div className="overflow-hidden">
                  <p className="text-sm font-bold text-white truncate">{session.user?.email}</p>
-                  <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest leading-none mt-1">시스템 관리자</p>
+                  <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-normal leading-none mt-1">시스템 관리자</p>
                </div>
              </div>
            </div>
            <button 
             onClick={() => signOut({ callbackUrl: '/admin/login' })}
-            className="w-full flex items-center gap-4 px-4 py-4 text-sm font-bold text-red-400 hover:bg-red-400/10 transition-all uppercase tracking-widest"
+            className="w-full flex items-center gap-4 px-4 py-4 text-sm font-bold text-red-400 hover:bg-red-400/10 transition-all uppercase tracking-normal"
           >
              <LogOut className="w-5 h-5" />
              로그아웃
@@ -115,14 +129,28 @@ export default function AdminLayout({
         </div>
       </aside>
 
+      {/* Overlay for mobile sidebar */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-[90] lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* 2. Main Workspace */}
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         {/* Global Operate Header */}
-        <header className="h-24 bg-white border-b border-hyundai-gray-200 shrink-0 px-10 flex items-center justify-between z-40">
+        <header className="h-24 bg-white border-b border-hyundai-gray-200 shrink-0 px-6 lg:px-10 flex items-center justify-between z-40">
            <div className="flex items-center gap-4">
-              <div className="w-1.5 h-8 bg-hyundai-black"></div>
+              <button 
+                className="lg:hidden p-2 text-hyundai-black hover:bg-hyundai-gray-50 rounded-lg mr-2"
+                onClick={() => setIsMobileMenuOpen(true)}
+              >
+                <Menu className="w-6 h-6" />
+              </button>
+              <div className="w-1.5 h-8 bg-hyundai-black hidden sm:block"></div>
                <div>
-                 <h3 className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest mb-0.5">운영 워크스페이스</h3>
+                 <h3 className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-normal mb-0.5">운영 워크스페이스</h3>
                  <p className="text-lg font-bold text-hyundai-black uppercase">{navItems.find(i => i.href === pathname)?.name || '관리자 영역'}</p>
                </div>
            </div>
@@ -130,7 +158,7 @@ export default function AdminLayout({
            <div className="flex items-center gap-8">
               <div className="flex items-center gap-2 text-hyundai-gray-300">
                 <Search className="w-5 h-5" />
-                 <span className="text-[11px] font-bold uppercase tracking-widest hidden md:block">Cmd + K로 빠른 메뉴 검색</span>
+                 <span className="text-[11px] font-bold uppercase tracking-normal hidden xl:block">Cmd + K로 빠른 메뉴 검색</span>
               </div>
               <div className="w-px h-8 bg-hyundai-gray-100 hidden md:block"></div>
               <div className="flex items-center gap-6">
@@ -143,8 +171,8 @@ export default function AdminLayout({
                         <p className="text-[12px] font-bold text-hyundai-black leading-none mb-1 capitalize">{session.user?.name || '관리자'}</p>
                         <p className="text-[10px] font-bold text-hyundai-gray-400 leading-none">내부 보안 접속 중</p>
                     </div>
-                    <div className="w-12 h-12 bg-hyundai-gray-50 border border-hyundai-gray-100 flex items-center justify-center text-hyundai-gray-400">
-                       <User className="w-7 h-7" />
+                    <div className="w-10 h-10 lg:w-12 lg:h-12 bg-hyundai-gray-50 border border-hyundai-gray-100 flex items-center justify-center text-hyundai-gray-400">
+                       <User className="w-6 h-6 lg:w-7 lg:h-7" />
                     </div>
                  </div>
               </div>
@@ -153,7 +181,7 @@ export default function AdminLayout({
 
         {/* Content Area */}
         <main className="flex-1 overflow-auto bg-[#F7F8FA]">
-           <div className="p-10 min-h-full">
+           <div className="p-6 lg:p-10 min-h-full">
               {children}
            </div>
         </main>

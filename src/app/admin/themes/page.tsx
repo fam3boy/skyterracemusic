@@ -99,7 +99,7 @@ export default function ThemesPage() {
 
       <div className="grid grid-cols-1 gap-6">
         {loading ? (
-          <div className="text-center py-20 uppercase font-bold tracking-widest text-hyundai-gray-200 animate-pulse">테마 정보를 불러오는 중...</div>
+          <div className="text-center py-20 uppercase font-bold tracking-normal text-hyundai-gray-200 animate-pulse text-[14px]">테마 정보를 불러오는 중...</div>
         ) : themes.length === 0 ? (
           <div className="text-center py-20 text-hyundai-gray-400 italic">등록된 테마가 없습니다.</div>
         ) : (
@@ -108,7 +108,7 @@ export default function ThemesPage() {
               <div className="flex flex-col md:flex-row">
                 <div className={`p-8 md:w-2/3 ${theme.is_active ? 'bg-white' : 'bg-hyundai-gray-100/50'}`}>
                   <div className="flex items-center gap-3 mb-4">
-                    <span className="text-[12px] font-bold tracking-widest text-hyundai-emerald bg-hyundai-emerald/5 px-3 py-1.5 rounded-full border border-hyundai-emerald/20 uppercase">
+                    <span className="text-[12px] font-bold tracking-normal text-hyundai-emerald bg-hyundai-emerald/5 px-3 py-1.5 rounded-full border border-hyundai-emerald/20 uppercase">
                       {new Date(theme.theme_month).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long' })}
                     </span>
                     {theme.is_active && (
@@ -134,7 +134,7 @@ export default function ThemesPage() {
                 <div className="p-8 md:w-1/3 bg-hyundai-black flex flex-col justify-center gap-3">
                   <button 
                     onClick={() => handleToggleActive(theme.id, theme.is_active)}
-                    className={`w-full py-4 rounded-xl text-[12px] font-bold transition-all uppercase tracking-widest ${
+                    className={`w-full py-4 rounded-xl text-[14px] font-bold transition-all uppercase tracking-tight ${
                       theme.is_active 
                         ? 'bg-hyundai-gray-800 text-hyundai-gray-400 hover:text-white' 
                         : 'bg-hyundai-emerald text-white hover:bg-white hover:text-hyundai-emerald shadow-lg shadow-hyundai-emerald/20'
@@ -144,7 +144,7 @@ export default function ThemesPage() {
                   </button>
                   <button 
                     onClick={() => handleEdit(theme)}
-                    className="w-full py-4 bg-white/10 text-white rounded-xl text-[12px] font-bold hover:bg-white hover:text-hyundai-black transition-all uppercase tracking-widest border border-white/20"
+                    className="w-full py-4 bg-white/10 text-white rounded-xl text-[14px] font-bold hover:bg-white hover:text-hyundai-black transition-all uppercase tracking-tight border border-white/20"
                   >
                     테마 정보 수정
                   </button>
@@ -170,7 +170,7 @@ export default function ThemesPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-6 md:col-span-2">
                     <div>
-                      <label className="block text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-[0.2em] mb-2">테마명</label>
+                      <label className="block text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-normal mb-2">테마명</label>
                       <input
                         type="text"
                         required
@@ -181,7 +181,7 @@ export default function ThemesPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-[0.2em] mb-2">테마 상세 설명</label>
+                      <label className="block text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-normal mb-2">테마 상세 설명</label>
                       <textarea
                         className="w-full px-5 py-4 bg-hyundai-gray-100/50 border border-hyundai-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-hyundai-emerald/10 focus:border-hyundai-emerald transition-all min-h-[100px] text-sm font-medium"
                         placeholder="테마에 대한 배경이나 선정 이유를 입력하세요..."
@@ -192,7 +192,7 @@ export default function ThemesPage() {
                   </div>
 
                   <div>
-                    <label className="block text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-[0.2em] mb-2">대상 월 (Month)</label>
+                    <label className="block text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-normal mb-2">대상 월 (Month)</label>
                     <input
                       type="date"
                       required
@@ -203,7 +203,7 @@ export default function ThemesPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-[0.2em] mb-2">시작일</label>
+                      <label className="block text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-normal mb-2">시작일</label>
                       <input
                         type="date"
                         className="w-full px-4 py-4 bg-hyundai-gray-100/50 border border-hyundai-gray-200 rounded-2xl outline-none text-xs font-bold"
@@ -212,7 +212,7 @@ export default function ThemesPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-[0.2em] mb-2">종료일</label>
+                      <label className="block text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-normal mb-2">종료일</label>
                       <input
                         type="date"
                         className="w-full px-4 py-4 bg-hyundai-gray-100/50 border border-hyundai-gray-200 rounded-2xl outline-none text-xs font-bold"
@@ -225,11 +225,11 @@ export default function ThemesPage() {
 
                 <div className="space-y-4">
                   <div className="flex justify-between items-center border-b-2 border-hyundai-black pb-4">
-                    <label className="text-[12px] font-bold text-hyundai-black uppercase tracking-[0.2em]">테마 기본 플레이리스트</label>
+                    <label className="text-[14px] font-bold text-hyundai-black uppercase tracking-tight">테마 기본 플레이리스트</label>
                       <button 
                         type="button"
                         onClick={() => setTracks([...tracks, { title: '', artist: '', youtube_url: '' }])}
-                        className="px-5 py-3 bg-hyundai-emerald text-white text-[11px] font-bold rounded-lg shadow-md hover:scale-105 transition-all uppercase tracking-widest"
+                        className="px-5 py-3 bg-hyundai-emerald text-white text-[12px] font-bold rounded-lg shadow-md hover:scale-105 transition-all uppercase tracking-tight"
                       >
                         + 신규 곡 추가
                       </button>
@@ -322,13 +322,13 @@ export default function ThemesPage() {
                 <button 
                   type="button"
                   onClick={() => setEditingTheme(null)}
-                  className="px-8 py-5 text-[12px] font-bold text-hyundai-gray-400 hover:text-white transition-all uppercase tracking-widest"
+                  className="px-8 py-5 text-[14px] font-bold text-hyundai-gray-400 hover:text-white transition-all uppercase tracking-tight"
                 >
                   취소
                 </button>
                 <button 
                   type="submit"
-                  className="px-12 py-5 bg-hyundai-emerald text-white text-[12px] font-bold rounded-2xl shadow-2xl hover:scale-105 transition-all uppercase tracking-[0.2em]"
+                  className="px-12 py-5 bg-hyundai-emerald text-white text-[14px] font-bold rounded-2xl shadow-2xl hover:scale-105 transition-all uppercase tracking-tight"
                 >
                   테마 저장 및 적용
                 </button>
