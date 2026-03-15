@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Search, Menu, X, Globe, User, ChevronDown } from 'lucide-react';
+import { Search, Menu, X } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -25,8 +25,7 @@ export default function Header() {
   }, []);
 
   const topNavItems = [
-    { name: '브랜드 사이트', href: '#' },
-    { name: 'ENGLISH', href: '#' },
+    { name: '브랜드 사이트', href: 'https://www.ehyundai.com' },
   ];
 
   const mainNavItems = [
@@ -48,7 +47,7 @@ export default function Header() {
              </Link>
            ))}
            <div className="h-3 w-px bg-hyundai-gray-200"></div>
-           <Link href="/admin" className="text-[10px] font-black text-hyundai-black uppercase tracking-widest">관리자 포털</Link>
+           <Link href="/admin/login" className="text-[10px] font-black text-hyundai-gray-400 hover:text-hyundai-black transition-colors uppercase tracking-[0.1em]">관리자</Link>
         </div>
       </div>
 

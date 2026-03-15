@@ -4,7 +4,6 @@ import {
   Music, Clock, MapPin, Send, Search, CheckCircle, 
   Headphones, Sparkles, AlertCircle, ChevronRight, PlayCircle, Star, ArrowUpRight
 } from 'lucide-react';
-import HeroCarousel from '@/components/HeroCarousel';
 import InfoBlock from '@/components/InfoBlock';
 import PortalSection from '@/components/PortalSection';
 
@@ -56,8 +55,29 @@ export default async function Home() {
 
   return (
     <div className="bg-white">
-      {/* 1. Main Visual Carousel */}
-      <HeroCarousel />
+      {/* 1. Sophisticated Theme Hero */}
+      <section className="relative pt-40 pb-32 overflow-hidden border-b border-hyundai-gray-100">
+        <div className="absolute top-0 right-0 w-1/2 h-full opacity-[0.03] pointer-events-none">
+           <Music className="w-full h-full -rotate-12 translate-x-1/4" />
+        </div>
+        <div className="portal-container relative z-10">
+           <div className="max-w-4xl space-y-10">
+              <div className="space-y-4">
+                 <span className="text-hyundai-gold text-[13px] font-black tracking-[0.6em] uppercase block animate-in fade-in slide-in-from-bottom-4 duration-700">이달의 테라스 선율</span>
+                 <h1 className="text-6xl md:text-[100px] font-black text-hyundai-black tracking-[-0.06em] leading-[0.85] uppercase animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                    {activeTheme ? activeTheme.title : "SEASONAL CURATION"}
+                 </h1>
+              </div>
+              <p className="text-xl md:text-2xl font-medium text-hyundai-gray-500 leading-relaxed max-w-2xl animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
+                 {activeTheme?.description || "현대프리미엄아울렛 대전점 스카이테라스의 공간에 영감을 불어넣는 공식 컬렉션입니다."}
+              </p>
+              <div className="flex gap-4 pt-4 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
+                 <Link href="/request" className="btn-portal-primary h-20 flex items-center justify-center min-w-[240px]">음악 신청하기</Link>
+                 <Link href="/status" className="btn-portal-outline h-20 flex items-center justify-center min-w-[240px]">현황 조회</Link>
+              </div>
+           </div>
+        </div>
+      </section>
 
       {/* 2. Key Information Block */}
       <InfoBlock />
@@ -135,22 +155,22 @@ export default async function Home() {
               <span className="text-hyundai-gold text-[12px] font-black tracking-[0.4em] uppercase block">인기 신청곡</span>
               <h3 className="text-5xl font-black text-hyundai-black uppercase tracking-tighter leading-none">명예의 전당</h3>
             </div>
-            <div className="space-y-10">
+            <div className="grid grid-cols-1 gap-px bg-hyundai-gray-100 border border-hyundai-gray-100">
               {popularTracks.map((track, i) => (
-                <div key={i} className="flex items-center gap-8 group">
+                <div key={i} className="flex items-center gap-8 group p-8 bg-white hover:bg-hyundai-gray-50 transition-all duration-500">
                    <div className="relative">
-                      <div className="w-20 h-20 bg-hyundai-gray-50 flex items-center justify-center p-6 group-hover:bg-hyundai-black group-hover:text-white transition-all duration-700">
-                        <Star className={`w-8 h-8 ${i === 0 ? 'text-hyundai-gold' : 'text-current'}`} strokeWidth={1} />
+                      <div className="w-16 h-16 bg-hyundai-black text-white flex items-center justify-center p-4">
+                        <span className="text-xl font-black italic">0{i + 1}</span>
                       </div>
-                      <span className="absolute -top-3 -right-3 w-8 h-8 bg-hyundai-black text-white text-[11px] font-black flex items-center justify-center border-4 border-white">0{i + 1}</span>
+                      {i === 0 && <Star className="absolute -top-2 -right-2 w-5 h-5 text-hyundai-gold fill-hyundai-gold shadow-sm" />}
                    </div>
                    <div className="flex-grow space-y-1">
-                      <h6 className="text-xl font-black text-hyundai-black uppercase tracking-tight">{track.title}</h6>
-                      <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest">{track.artist}</p>
+                      <h6 className="text-lg font-black text-hyundai-black uppercase tracking-tight truncate max-w-[200px]">{track.title}</h6>
+                      <p className="text-[10px] font-bold text-hyundai-gray-400 uppercase tracking-widest">{track.artist}</p>
                    </div>
-                   <div className="text-right">
-                      <p className="text-[10px] font-black text-hyundai-gold uppercase tracking-widest">신청 횟수</p>
-                      <p className="text-2xl font-black text-hyundai-black italic">{track.request_count}</p>
+                   <div className="text-right flex flex-col items-end">
+                      <span className="text-[8px] font-black text-hyundai-gray-300 uppercase tracking-widest mb-1">DATA COUNT</span>
+                      <p className="text-xl font-black text-hyundai-black italic">{track.request_count}</p>
                    </div>
                 </div>
               ))}

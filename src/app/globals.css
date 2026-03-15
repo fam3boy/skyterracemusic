@@ -21,6 +21,7 @@
   --content-max-width: 1200px;
   --header-height: 100px;
   --utility-height: 44px;
+  --section-spacing: 120px;
 }
 
 @layer base {
@@ -40,7 +41,7 @@
   }
 
   .section-subtitle {
-    @apply text-[11px] font-black uppercase tracking-[0.3em] text-hyundai-gray-400 mb-4 block;
+    @apply text-[11px] font-black uppercase tracking-[0.4em] text-hyundai-gold mb-6 block;
   }
   
   .card-portal {
@@ -48,11 +49,11 @@
   }
 
   .btn-portal-primary {
-    @apply bg-hyundai-black text-white px-12 py-6 text-[10px] font-black uppercase tracking-[0.25em] hover:bg-hyundai-gray-800 transition-all text-center relative overflow-hidden;
+    @apply bg-hyundai-black text-white px-12 py-6 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-hyundai-gray-800 transition-all duration-500 text-center relative overflow-hidden;
   }
 
   .btn-portal-outline {
-    @apply border border-hyundai-black text-hyundai-black px-12 py-6 text-[10px] font-black uppercase tracking-[0.25em] hover:bg-hyundai-black hover:text-white transition-all text-center;
+    @apply border border-hyundai-black text-hyundai-black px-12 py-6 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-hyundai-black hover:text-white transition-all duration-500 text-center;
   }
   
   .link-portal {

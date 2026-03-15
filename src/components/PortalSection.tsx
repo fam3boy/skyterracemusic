@@ -41,7 +41,7 @@ export default function PortalSection({ title, subtitle, moreHref, children, bgG
               href={moreHref}
               className="group flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-hyundai-gray-400 hover:text-hyundai-black transition-all"
             >
-              <span>Explore More</span>
+              <span>자세히 보기</span>
               <div className="w-12 h-12 rounded-full border border-hyundai-gray-200 flex items-center justify-center group-hover:bg-hyundai-black group-hover:text-white group-hover:border-hyundai-black transition-all">
                 <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5" />
               </div>
