@@ -48,12 +48,23 @@ export async function PATCH(req: Request) {
   const actingAdminId = (session.user as any).id;
 
   try {
-    const { id, password } = await req.json();
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const { id, password, email, nickname } = await req.json();
     
-    await sql`UPDATE admins SET password = ${hashedPassword} WHERE id = ${id}`;
-    
-    await logAudit('CHANGE_ADMIN_PASSWORD', 'admins', id, {}, actingAdminId);
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await sql`UPDATE admins SET password = ${hashedPassword} WHERE id = ${id}`;
+      await logAudit('CHANGE_ADMIN_PASSWORD', 'admins', id, {}, actingAdminId);
+    }
+
+    if (email || nickname) {
+      await sql`
+        UPDATE admins 
+        SET email = COALESCE(${email}, email), 
+            nickname = COALESCE(${nickname}, nickname) 
+        WHERE id = ${id}
+      `;
+      await logAudit('UPDATE_ADMIN_INFO', 'admins', id, { email, nickname }, actingAdminId);
+    }
     
     return NextResponse.json({ success: true });
   } catch (error: any) {

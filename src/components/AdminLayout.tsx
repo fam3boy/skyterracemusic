@@ -38,11 +38,26 @@ export default function AdminLayout({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
 
+  const [customLogo, setCustomLogo] = useState<string | null>(null);
+
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/admin/login');
     }
+    fetchBranding();
   }, [status, router]);
+
+  async function fetchBranding() {
+    try {
+      const res = await fetch('/api/admin/branding');
+      if (res.ok) {
+        const settings = await res.json();
+        if (settings.logo_base64) setCustomLogo(settings.logo_base64);
+      }
+    } catch (err) {
+      console.error('Branding fetch failed', err);
+    }
+  }
 
   if (status === 'loading') {
     return (
@@ -59,7 +74,6 @@ export default function AdminLayout({
     { name: '신청곡 관리', href: '/admin/requests', icon: Music },
     { name: '플레이리스트', href: '/admin/playlist', icon: ListMusic },
     { name: '월별 테마', href: '/admin/themes', icon: CalendarDays },
-    { name: '발송 로그', href: '/admin/mail-logs', icon: History },
     { name: '활동 로그', href: '/admin/audit-logs', icon: ClipboardList },
     { name: '시스템 설정', href: '/admin/settings', icon: Settings2 },
   ];
@@ -74,13 +88,17 @@ export default function AdminLayout({
         <div className="h-24 px-8 flex items-center justify-between border-b border-white/5">
           <Link href="/admin/dashboard" className="flex items-center gap-3 group">
              <div className="relative h-10 flex items-center">
-               <img 
-                 src="/logo.png" 
-                 alt="THE HYUNDAI" 
-                 className="h-full w-auto object-contain hidden"
-                 onError={(e) => (e.currentTarget.style.display = 'none')}
-                 onLoad={(e) => (e.currentTarget.style.display = 'block')}
-               />
+               {customLogo ? (
+                 <img src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
+               ) : (
+                 <img 
+                   src="/logo.png" 
+                   alt="THE HYUNDAI" 
+                   className="h-full w-auto object-contain hidden"
+                   onError={(e) => (e.currentTarget.style.display = 'none')}
+                   onLoad={(e) => (e.currentTarget.style.display = 'block')}
+                 />
+               )}
                <div className="flex flex-col gap-0.5">
                  <span className="text-hyundai-gold text-[12px] font-bold tracking-normal uppercase block group-hover:text-white transition-colors">운영 시스템</span>
                  <h2 className="text-xl font-bold tracking-tighter text-white">SKYTERRACE</h2>

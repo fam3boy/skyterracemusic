@@ -8,24 +8,24 @@ export default function AdminSettingsPage() {
   const [templates, setTemplates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Form states (Restored)
+  // Form states
   const [newPattern, setNewPattern] = useState('');
   const [patternType, setPatternType] = useState('WORD');
   const [newTemplate, setNewTemplate] = useState({ title: '', content: '', type: 'HOLD' });
 
-  // New states for Mail & Accounts
-  const [activeTab, setActiveTab] = useState<'automation' | 'mail' | 'accounts'>('automation');
-  const [recipients, setRecipients] = useState<any[]>([]);
+  // New states for Branding & Accounts
+  const [activeTab, setActiveTab] = useState<'automation' | 'branding' | 'accounts'>('automation');
   const [admins, setAdmins] = useState<any[]>([]);
-  const [newRecipient, setNewRecipient] = useState({ email: '', role: 'TO', send_day: 4 });
   const [newAdmin, setNewAdmin] = useState({ email: '', nickname: '', password: '', role: 'admin' });
-  const [editingAdmin, setEditingAdmin] = useState<string | null>(null);
-  const [newPassword, setNewPassword] = useState('');
+  const [editingAdmin, setEditingAdmin] = useState<any | null>(null);
+  
+  const [logoBase64, setLogoBase64] = useState<string | null>(null);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
   useEffect(() => {
     fetchData();
-    fetchRecipients();
     fetchAccounts();
+    fetchBranding();
   }, []);
 
   async function fetchData() {
@@ -44,15 +44,55 @@ export default function AdminSettingsPage() {
     }
   }
 
-  async function fetchRecipients() {
-    const res = await fetch('/api/admin/mail-settings');
-    if (res.ok) setRecipients(await res.json());
-  }
-
   async function fetchAccounts() {
     const res = await fetch('/api/admin/accounts');
     if (res.ok) setAdmins(await res.json());
   }
+
+  async function fetchBranding() {
+    const res = await fetch('/api/admin/branding');
+    if (res.ok) {
+      const settings = await res.json();
+      setLogoBase64(settings.logo_base64 || null);
+    }
+  }
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingLogo(true);
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const img = new Image();
+      img.onload = async () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 400;
+        const scale = MAX_WIDTH / img.width;
+        canvas.width = MAX_WIDTH;
+        canvas.height = img.height * scale;
+        
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        const base64 = canvas.toDataURL('image/png');
+        
+        const res = await fetch('/api/admin/branding', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: 'logo_base64', value: base64 })
+        });
+
+        if (res.ok) {
+          setLogoBase64(base64);
+          alert('로고가 성공적으로 업데이트되었습니다.');
+        }
+        setUploadingLogo(false);
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleAddPattern = async () => {
     if (!newPattern) return;
@@ -74,16 +114,6 @@ export default function AdminSettingsPage() {
     if (res.ok) { setNewTemplate({ title: '', content: '', type: 'HOLD' }); fetchData(); }
   };
 
-  const handleAddRecipient = async () => {
-    if (!newRecipient.email) return;
-    const res = await fetch('/api/admin/mail-settings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newRecipient)
-    });
-    if (res.ok) { setNewRecipient({ email: '', role: 'TO', send_day: 4 }); fetchRecipients(); }
-  };
-
   const handleCreateAdmin = async () => {
     if (!newAdmin.email || !newAdmin.password) return;
     const res = await fetch('/api/admin/accounts', {
@@ -94,38 +124,38 @@ export default function AdminSettingsPage() {
     if (res.ok) { setNewAdmin({ email: '', nickname: '', password: '', role: 'admin' }); fetchAccounts(); }
   };
 
-  const handleChangePassword = async (id: string) => {
-    if (!newPassword) return;
+  const handleUpdateAdmin = async () => {
+    if (!editingAdmin) return;
     const res = await fetch('/api/admin/accounts', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, password: newPassword })
+      body: JSON.stringify(editingAdmin)
     });
-    if (res.ok) { setEditingAdmin(null); setNewPassword(''); alert('비밀번호가 변경되었습니다.'); }
+    if (res.ok) { setEditingAdmin(null); fetchAccounts(); alert('관리자 정보가 업데이트되었습니다.'); }
   };
 
   const handleDelete = async (id: string, table: string) => {
     if (!confirm('정말 삭제하시겠습니까?')) return;
     let url = `/api/admin/settings?id=${id}&table=${table}`;
-    if (table === 'mail_recipients') url = `/api/admin/mail-settings?id=${id}`;
     if (table === 'admins') url = `/api/admin/accounts?id=${id}`;
     
     const res = await fetch(url, { method: 'DELETE' });
-    if (res.ok) { fetchData(); fetchRecipients(); fetchAccounts(); }
+    if (res.ok) { fetchData(); fetchAccounts(); }
   };
 
   return (
     <div className="animate-in fade-in duration-700">
+      <AdminLayout>
       <div className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h2 className="text-3xl font-bold text-hyundai-black tracking-tight">시스템 통합 설정</h2>
-          <p className="text-hyundai-gray-500 mt-1 font-medium">관리자 계정, 메일 수신 및 자동화 규칙 관리</p>
+          <p className="text-hyundai-gray-500 mt-1 font-medium">관리자 계정, 브랜딩 및 자동화 규칙 관리</p>
         </div>
         
         <div className="flex bg-hyundai-gray-100 p-1.5 rounded-2xl">
           {[
             { id: 'automation', label: '자동화 규칙' },
-            { id: 'mail', label: '메일 수신 설정' },
+            { id: 'branding', label: '브랜딩 설정' },
             { id: 'accounts', label: '관리자 계정' }
           ].map(tab => (
             <button
@@ -141,7 +171,6 @@ export default function AdminSettingsPage() {
 
       {activeTab === 'automation' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 animate-in fade-in duration-500">
-          {/* Banned Patterns (same as before) */}
           <div className="card-premium p-8">
             <h3 className="text-xl font-bold mb-6 flex items-center gap-3">
               <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
@@ -162,7 +191,6 @@ export default function AdminSettingsPage() {
             </div>
           </div>
 
-          {/* Templates (same as before) */}
           <div className="card-premium p-8">
             <h3 className="text-xl font-bold mb-6 flex items-center gap-3"><div className="w-2.5 h-2.5 rounded-full bg-hyundai-emerald"></div>심사 메모 템플릿</h3>
             <div className="space-y-4 mb-8">
@@ -189,67 +217,38 @@ export default function AdminSettingsPage() {
         </div>
       )}
 
-      {activeTab === 'mail' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <div className="lg:col-span-1 space-y-8">
-            <div className="card-premium p-8">
-              <h3 className="text-lg font-bold mb-6">수신자 추가</h3>
-              <div className="space-y-4">
+      {activeTab === 'branding' && (
+        <div className="max-w-4xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="card-premium p-10">
+            <h3 className="text-2xl font-black mb-8">시스템 브랜딩</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              <div className="space-y-6">
                 <div>
-                  <label className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-normal block mb-2">이메일 주소</label>
-                  <input type="email" value={newRecipient.email} onChange={(e) => setNewRecipient({...newRecipient, email: e.target.value})} className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-hyundai-emerald/10 outline-none" placeholder="example@hyundai.com" />
+                   <label className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest block mb-4">공식 로고 등록</label>
+                   <div className="relative group cursor-pointer border-2 border-dashed border-hyundai-gray-100 rounded-[2rem] p-10 bg-hyundai-gray-50/50 hover:bg-white hover:border-hyundai-gold transition-all duration-500 text-center">
+                      <input type="file" accept="image/*" onChange={handleLogoUpload} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
+                      <div className="flex flex-col items-center gap-4">
+                        <div className="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center text-hyundai-gray-400 group-hover:text-hyundai-gold transition-colors">
+                           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        </div>
+                        <p className="text-sm font-bold text-hyundai-black">이미지 업로드</p>
+                        <p className="text-[11px] text-hyundai-gray-400 font-medium leading-relaxed">PNG, JPG 지원 (최적 너비 400px)<br />업로드 시 자동으로 크기가 조정됩니다.</p>
+                      </div>
+                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-normal block mb-2">역할</label>
-                    <select value={newRecipient.role} onChange={(e) => setNewRecipient({...newRecipient, role: e.target.value})} className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm font-bold">
-                      <option value="TO">수신 (TO)</option>
-                      <option value="CC">참조 (CC)</option>
-                      <option value="BCC">숨은참조 (BCC)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-normal block mb-2">발송 요일</label>
-                    <select value={newRecipient.send_day} onChange={(e) => setNewRecipient({...newRecipient, send_day: parseInt(e.target.value)})} className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm font-bold">
-                      <option value={4}>목요일 (시스템 기본)</option>
-                      <option value={1}>월요일</option>
-                      <option value={5}>금요일</option>
-                      <option value={0}>일요일</option>
-                    </select>
-                  </div>
-                </div>
-                <button onClick={handleAddRecipient} className="w-full py-4 bg-hyundai-black text-white text-[14px] font-bold rounded-xl uppercase tracking-tight mt-4">수신자 등록</button>
               </div>
-            </div>
-          </div>
-
-          <div className="lg:col-span-2 card-premium p-8 overflow-hidden">
-            <h3 className="text-lg font-bold mb-6">수신 리스트</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-tight border-b border-hyundai-gray-100">
-                    <th className="pb-4 text-left">이메일</th>
-                    <th className="pb-4 text-center">역할</th>
-                    <th className="pb-4 text-center">발송 요일</th>
-                    <th className="pb-4 text-right">관리</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-hyundai-gray-50">
-                  {recipients.map(r => (
-                    <tr key={r.id} className="text-sm">
-                      <td className="py-4 font-bold text-hyundai-black">{r.email}</td>
-                      <td className="py-4 text-center">
-                        <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${r.role === 'TO' ? 'bg-hyundai-emerald/10 text-hyundai-emerald' : 'bg-blue-50 text-blue-500'}`}>{r.role}</span>
-                      </td>
-                      <td className="py-4 text-center font-bold text-hyundai-gray-500">{r.send_day === 4 ? '목요일' : r.send_day === 1 ? '월요일' : '기타'}</td>
-                      <td className="py-4 text-right">
-                        <button onClick={() => handleDelete(r.id, 'mail_recipients')} className="p-2 text-hyundai-gray-300 hover:text-red-500"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              
+              <div className="space-y-6 flex flex-col items-center justify-center p-10 bg-hyundai-black rounded-[2rem] text-center">
+                 <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest block mb-6">현재 적용된 로고 미리보기</label>
+                 <div className="h-20 flex items-center justify-center">
+                   {logoBase64 ? (
+                     <img src={logoBase64} alt="Preview" className="h-full w-auto object-contain" />
+                   ) : (
+                     <div className="text-white/20 font-black italic text-4xl">NO LOGO</div>
+                   )}
+                 </div>
+                 {uploadingLogo && <p className="text-hyundai-gold text-xs font-bold animate-pulse mt-4">최적화 및 업로드 중...</p>}
+              </div>
             </div>
           </div>
         </div>
@@ -281,7 +280,7 @@ export default function AdminSettingsPage() {
                     <p className="text-xs text-hyundai-gray-400">{a.email}</p>
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={() => setEditingAdmin(a.id)} className="p-2 text-hyundai-gray-300 hover:text-hyundai-black transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></button>
+                    <button onClick={() => setEditingAdmin(a)} className="p-2 text-hyundai-gray-300 hover:text-hyundai-black transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg></button>
                     <button onClick={() => handleDelete(a.id, 'admins')} className="p-2 text-hyundai-gray-300 hover:text-red-500"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
                   </div>
                 </div>
@@ -293,16 +292,30 @@ export default function AdminSettingsPage() {
 
       {editingAdmin && (
         <div className="fixed inset-0 bg-hyundai-black/60 flex items-center justify-center z-[200] p-6 backdrop-blur-md">
-          <div className="bg-white rounded-[2rem] w-full max-w-md p-8 shadow-3xl">
-            <h3 className="text-xl font-bold mb-6">비밀번호 변경</h3>
-            <input type="password" placeholder="새 비밀번호 입력..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-4 text-sm mb-6 outline-none focus:ring-2 focus:ring-hyundai-black/5" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-            <div className="flex gap-4">
+          <div className="bg-white rounded-[2rem] w-full max-w-lg p-10 shadow-3xl">
+            <h3 className="text-2xl font-black mb-8">관리자 정보 수정</h3>
+            <div className="space-y-6">
+              <div>
+                <label className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest block mb-2">이메일 계정 (ID)</label>
+                <input type="email" placeholder="이메일..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-4 text-sm" value={editingAdmin.email} onChange={(e) => setEditingAdmin({...editingAdmin, email: e.target.value})} />
+              </div>
+              <div>
+                <label className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest block mb-2">닉네임</label>
+                <input type="text" placeholder="닉네임..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-4 text-sm" value={editingAdmin.nickname} onChange={(e) => setEditingAdmin({...editingAdmin, nickname: e.target.value})} />
+              </div>
+              <div>
+                <label className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest block mb-2">새 비밀번호 (변경 시에만 입력)</label>
+                <input type="password" placeholder="비밀번호..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-4 text-sm" value={editingAdmin.password || ''} onChange={(e) => setEditingAdmin({...editingAdmin, password: e.target.value})} />
+              </div>
+            </div>
+            <div className="flex gap-4 mt-10">
               <button onClick={() => setEditingAdmin(null)} className="flex-1 py-4 text-[14px] font-bold text-hyundai-gray-400 uppercase tracking-tight">취소</button>
-              <button onClick={() => editingAdmin && handleChangePassword(editingAdmin)} className="flex-1 py-4 bg-hyundai-black text-white text-[14px] font-bold rounded-xl uppercase tracking-tight shadow-lg shadow-hyundai-black/20">변경하기</button>
+              <button onClick={handleUpdateAdmin} className="flex-1 py-4 bg-hyundai-black text-white text-[14px] font-bold rounded-xl uppercase tracking-tight shadow-xl shadow-hyundai-black/20">수정 내용 저장</button>
             </div>
           </div>
         </div>
       )}
+      </AdminLayout>
     </div>
   );
 }

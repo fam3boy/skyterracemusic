@@ -15,14 +15,28 @@ export default function Header() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [customLogo, setCustomLogo] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
+    fetchBranding();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  async function fetchBranding() {
+    try {
+      const res = await fetch('/api/admin/branding');
+      if (res.ok) {
+        const settings = await res.json();
+        if (settings.logo_base64) setCustomLogo(settings.logo_base64);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   const topNavItems = [
     { name: '브랜드 사이트', href: 'https://www.ehyundai.com' },
@@ -44,14 +58,18 @@ export default function Header() {
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-4 group">
             <div className="relative h-12 flex items-center">
-              {/* Image Logo (Hidden if file missing, handled by browser/fallback structure) */}
-              <img 
-                src="/logo.png" 
-                alt="THE HYUNDAI" 
-                className="h-full w-auto object-contain hidden"
-                onError={(e) => (e.currentTarget.style.display = 'none')}
-                onLoad={(e) => (e.currentTarget.style.display = 'block')}
-              />
+              {/* Image Logo */}
+              {customLogo ? (
+                <img src={customLogo} alt="THE HYUNDAI" className="h-full w-auto object-contain" />
+              ) : (
+                <img 
+                  src="/logo.png" 
+                  alt="THE HYUNDAI" 
+                  className="h-full w-auto object-contain hidden"
+                  onError={(e) => (e.currentTarget.style.display = 'none')}
+                  onLoad={(e) => (e.currentTarget.style.display = 'block')}
+                />
+              )}
               <div className="flex flex-col first-letter:group-hover:opacity-80 transition-opacity">
                 <span className="text-2xl font-bold text-hyundai-black tracking-[-0.05em] leading-none">THE HYUNDAI</span>
                 <div className="flex items-center gap-2 mt-1">
