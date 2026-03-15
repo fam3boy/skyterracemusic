@@ -34,7 +34,7 @@ export async function GET(req: Request) {
       whereClause += ` AND r.status = $${params.length}`;
     }
 
-    // 1. Core KPIs
+    // 1. Core KPIs - Adjust query to include deleted items for counting
     const kpiRes = await sql.query(`
       SELECT 
         COUNT(*)::int as total,
@@ -44,11 +44,11 @@ export async function GET(req: Request) {
         COUNT(CASE WHEN status = 'deleted' OR deleted_at IS NOT NULL THEN 1 END)::int as deleted,
         COUNT(CASE WHEN youtube_url IS NOT NULL AND youtube_url != '' THEN 1 END)::int as with_link
       FROM song_requests r
-      ${whereClause}
+      ${whereClause.replace('r.deleted_at IS NULL', '1=1')}
     `, params);
     const kpis = kpiRes.rows[0];
 
-    // 2. Daily Trends (Last 30 days if no filter, or by filter)
+    // 2. Daily Trends
     const trendRes = await sql.query(`
       SELECT 
         TO_CHAR(date_trunc('day', r.created_at), 'YYYY-MM-DD') as date,
@@ -98,7 +98,7 @@ export async function GET(req: Request) {
       SELECT t.title as name, COUNT(r.id)::int as value
       FROM monthly_themes t
       LEFT JOIN song_requests r ON t.id = r.theme_id
-      ${whereClause.replace('r.', 'r.').replace('WHERE', 'AND')}
+      ${whereClause.replace('r.deleted_at IS NULL', '1=1').replace('WHERE', 'AND')}
       GROUP BY 1
       ORDER BY 2 DESC
     `, params);
@@ -112,9 +112,9 @@ export async function GET(req: Request) {
       ORDER BY 1 ASC
     `, params);
 
-    // 9. Mail Trends
+    // 9. Mail Trends - Fix table and column name
     const mailTrendRes = await sql`
-      SELECT TO_CHAR(date_trunc('week', created_at), 'YYYY-WW') as week, COUNT(*)::int as count
+      SELECT TO_CHAR(date_trunc('week', sent_at), 'YYYY-WW') as week, COUNT(*)::int as count
       FROM weekly_mail_logs
       WHERE status = 'success'
       GROUP BY 1 ORDER BY 1 ASC
@@ -124,7 +124,7 @@ export async function GET(req: Request) {
     return NextResponse.json({
       kpis: {
         ...kpis,
-        approvalRate: kpis.total > 0 ? (kpis.approved / kpis.total) * 100 : 0,
+        approvalRate: kpis.total > 0 ? (kpis.approved / (kpis.total - kpis.deleted || 1)) * 100 : 0,
         deletionRate: kpis.total > 0 ? (kpis.deleted / kpis.total) * 100 : 0,
         linkRate: kpis.total > 0 ? (kpis.with_link / kpis.total) * 100 : 0
       },

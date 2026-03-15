@@ -64,9 +64,9 @@ export async function GET() {
 
     // 4. Last Mail Log
     const lastMailRes = await sql`
-      SELECT status, created_at as sent_at 
-      FROM mail_logs 
-      ORDER BY created_at DESC 
+      SELECT status, sent_at
+      FROM weekly_mail_logs 
+      ORDER BY sent_at DESC 
       LIMIT 1
     `;
 
