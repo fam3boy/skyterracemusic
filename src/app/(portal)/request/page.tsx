@@ -136,12 +136,14 @@ export default function RequestPage() {
     if (!searchKeyword) return;
     setSearching(true);
     setSearchError(null);
+    setSearchResults([]); 
     try {
       const res = await fetch(`/api/music-search?keyword=${encodeURIComponent(searchKeyword)}`);
       if (res.ok) {
         setSearchResults(await res.json());
       } else {
-        setSearchError('검색 중 오류가 발생했습니다.');
+        const data = await res.json();
+        setSearchError(data.error || '검색 중 오류가 발생했습니다.');
       }
     } catch (err) {
       setSearchError('네트워크 오류가 발생했습니다.');
@@ -196,7 +198,7 @@ export default function RequestPage() {
       {/* 1. Header */}
       <div className="border-b border-hyundai-gray-100 bg-white text-hyundai-black">
         <div className="portal-container">
-            <div className="h-14 flex items-center gap-4 text-[10px] font-black uppercase tracking-widest">
+            <div className="h-14 flex items-center gap-4 text-[11px] font-black uppercase tracking-widest">
                <Link href="/" className="hover:text-hyundai-gold transition-colors">디지털 포털</Link>
                <span className="w-1.5 h-px bg-hyundai-gray-200"></span>
                <span className="">음악 신청 센터</span>
@@ -209,7 +211,7 @@ export default function RequestPage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-16 border-b-4 border-hyundai-black pb-16 mb-24">
            <div className="space-y-6 max-w-3xl">
               <div className="space-y-4">
-                 <span className="text-hyundai-gold text-[12px] font-black tracking-[0.4em] uppercase block">신청 서비스 등록</span>
+                 <span className="text-hyundai-gold text-sm font-black tracking-[0.4em] uppercase block">신청 서비스 등록</span>
                  <h1 className="text-5xl md:text-8xl font-black text-hyundai-black tracking-[-0.04em] leading-[0.9] uppercase">스카이테라스 <br />음악 신청 <br />데스크</h1>
               </div>
               <p className="text-lg md:text-xl font-medium text-hyundai-gray-500 leading-relaxed">함께 나누고 싶은 고품격 아울렛의 감성, 당신의 노래를 들려주세요. <br className="hidden md:block" />현대백화점 대전점 스카이테라스의 소리를 당신이 채웁니다.</p>
@@ -219,15 +221,15 @@ export default function RequestPage() {
               <div className="bg-hyundai-gray-50 p-8 border border-hyundai-gray-100 space-y-4">
                  <div className="flex items-center gap-3">
                     <Clock className="w-5 h-5 text-hyundai-gold" />
-                    <span className="text-[11px] font-black uppercase tracking-widest text-hyundai-black">정기 심사 및 방송 안내</span>
+                    <span className="text-xs font-black uppercase tracking-widest text-hyundai-black">정기 심사 및 방송 안내</span>
                  </div>
                  <div className="space-y-1">
-                    <p className="text-[13px] font-bold text-hyundai-black">매주 목요일 19:00</p>
-                    <p className="text-[11px] font-medium text-hyundai-gray-400">일괄 검토 및 승인 상태 업데이트</p>
+                    <p className="text-sm font-bold text-hyundai-black">매주 목요일 19:00</p>
+                    <p className="text-xs font-medium text-hyundai-gray-400">일괄 검토 및 승인 상태 업데이트</p>
                  </div>
               </div>
               <div className="bg-hyundai-black p-8 text-white space-y-1">
-                 <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">진행 중인 테마</p>
+                 <p className="text-[11px] font-black uppercase tracking-[0.2em] opacity-40">진행 중인 테마</p>
                  <p className="text-lg font-black uppercase tracking-tight">{activeTheme ? activeTheme.title : "일반 선곡 리스트"}</p>
               </div>
            </div>
@@ -254,9 +256,9 @@ export default function RequestPage() {
                     <div className="space-y-6">
                         <div className="space-y-4">
                            <div className="flex justify-between items-end">
-                              <label className="text-[11px] font-black text-hyundai-gray-400 uppercase tracking-[0.3em] flex items-center gap-2">
+                              <label className="text-sm font-black text-hyundai-gray-400 uppercase tracking-[0.3em] flex items-center gap-2">
                                 <Youtube className="w-4 h-4 text-red-600" />
-                                Youtube 링크 <span className="text-[9px] font-bold opacity-50">(자동 입력 지원)</span>
+                                Youtube 링크 <span className="text-[10px] font-bold opacity-50">(자동 입력 지원)</span>
                               </label>
                            </div>
                           <div className="relative">
@@ -272,7 +274,7 @@ export default function RequestPage() {
                                 <Sparkles className="w-6 h-6 text-hyundai-gold animate-pulse" />
                              </div>
                           </div>
-                          <p className="text-[11px] text-hyundai-gray-400 font-medium leading-relaxed uppercase tracking-wider italic">
+                          <p className="text-[13px] text-hyundai-gray-400 font-medium leading-relaxed uppercase tracking-wider italic">
                             유튜브 링크를 붙여넣으시면 곡 제목과 아티스트 정보가 자동으로 채워집니다.
                           </p>
                        </div>
@@ -280,18 +282,18 @@ export default function RequestPage() {
 
                     <div className="flex items-center gap-8 py-4">
                        <span className="h-px bg-hyundai-gray-200 flex-grow"></span>
-                       <span className="text-[10px] font-black text-hyundai-gray-300 uppercase tracking-[0.4em]">고정 곡 정보</span>
+                       <span className="text-xs font-black text-hyundai-gray-300 uppercase tracking-[0.4em]">고정 곡 정보</span>
                        <span className="h-px bg-hyundai-gray-200 flex-grow"></span>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                         <div className="space-y-4 relative">
                            <div className="flex justify-between items-end">
-                              <label className="text-[11px] font-black text-hyundai-gray-400 uppercase tracking-[0.3em]">곡 제목</label>
+                              <label className="text-sm font-black text-hyundai-gray-400 uppercase tracking-[0.3em]">곡 제목</label>
                               <button 
                                 type="button" 
                                 onClick={() => { setSearchKeyword(formData.title); setSearchOpen(true); }}
-                                className="text-[10px] font-black text-hyundai-gold hover:text-hyundai-black uppercase tracking-widest flex items-center gap-1 transition-colors"
+                                className="text-xs font-black text-hyundai-gold hover:text-hyundai-black uppercase tracking-widest flex items-center gap-1 transition-colors"
                               >
                                  <Search className="w-3 h-3" /> 음악 검색 (KOREAN)
                               </button>
@@ -316,7 +318,7 @@ export default function RequestPage() {
                                      className="w-full px-8 py-6 text-left hover:bg-hyundai-gray-50 transition-all flex flex-col gap-1"
                                    >
                                      <span className="text-lg font-black text-hyundai-black uppercase tracking-tight">{s.title}</span>
-                                     <span className="text-[11px] text-hyundai-gray-400 font-bold uppercase tracking-widest">{s.artist}</span>
+                                     <span className="text-xs text-hyundai-gray-400 font-bold uppercase tracking-widest">{s.artist}</span>
                                    </button>
                                  ))}
                                </div>
@@ -324,7 +326,7 @@ export default function RequestPage() {
                           )}
                        </div>
                         <div className="space-y-4">
-                           <label className="text-[11px] font-black text-hyundai-gray-400 uppercase tracking-[0.3em]">아티스트명</label>
+                           <label className="text-sm font-black text-hyundai-gray-400 uppercase tracking-[0.3em]">아티스트명</label>
                           <input 
                             type="text" 
                             required
@@ -353,11 +355,11 @@ export default function RequestPage() {
                   <div className="space-y-12">
                      <div className="space-y-4">
                         <span className="text-2xl font-black text-hyundai-gray-200 uppercase tracking-tighter block italic">02/신청 사연</span>
-                        <h3 className="text-3xl font-black text-hyundai-black uppercase tracking-tight">선곡의 이유와 추억</h3>
+                        <h3 className="text-3xl font-black text-hyundai-black uppercase tracking-tight">선곡의 이유와 추억 (선택사항)</h3>
                      </div>
                      <textarea 
                        rows={8}
-                       placeholder="심사 시 반영될 사연을 입력해 주세요."
+                       placeholder="심사 시 반영될 사연을 입력해 주세요. (선택)"
                        className="w-full bg-hyundai-gray-50 border-none px-10 py-10 text-lg font-bold leading-relaxed focus:bg-white focus:ring-4 focus:ring-hyundai-black/5 transition-all outline-none resize-none placeholder:text-hyundai-gray-200"
                        maxLength={200}
                        value={formData.story}
@@ -368,19 +370,19 @@ export default function RequestPage() {
                   <div className="space-y-12">
                      <div className="space-y-4">
                         <span className="text-2xl font-black text-hyundai-gray-200 uppercase tracking-tighter block italic">03/정보 확인</span>
-                        <h3 className="text-3xl font-black text-hyundai-black uppercase tracking-tight">신청자 프로필</h3>
+                        <h3 className="text-3xl font-black text-hyundai-black uppercase tracking-tight">신청자 프로필 (선택사항)</h3>
                      </div>
                      <div className="space-y-10">
                         <input 
                           type="text" 
-                          placeholder="성함 또는 닉네임"
+                          placeholder="성함 또는 닉네임 (선택)"
                           className="w-full h-20 bg-hyundai-gray-50 border-none px-8 text-xl font-black uppercase focus:ring-4 focus:ring-hyundai-black/5 outline-none transition-all"
                           value={formData.requester_name}
                           onChange={(e) => setFormData({...formData, requester_name: e.target.value})}
                         />
                         <input 
                           type="text" 
-                          placeholder="연락처 (010-0000-0000)"
+                          placeholder="연락처 (010-0000-0000) (선택)"
                           className="w-full h-20 bg-hyundai-gray-50 border-none px-8 text-xl font-black focus:ring-4 focus:ring-hyundai-black/5 outline-none transition-all"
                           value={formData.requester_contact}
                           onChange={(e) => setFormData({...formData, requester_contact: e.target.value})}
@@ -425,30 +427,49 @@ export default function RequestPage() {
                     value={searchKeyword}
                     onChange={(e) => setSearchKeyword(e.target.value)}
                   />
-                  <button type="submit" disabled={searching} className="px-10 bg-hyundai-black text-white text-[14px] font-black uppercase disabled:opacity-50">
-                    {searching ? 'SEARCHING' : 'SEARCH'}
+                  <button type="submit" disabled={searching} className="px-10 bg-hyundai-black text-white text-[14px] font-black uppercase disabled:opacity-50 min-w-[120px]">
+                    {searching ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                        <span>WAIT</span>
+                      </div>
+                    ) : 'SEARCH'}
                   </button>
                </form>
 
-               {searchError && <p className="text-red-500 font-bold">{searchError}</p>}
+               {searchError && (
+                 <div className="p-4 bg-red-50 border border-red-200 text-red-600 font-bold rounded flex items-center gap-2">
+                   <AlertCircle className="w-4 h-4" />
+                   {searchError}
+                 </div>
+               )}
 
                <div className="flex-grow overflow-y-auto space-y-2 pr-4 custom-scrollbar">
-                  {searchResults.map((result, i) => (
-                    <button 
-                      key={i} 
-                      onClick={() => selectMusicResult(result)}
-                      className="w-full flex items-center gap-6 p-6 text-left hover:bg-hyundai-gray-50 transition-all border border-transparent hover:border-hyundai-gray-200 group relative"
-                    >
-                       <div className="w-16 h-16 bg-hyundai-gray-200 shrink-0 overflow-hidden relative">
-                          {result.image ? <img src={result.image} alt="" className="w-full h-full object-cover" /> : <Music className="w-full h-full p-5 text-hyundai-gray-400" />}
-                       </div>
-                       <div className="flex-grow min-w-0">
-                          <p className="font-black text-hyundai-black text-xl uppercase truncate">{result.title}</p>
-                          <p className="text-[12px] font-bold text-hyundai-gray-400 truncate uppercase mt-1 tracking-widest">{result.artist}</p>
-                       </div>
-                       <ChevronRight className="w-6 h-6 text-hyundai-gray-200" />
-                    </button>
-                  ))}
+                  {searching ? (
+                    <div className="py-20 flex flex-col items-center justify-center gap-4 text-hyundai-gray-300">
+                      <div className="w-12 h-12 border-4 border-hyundai-gray-100 border-t-hyundai-gold rounded-full animate-spin"></div>
+                      <p className="font-black uppercase tracking-[0.2em] text-sm">Searching Database...</p>
+                    </div>
+                  ) : searchResults.length === 0 && !searchError && searchKeyword ? (
+                    <div className="py-20 text-center text-hyundai-gray-300 font-black uppercase tracking-[0.2em]">검색 결과가 없습니다.</div>
+                  ) : (
+                    searchResults.map((result, i) => (
+                      <button 
+                        key={i} 
+                        onClick={() => selectMusicResult(result)}
+                        className="w-full flex items-center gap-6 p-6 text-left hover:bg-hyundai-gray-50 transition-all border border-transparent hover:border-hyundai-gray-200 group relative"
+                      >
+                         <div className="w-16 h-16 bg-hyundai-gray-200 shrink-0 overflow-hidden relative">
+                            {result.image ? <img src={result.image} alt="" className="w-full h-full object-cover" /> : <Music className="w-full h-full p-5 text-hyundai-gray-400" />}
+                         </div>
+                         <div className="flex-grow min-w-0">
+                            <p className="font-black text-hyundai-black text-xl uppercase truncate">{result.title}</p>
+                            <p className="text-xs font-bold text-hyundai-gray-400 truncate uppercase mt-1 tracking-widest">{result.artist}</p>
+                         </div>
+                         <ChevronRight className="w-6 h-6 text-hyundai-gray-200" />
+                      </button>
+                    ))
+                  )}
                </div>
             </div>
           </div>

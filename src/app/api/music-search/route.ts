@@ -10,10 +10,16 @@ export async function GET(req: Request) {
   }
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+
     // Maniadb API (Search for songs)
     const maniadbUrl = `http://www.maniadb.com/api/search/${encodeURIComponent(keyword)}/?sr=song&display=20&key=admin@skyterracemusic.com&v=0.5`;
     
-    const response = await fetch(maniadbUrl);
+    console.log('Maniadb Search URL:', maniadbUrl);
+
+    const response = await fetch(maniadbUrl, { signal: controller.signal });
+    clearTimeout(timeoutId);
     if (!response.ok) throw new Error(`Maniadb search failed: ${response.status}`);
 
     const xmlData = await response.text();
@@ -42,6 +48,9 @@ export async function GET(req: Request) {
     return NextResponse.json(results);
   } catch (error: any) {
     console.error('Public music search error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error.name === 'AbortError') {
+      return NextResponse.json({ error: '검색 시간이 초과되었습니다. 다시 시도해 주세요.' }, { status: 504 });
+    }
+    return NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 });
   }
 }
