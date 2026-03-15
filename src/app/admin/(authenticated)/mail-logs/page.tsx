@@ -49,7 +49,7 @@ export default function MailLogsPage() {
   };
 
   return (
-    <AdminLayout>
+    <div className="animate-in fade-in duration-700">
       <div className="mb-10">
         <h2 className="text-3xl font-bold text-hyundai-black">메일 발송 권한 및 로그</h2>
         <p className="text-hyundai-gray-500 mt-1">자동 발송된 신청곡 목록 이력 및 수동 재발송</p>
@@ -133,6 +133,6 @@ export default function MailLogsPage() {
           수동 재발송 시에는 현재 시점 기준의 최신 승인 목록을 다시 집계하여 발송하니 주의하시기 바랍니다.
         </p>
       </div>
-    </AdminLayout>
+    </div>
   );
 }

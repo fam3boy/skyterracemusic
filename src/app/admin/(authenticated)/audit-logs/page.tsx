@@ -25,7 +25,7 @@ export default function AuditLogsPage() {
   }, []);
 
   return (
-    <AdminLayout>
+    <div className="animate-in fade-in duration-700">
       <div className="mb-10">
         <h2 className="text-3xl font-bold text-hyundai-black">관리자 활동 이력</h2>
         <p className="text-hyundai-gray-500 mt-1">시스템 변경 사항 및 운영 로그</p>
@@ -73,6 +73,6 @@ export default function AuditLogsPage() {
           </tbody>
         </table>
       </div>
-    </AdminLayout>
+    </div>
   );
 }

@@ -182,8 +182,8 @@ export default function DashboardPage() {
           <div>
             <p className="text-[12px] font-bold text-red-900 tracking-widest uppercase mb-0.5">운영 알림: 퍼포먼스 이슈 감지</p>
             <p className="text-xs font-bold text-red-600 leading-tight">
-              {stats.kpis.approvalRate < 20 ? `승인율이 ${stats.kpis.approvalRate.toFixed(1)}%로 임계치 미달입니다. ` : ''}
-              {stats.kpis.deletionRate > 30 ? `삭제율이 ${stats.kpis.deletionRate.toFixed(1)}%로 비정상 유입이 의심됩니다.` : ''}
+              {stats?.kpis?.approvalRate < 20 ? `승인율이 ${(stats?.kpis?.approvalRate ?? 0).toFixed(1)}%로 임계치 미달입니다. ` : ''}
+              {stats?.kpis?.deletionRate > 30 ? `삭제율이 ${(stats?.kpis?.deletionRate ?? 0).toFixed(1)}%로 비정상 유입이 의심됩니다.` : ''}
             </p>
           </div>
         </div>
@@ -191,9 +191,9 @@ export default function DashboardPage() {
 
       {/* 4. KPI Scorecard */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-hyundai-gray-200 border border-hyundai-gray-200">
-        <KPIItem label="전체 신청 건수" value={stats?.kpis.total} icon={<Activity />} trend="up" />
-        <KPIItem label="평균 승인율" value={`${stats?.kpis.approvalRate.toFixed(1)}%`} icon={<CheckCircle />} trend="none" />
-        <KPIItem label="링크 입력 비중" value={`${((stats?.kpis.with_link / stats?.kpis.total) * 100).toFixed(1)}%`} icon={<Music />} trend="none" />
+        <KPIItem label="전체 신청 건수" value={stats?.kpis?.total ?? 0} icon={<Activity />} trend="up" />
+        <KPIItem label="평균 승인율" value={`${(stats?.kpis?.approvalRate ?? 0).toFixed(1)}%`} icon={<CheckCircle />} trend="none" />
+        <KPIItem label="링크 입력 비중" value={`${(stats?.kpis?.total > 0 ? (stats?.kpis?.with_link / stats?.kpis?.total) * 100 : 0).toFixed(1)}%`} icon={<Music />} trend="none" />
         
         {/* Instant Action */}
         <div className="bg-hyundai-black p-8 flex flex-col justify-between group">
@@ -201,8 +201,8 @@ export default function DashboardPage() {
              <span className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest">일괄 처리 프로세스</span>
              <FileText className="w-5 h-5 text-hyundai-gold" />
            </div>
-           <div>
-              <p className="text-sm font-bold text-white mb-6">현재 승인된 {stats?.kpis.approved}곡을 <br />보고서로 즉시 발송합니다.</p>
+            <div>
+              <p className="text-sm font-bold text-white mb-6">현재 승인된 {stats?.kpis?.approved ?? 0}곡을 <br />보고서로 즉시 발송합니다.</p>
               <button 
                 onClick={async () => {
                   if (confirm('주간 리포트를 즉시 발송하시겠습니까?')) {

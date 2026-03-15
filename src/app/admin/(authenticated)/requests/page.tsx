@@ -141,8 +141,7 @@ export default function RequestsManagementPage() {
   };
 
   return (
-    <AdminLayout>
-      <div className="space-y-8 animate-in fade-in duration-700">
+    <div className="space-y-8 animate-in fade-in duration-700">
         {/* Top Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div>
@@ -420,6 +419,5 @@ export default function RequestsManagementPage() {
           </div>
         )}
       </div>
-    </AdminLayout>
   );
 }

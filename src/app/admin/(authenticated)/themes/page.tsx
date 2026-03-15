@@ -82,7 +82,7 @@ export default function ThemesPage() {
   };
 
   return (
-    <AdminLayout>
+    <div className="animate-in fade-in duration-700">
       <div className="flex justify-between items-center mb-10">
         <div>
           <h2 className="text-3xl font-bold text-hyundai-black">월별 테마 설정</h2>
@@ -337,6 +337,6 @@ export default function ThemesPage() {
           </div>
         </div>
       )}
-    </AdminLayout>
+    </div>
   );
 }

@@ -115,7 +115,7 @@ export default function AdminSettingsPage() {
   };
 
   return (
-    <AdminLayout>
+    <div className="animate-in fade-in duration-700">
       <div className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h2 className="text-3xl font-bold text-hyundai-black tracking-tight">시스템 통합 설정</h2>
@@ -298,11 +298,11 @@ export default function AdminSettingsPage() {
             <input type="password" placeholder="새 비밀번호 입력..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-4 text-sm mb-6 outline-none focus:ring-2 focus:ring-hyundai-black/5" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
             <div className="flex gap-4">
               <button onClick={() => setEditingAdmin(null)} className="flex-1 py-4 text-[14px] font-bold text-hyundai-gray-400 uppercase tracking-tight">취소</button>
-              <button onClick={() => handleChangePassword(editingAdmin)} className="flex-1 py-4 bg-hyundai-black text-white text-[14px] font-bold rounded-xl uppercase tracking-tight shadow-lg shadow-hyundai-black/20">변경하기</button>
+              <button onClick={() => editingAdmin && handleChangePassword(editingAdmin)} className="flex-1 py-4 bg-hyundai-black text-white text-[14px] font-bold rounded-xl uppercase tracking-tight shadow-lg shadow-hyundai-black/20">변경하기</button>
             </div>
           </div>
         </div>
       )}
-    </AdminLayout>
+    </div>
   );
 }

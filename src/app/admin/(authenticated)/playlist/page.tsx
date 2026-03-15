@@ -96,7 +96,7 @@ export default function PlaylistPage() {
   };
 
   return (
-    <AdminLayout>
+    <div className="animate-in fade-in duration-700">
       <div className="flex justify-between items-center mb-10">
         <div>
           <h2 className="text-3xl font-bold text-hyundai-black tracking-tight flex items-center gap-3">
@@ -241,6 +241,6 @@ export default function PlaylistPage() {
           </p>
         </div>
       </div>
-    </AdminLayout>
+    </div>
   );
 }
