@@ -62,10 +62,10 @@ export default async function Home() {
           <div className="absolute inset-0 z-0">
             <img 
               src={activeTheme.background_base64} 
-              className="w-full h-full object-cover blur-[20px] opacity-60 scale-105" 
+              className="w-full h-full object-cover" 
               alt="" 
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-white/60 to-white"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent"></div>
           </div>
         )}
         
