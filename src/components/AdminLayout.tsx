@@ -91,18 +91,20 @@ export default function AdminLayout({
                {customLogo ? (
                  <img src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
                ) : (
-                 <img 
-                   src="/logo.png" 
-                   alt="THE HYUNDAI" 
-                   className="h-full w-auto object-contain hidden"
-                   onError={(e) => (e.currentTarget.style.display = 'none')}
-                   onLoad={(e) => (e.currentTarget.style.display = 'block')}
-                 />
+                 <>
+                   <img 
+                     src="/logo.png" 
+                     alt="THE HYUNDAI" 
+                     className="h-full w-auto object-contain hidden"
+                     onError={(e) => (e.currentTarget.style.display = 'none')}
+                     onLoad={(e) => (e.currentTarget.style.display = 'block')}
+                   />
+                   <div className="flex flex-col gap-0.5">
+                     <span className="text-hyundai-gold text-[12px] font-bold tracking-normal uppercase block group-hover:text-white transition-colors">운영 시스템</span>
+                     <h2 className="text-xl font-bold tracking-tighter text-white">SKYTERRACE</h2>
+                   </div>
+                 </>
                )}
-               <div className="flex flex-col gap-0.5">
-                 <span className="text-hyundai-gold text-[12px] font-bold tracking-normal uppercase block group-hover:text-white transition-colors">운영 시스템</span>
-                 <h2 className="text-xl font-bold tracking-tighter text-white">SKYTERRACE</h2>
-               </div>
              </div>
           </Link>
           <button 

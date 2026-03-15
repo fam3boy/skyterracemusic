@@ -56,24 +56,37 @@ export default async function Home() {
   return (
     <div className="bg-white">
       {/* 1. Sophisticated Theme Hero */}
-      <section className="relative pt-40 pb-32 overflow-hidden border-b border-hyundai-gray-100">
-        <div className="absolute top-0 right-0 w-1/2 h-full opacity-[0.03] pointer-events-none">
+      <section className="relative pt-48 pb-32 overflow-hidden border-b border-hyundai-gray-100 min-h-[700px] flex items-center">
+        {/* Blurred Background Image */}
+        {activeTheme?.background_base64 && (
+          <div className="absolute inset-0 z-0">
+            <img 
+              src={activeTheme.background_base64} 
+              className="w-full h-full object-cover blur-[40px] opacity-20 scale-110" 
+              alt="" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-white via-white/80 to-white"></div>
+          </div>
+        )}
+        
+        <div className="absolute top-0 right-0 w-1/2 h-full opacity-[0.03] pointer-events-none z-0">
            <Music className="w-full h-full -rotate-12 translate-x-1/4" />
         </div>
-        <div className="portal-container relative z-10">
-           <div className="max-w-4xl space-y-10">
-              <div className="space-y-4">
-                 <span className="text-hyundai-gold text-[13px] font-bold tracking-[0.6em] uppercase block animate-in fade-in slide-in-from-bottom-4 duration-700">이달의 테라스 선율</span>
-                  <h1 className="text-5xl md:text-[90px] font-bold text-hyundai-black tracking-[-0.08em] leading-[1.25] uppercase break-keep animate-in fade-in slide-in-from-bottom-8 duration-1000">
+        
+        <div className="portal-container relative z-10 w-full">
+           <div className="max-w-5xl space-y-12">
+              <div className="space-y-6">
+                 <span className="text-hyundai-gold text-[14px] font-bold tracking-[0.5em] uppercase block animate-in fade-in slide-in-from-bottom-4 duration-700">이달의 테라스 선율</span>
+                  <h1 className="text-5xl md:text-[80px] font-black text-hyundai-black tracking-[-0.06em] leading-[1.1] uppercase break-keep whitespace-pre-wrap animate-in fade-in slide-in-from-bottom-8 duration-1000">
                     {activeTheme ? activeTheme.title : "SEASONAL CURATION"}
                   </h1>
                </div>
-               <p className="text-lg md:text-xl font-medium text-hyundai-gray-400 leading-[1.8] max-w-2xl break-keep animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
+               <p className="text-lg md:text-2xl font-medium text-hyundai-gray-500 leading-[1.7] max-w-3xl break-keep animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
                   {activeTheme?.description || "현대프리미엄아울렛 대전점 스카이테라스의 공간에 영감을 불어넣는 공식 컬렉션입니다."}
                </p>
-              <div className="flex gap-4 pt-4 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
-                 <Link href="/request" className="btn-portal-primary h-20 flex items-center justify-center min-w-[260px]">음악 신청하기</Link>
-                 <Link href="/status" className="btn-portal-outline h-20 flex items-center justify-center min-w-[260px]">현황 조회</Link>
+              <div className="flex flex-col sm:flex-row gap-6 pt-6 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
+                 <Link href="/request" className="btn-portal-primary h-20 px-16 flex items-center justify-center text-[16px]">음악 신청하기</Link>
+                 <Link href="/status" className="btn-portal-outline h-20 px-16 flex items-center justify-center text-[16px]">현황 조회하기</Link>
               </div>
            </div>
         </div>

@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   const adminId = (session.user as any).id;
 
   try {
-    const { title, theme_month, description, start_date, end_date, tracks, is_active } = await req.json();
+    const { title, theme_month, description, start_date, end_date, tracks, is_active, background_base64 } = await req.json();
 
     // 1. One Active Theme Check
     if (is_active) {
@@ -43,8 +43,8 @@ export async function POST(req: Request) {
 
     // 2. Insert theme
     const themeRes = await sql`
-      INSERT INTO monthly_themes (title, theme_month, description, start_date, end_date, is_active)
-      VALUES (${title}, ${theme_month}, ${description}, ${start_date}, ${end_date}, ${!!is_active})
+      INSERT INTO monthly_themes (title, theme_month, description, start_date, end_date, is_active, background_base64)
+      VALUES (${title}, ${theme_month}, ${description}, ${start_date}, ${end_date}, ${!!is_active}, ${background_base64 || ''})
       RETURNING id
     `;
     const themeId = themeRes.rows[0].id;
@@ -75,7 +75,7 @@ export async function PATCH(req: Request) {
   const adminId = (session.user as any).id;
 
   try {
-    const { id, title, theme_month, description, start_date, end_date, tracks, is_active } = await req.json();
+    const { id, title, theme_month, description, start_date, end_date, tracks, is_active, background_base64 } = await req.json();
 
     if (is_active !== undefined) {
       if (is_active === true) {
@@ -86,7 +86,7 @@ export async function PATCH(req: Request) {
       await logAudit(`SET_ACTIVE: ${is_active}`, 'monthly_themes', id, null, adminId);
     }
 
-    if (title || theme_month || description !== undefined || start_date || end_date) {
+    if (title || theme_month || description !== undefined || start_date || end_date || background_base64 !== undefined) {
       await sql`
         UPDATE monthly_themes 
         SET title = COALESCE(${title}, title), 
@@ -94,6 +94,7 @@ export async function PATCH(req: Request) {
             description = COALESCE(${description}, description),
             start_date = COALESCE(${start_date}, start_date),
             end_date = COALESCE(${end_date}, end_date),
+            background_base64 = COALESCE(${background_base64}, background_base64),
             updated_at = CURRENT_TIMESTAMP
         WHERE id = ${id}
       `;

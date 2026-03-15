@@ -1,7 +1,8 @@
 'use client';
 
-import AdminLayout from '@/components/AdminLayout';
 import { useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
+import { LayoutDashboard, Music, ListMusic, CalendarDays, ClipboardList, Settings2 } from 'lucide-react';
 
 export default function AdminSettingsPage() {
   const [patterns, setPatterns] = useState<any[]>([]);
@@ -20,6 +21,7 @@ export default function AdminSettingsPage() {
   const [editingAdmin, setEditingAdmin] = useState<any | null>(null);
   
   const [logoBase64, setLogoBase64] = useState<string | null>(null);
+  const [logoMode, setLogoMode] = useState<'text' | 'image' | 'both'>('text');
   const [uploadingLogo, setUploadingLogo] = useState(false);
 
   useEffect(() => {
@@ -54,6 +56,7 @@ export default function AdminSettingsPage() {
     if (res.ok) {
       const settings = await res.json();
       setLogoBase64(settings.logo_base64 || null);
+      setLogoMode(settings.logo_mode || 'text');
     }
   }
 
@@ -92,6 +95,15 @@ export default function AdminSettingsPage() {
       img.src = event.target?.result as string;
     };
     reader.readAsDataURL(file);
+  };
+
+  const updateLogoMode = async (mode: string) => {
+    setLogoMode(mode as any);
+    await fetch('/api/admin/branding', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: 'logo_mode', value: mode })
+    });
   };
 
   const handleAddPattern = async () => {
@@ -145,7 +157,6 @@ export default function AdminSettingsPage() {
 
   return (
     <div className="animate-in fade-in duration-700">
-      <AdminLayout>
       <div className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h2 className="text-3xl font-bold text-hyundai-black tracking-tight">시스템 통합 설정</h2>
@@ -161,7 +172,10 @@ export default function AdminSettingsPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`px-6 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === tab.id ? 'bg-white text-hyundai-black shadow-sm' : 'text-hyundai-gray-400 hover:text-hyundai-gray-600'}`}
+              className={cn(
+                "px-6 py-3 rounded-xl text-sm font-bold transition-all",
+                activeTab === tab.id ? 'bg-white text-hyundai-black shadow-sm' : 'text-hyundai-gray-400 hover:text-hyundai-gray-600'
+              )}
             >
               {tab.label}
             </button>
@@ -177,7 +191,7 @@ export default function AdminSettingsPage() {
               금칙어 / 링크 필터 관리
             </h3>
             <div className="flex gap-2 mb-6">
-              <select value={patternType} onChange={(e) => setPatternType(e.target.value)} className="bg-hyundai-gray-50 border-none rounded-xl text-sm font-bold px-4"><option value="WORD">단어</option><option value="ARTIST">아티스트</option><option value="LINK">링크/URL</option></select>
+              <select value={patternType} onChange={(e) => setPatternType(e.target.value)} className="bg-hyundai-gray-50 border-none rounded-xl text-sm font-bold px-4 focus:ring-0 outline-none"><option value="WORD">단어</option><option value="ARTIST">아티스트</option><option value="LINK">링크/URL</option></select>
               <input type="text" placeholder="검색 또는 차단할 패턴 입력..." className="flex-grow bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-500/10 outline-none" value={newPattern} onChange={(e) => setNewPattern(e.target.value)} />
               <button onClick={handleAddPattern} className="px-6 bg-hyundai-black text-white text-[12px] font-bold rounded-xl uppercase tracking-tight">필터 추가</button>
             </div>
@@ -195,17 +209,20 @@ export default function AdminSettingsPage() {
             <h3 className="text-xl font-bold mb-6 flex items-center gap-3"><div className="w-2.5 h-2.5 rounded-full bg-hyundai-emerald"></div>심사 메모 템플릿</h3>
             <div className="space-y-4 mb-8">
               <div className="flex gap-4">
-                <input type="text" placeholder="템플릿 제목..." className="flex-grow bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm" value={newTemplate.title} onChange={(e) => setNewTemplate({ ...newTemplate, title: e.target.value })} />
-                <select value={newTemplate.type} onChange={(e) => setNewTemplate({ ...newTemplate, type: e.target.value })} className="bg-hyundai-gray-50 border-none rounded-xl text-sm font-bold px-4"><option value="HOLD">보류용</option><option value="DELETED">삭제용</option></select>
+                <input type="text" placeholder="템플릿 제목..." className="flex-grow bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-0 outline-none" value={newTemplate.title} onChange={(e) => setNewTemplate({ ...newTemplate, title: e.target.value })} />
+                <select value={newTemplate.type} onChange={(e) => setNewTemplate({ ...newTemplate, type: e.target.value })} className="bg-hyundai-gray-50 border-none rounded-xl text-sm font-bold px-4 focus:ring-0 outline-none"><option value="HOLD">보류용</option><option value="DELETED">삭제용</option></select>
               </div>
-              <textarea placeholder="내용..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm min-h-[100px]" value={newTemplate.content} onChange={(e) => setNewTemplate({ ...newTemplate, content: e.target.value })} />
+              <textarea placeholder="내용..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm min-h-[100px] focus:ring-0 outline-none" value={newTemplate.content} onChange={(e) => setNewTemplate({ ...newTemplate, content: e.target.value })} />
               <button onClick={handleAddTemplate} className="w-full py-4 bg-hyundai-black text-white text-[14px] font-bold rounded-xl uppercase tracking-tight">템플릿 생성</button>
             </div>
             <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
               {templates.map(t => (
-                <div key={t.id} className="p-5 bg-hyundai-gray-50 rounded-3xl group relative">
+                <div key={t.id} className="p-5 bg-hyundai-gray-50 rounded-3xl group relative text-left">
                   <div className="flex justify-between mb-2">
-                    <span className={`text-[12px] font-bold px-2 py-0.5 rounded-full tracking-tight ${t.type === 'HOLD' ? 'bg-blue-100 text-blue-600' : 'bg-red-100 text-red-600'}`}>{t.type}</span>
+                    <span className={cn(
+                      "text-[12px] font-bold px-2 py-0.5 rounded-full tracking-tight",
+                      t.type === 'HOLD' ? 'bg-blue-100 text-blue-600' : 'bg-red-100 text-red-600'
+                    )}>{t.type}</span>
                     <button onClick={() => handleDelete(t.id, 'admin_templates')} className="opacity-0 group-hover:opacity-100 text-hyundai-gray-300 hover:text-red-500"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
                   </div>
                   <p className="text-sm font-bold text-hyundai-black mb-1">{t.title}</p>
@@ -218,13 +235,14 @@ export default function AdminSettingsPage() {
       )}
 
       {activeTab === 'branding' && (
-        <div className="max-w-4xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="max-w-4xl space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="card-premium p-10">
-            <h3 className="text-2xl font-black mb-8">시스템 브랜딩</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <h3 className="text-2xl font-black mb-8">시스템 브랜딩 및 로고</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 border-b border-hyundai-gray-100 pb-12 mb-12">
               <div className="space-y-6">
                 <div>
-                   <label className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest block mb-4">공식 로고 등록</label>
+                   <label className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest block mb-4">공식 로고 이미지</label>
                    <div className="relative group cursor-pointer border-2 border-dashed border-hyundai-gray-100 rounded-[2rem] p-10 bg-hyundai-gray-50/50 hover:bg-white hover:border-hyundai-gold transition-all duration-500 text-center">
                       <input type="file" accept="image/*" onChange={handleLogoUpload} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
                       <div className="flex flex-col items-center gap-4">
@@ -232,14 +250,14 @@ export default function AdminSettingsPage() {
                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                         </div>
                         <p className="text-sm font-bold text-hyundai-black">이미지 업로드</p>
-                        <p className="text-[11px] text-hyundai-gray-400 font-medium leading-relaxed">PNG, JPG 지원 (최적 너비 400px)<br />업로드 시 자동으로 크기가 조정됩니다.</p>
+                        <p className="text-[11px] text-hyundai-gray-400 font-medium leading-relaxed">PNG, JPG 지원 (최적 너비 400px)<br />업로드 시 자동으로 크기 조정됨</p>
                       </div>
                    </div>
                 </div>
               </div>
               
               <div className="space-y-6 flex flex-col items-center justify-center p-10 bg-hyundai-black rounded-[2rem] text-center">
-                 <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest block mb-6">현재 적용된 로고 미리보기</label>
+                 <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest block mb-6">현재 적용 로고 미리보기</label>
                  <div className="h-20 flex items-center justify-center">
                    {logoBase64 ? (
                      <img src={logoBase64} alt="Preview" className="h-full w-auto object-contain" />
@@ -250,6 +268,31 @@ export default function AdminSettingsPage() {
                  {uploadingLogo && <p className="text-hyundai-gold text-xs font-bold animate-pulse mt-4">최적화 및 업로드 중...</p>}
               </div>
             </div>
+
+            <div className="space-y-6">
+               <label className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest block">로고 노출 스타일 설정</label>
+               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                 {[
+                   { id: 'text', label: '텍스트 브랜드만', desc: '기본 텍스트 브랜드 노출' },
+                   { id: 'image', label: '이미지 로고만', desc: '업로드된 이미지만 노출' },
+                   { id: 'both', label: '이미지 + 텍스트', desc: '이미지와 텍스트 병합 노출' }
+                 ].map(mode => (
+                   <button
+                    key={mode.id}
+                    onClick={() => updateLogoMode(mode.id)}
+                    className={cn(
+                      "flex flex-col items-start p-6 rounded-3xl border-2 transition-all text-left",
+                      logoMode === mode.id 
+                        ? "bg-white border-hyundai-gold shadow-lg shadow-hyundai-gold/10" 
+                        : "bg-hyundai-gray-50 border-transparent hover:border-hyundai-gray-200"
+                    )}
+                   >
+                     <p className={cn("text-sm font-bold mb-1", logoMode === mode.id ? "text-hyundai-black" : "text-hyundai-gray-400")}>{mode.label}</p>
+                     <p className="text-[10px] font-medium text-hyundai-gray-400 leading-tight">{mode.desc}</p>
+                   </button>
+                 ))}
+               </div>
+            </div>
           </div>
         </div>
       )}
@@ -259,10 +302,10 @@ export default function AdminSettingsPage() {
           <div className="lg:col-span-1 card-premium p-8">
             <h3 className="text-lg font-bold mb-6">신규 관리자 추가</h3>
             <div className="space-y-4">
-              <input type="email" placeholder="관리자 이메일 계정..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm" value={newAdmin.email} onChange={(e) => setNewAdmin({...newAdmin, email: e.target.value})} />
-              <input type="text" placeholder="관리자 이름 (닉네임)..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm" value={newAdmin.nickname} onChange={(e) => setNewAdmin({...newAdmin, nickname: e.target.value})} />
-              <input type="password" placeholder="초기 비밀번호..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm" value={newAdmin.password} onChange={(e) => setNewAdmin({...newAdmin, password: e.target.value})} />
-              <select className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm font-bold" value={newAdmin.role} onChange={(e) => setNewAdmin({...newAdmin, role: e.target.value})}><option value="admin">일반 운영자 (admin)</option><option value="administrator">시스템 관리자 (administrator)</option></select>
+              <input type="email" placeholder="관리자 이메일 계정..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-0 outline-none" value={newAdmin.email} onChange={(e) => setNewAdmin({...newAdmin, email: e.target.value})} />
+              <input type="text" placeholder="관리자 이름 (닉네임)..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-0 outline-none" value={newAdmin.nickname} onChange={(e) => setNewAdmin({...newAdmin, nickname: e.target.value})} />
+              <input type="password" placeholder="초기 비밀번호..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-0 outline-none" value={newAdmin.password} onChange={(e) => setNewAdmin({...newAdmin, password: e.target.value})} />
+              <select className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm font-bold focus:ring-0 outline-none" value={newAdmin.role} onChange={(e) => setNewAdmin({...newAdmin, role: e.target.value})}><option value="admin">일반 운영자 (admin)</option><option value="administrator">시스템 관리자 (administrator)</option></select>
               <button onClick={handleCreateAdmin} className="w-full py-4 bg-hyundai-black text-white text-[14px] font-bold rounded-xl uppercase tracking-tight">새 운영 계정 생성</button>
             </div>
           </div>
@@ -294,18 +337,18 @@ export default function AdminSettingsPage() {
         <div className="fixed inset-0 bg-hyundai-black/60 flex items-center justify-center z-[200] p-6 backdrop-blur-md">
           <div className="bg-white rounded-[2rem] w-full max-w-lg p-10 shadow-3xl">
             <h3 className="text-2xl font-black mb-8">관리자 정보 수정</h3>
-            <div className="space-y-6">
+            <div className="space-y-6 text-left">
               <div>
                 <label className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest block mb-2">이메일 계정 (ID)</label>
-                <input type="email" placeholder="이메일..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-4 text-sm" value={editingAdmin.email} onChange={(e) => setEditingAdmin({...editingAdmin, email: e.target.value})} />
+                <input type="email" placeholder="이메일..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-4 text-sm outline-none" value={editingAdmin.email} onChange={(e) => setEditingAdmin({...editingAdmin, email: e.target.value})} />
               </div>
               <div>
                 <label className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest block mb-2">닉네임</label>
-                <input type="text" placeholder="닉네임..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-4 text-sm" value={editingAdmin.nickname} onChange={(e) => setEditingAdmin({...editingAdmin, nickname: e.target.value})} />
+                <input type="text" placeholder="닉네임..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-4 text-sm outline-none" value={editingAdmin.nickname} onChange={(e) => setEditingAdmin({...editingAdmin, nickname: e.target.value})} />
               </div>
               <div>
                 <label className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest block mb-2">새 비밀번호 (변경 시에만 입력)</label>
-                <input type="password" placeholder="비밀번호..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-4 text-sm" value={editingAdmin.password || ''} onChange={(e) => setEditingAdmin({...editingAdmin, password: e.target.value})} />
+                <input type="password" placeholder="비밀번호..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-4 text-sm outline-none" value={editingAdmin.password || ''} onChange={(e) => setEditingAdmin({...editingAdmin, password: e.target.value})} />
               </div>
             </div>
             <div className="flex gap-4 mt-10">
@@ -315,7 +358,6 @@ export default function AdminSettingsPage() {
           </div>
         </div>
       )}
-      </AdminLayout>
     </div>
   );
 }

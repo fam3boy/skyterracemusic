@@ -16,6 +16,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [customLogo, setCustomLogo] = useState<string | null>(null);
+  const [logoMode, setLogoMode] = useState<'text' | 'image' | 'both'>('text');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,6 +33,7 @@ export default function Header() {
       if (res.ok) {
         const settings = await res.json();
         if (settings.logo_base64) setCustomLogo(settings.logo_base64);
+        if (settings.logo_mode) setLogoMode(settings.logo_mode);
       }
     } catch (err) {
       console.error(err);
@@ -57,26 +59,30 @@ export default function Header() {
         <div className="portal-container h-24 flex justify-between items-center">
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-4 group">
-            <div className="relative h-12 flex items-center">
+            <div className="relative h-12 flex items-center gap-5">
               {/* Image Logo */}
-              {customLogo ? (
-                <img src={customLogo} alt="THE HYUNDAI" className="h-full w-auto object-contain" />
-              ) : (
-                <img 
-                  src="/logo.png" 
-                  alt="THE HYUNDAI" 
-                  className="h-full w-auto object-contain hidden"
-                  onError={(e) => (e.currentTarget.style.display = 'none')}
-                  onLoad={(e) => (e.currentTarget.style.display = 'block')}
-                />
-              )}
-              <div className="flex flex-col first-letter:group-hover:opacity-80 transition-opacity">
-                <span className="text-2xl font-bold text-hyundai-black tracking-[-0.05em] leading-none">THE HYUNDAI</span>
-                <div className="flex items-center gap-2 mt-1">
-                   <span className="w-1 h-1 rounded-full bg-hyundai-gold"></span>
-                   <span className="text-[11px] font-bold text-hyundai-gray-400 tracking-normal uppercase">SKY TERRACE</span>
+              {(logoMode === 'image' || logoMode === 'both') && customLogo ? (
+                <img src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
+              ) : (logoMode === 'image' && !customLogo) ? (
+                 <img 
+                   src="/logo.png" 
+                   alt="THE HYUNDAI" 
+                   className="h-full w-auto object-contain hidden"
+                   onError={(e) => (e.currentTarget.style.display = 'none')}
+                   onLoad={(e) => (e.currentTarget.style.display = 'block')}
+                 />
+              ) : null}
+
+              {/* Text Branding */}
+              {(logoMode === 'text' || logoMode === 'both') && (
+                <div className="flex flex-col first-letter:group-hover:opacity-80 transition-opacity">
+                  <span className="text-2xl font-bold text-hyundai-black tracking-[-0.05em] leading-none">THE HYUNDAI</span>
+                  <div className="flex items-center gap-2 mt-1">
+                     <span className="w-1 h-1 rounded-full bg-hyundai-gold"></span>
+                     <span className="text-[11px] font-bold text-hyundai-gray-400 tracking-normal uppercase">SKY TERRACE</span>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </Link>
 
