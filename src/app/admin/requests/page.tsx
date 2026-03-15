@@ -105,6 +105,16 @@ export default function RequestsManagementPage() {
     REJECT: 'bg-red-500 text-white',
   };
 
+  const getBadgeLabel = (status: string) => {
+    switch (status) {
+      case 'APPROVE': return '승인 추천';
+      case 'REVIEW': return '검토 권장';
+      case 'REVIEW_CAUTION': return '주의 필요';
+      case 'REJECT': return '제외 추천';
+      default: return status;
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
@@ -118,19 +128,25 @@ export default function RequestsManagementPage() {
             onClick={() => setIsGrouped(!isGrouped)}
             className={`px-4 py-2 rounded-xl text-xs font-black transition-all border-2 ${isGrouped ? 'bg-hyundai-black text-white border-hyundai-black' : 'bg-white text-hyundai-gray-400 border-hyundai-gray-100'}`}
           >
-            {isGrouped ? 'VIEW: GROUPED' : 'VIEW: INDIVIDUAL'}
+            {isGrouped ? '보기: 그룹화됨' : '보기: 전체 목록'}
           </button>
           
           <div className="flex bg-white p-1.5 rounded-xl border border-hyundai-gray-200 shadow-sm">
-            {(['all', 'pending', 'approved', 'hold', 'deleted'] as const).map(f => (
+            {[
+              { id: 'all', label: '전체' },
+              { id: 'pending', label: '대기' },
+              { id: 'approved', label: '승인' },
+              { id: 'hold', label: '보류' },
+              { id: 'deleted', label: '삭제' }
+            ].map(f => (
               <button
-                key={f}
-                onClick={() => setFilter(f)}
+                key={f.id}
+                onClick={() => setFilter(f.id as any)}
                 className={`px-4 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all uppercase ${
-                  filter === f ? 'bg-hyundai-black text-white shadow-md' : 'text-hyundai-gray-400 hover:text-hyundai-black'
+                  filter === f.id ? 'bg-hyundai-black text-white shadow-md' : 'text-hyundai-gray-400 hover:text-hyundai-black'
                 }`}
               >
-                {f}
+                {f.label}
               </button>
             ))}
           </div>
@@ -143,16 +159,16 @@ export default function RequestsManagementPage() {
           <div className="bg-hyundai-black text-white px-8 py-5 rounded-[2rem] shadow-2xl border border-white/10 flex items-center justify-between backdrop-blur-md bg-opacity-95">
             <div className="flex items-center gap-6">
               <span className="text-sm font-black tracking-wider uppercase text-hyundai-emerald">
-                {selectedIds.length} items Selected
+                {selectedIds.length}건 선택됨
               </span>
               <div className="h-4 w-px bg-white/20"></div>
               <div className="flex gap-3">
-                <button onClick={() => handleBulkStatus('approved')} className="px-4 py-1.5 bg-hyundai-emerald text-white text-[10px] font-black rounded-full hover:scale-105 transition-transform">APPROVE ALL</button>
-                <button onClick={() => handleBulkStatus('hold')} className="px-4 py-1.5 bg-blue-500 text-white text-[10px] font-black rounded-full hover:scale-105 transition-transform">HOLD ALL</button>
-                <button onClick={() => handleBulkStatus('deleted')} className="px-4 py-1.5 bg-red-500 text-white text-[10px] font-black rounded-full hover:scale-105 transition-transform">DELETE ALL</button>
+                <button onClick={() => handleBulkStatus('approved')} className="px-4 py-1.5 bg-hyundai-emerald text-white text-[10px] font-black rounded-full hover:scale-105 transition-transform">일괄 승인</button>
+                <button onClick={() => handleBulkStatus('hold')} className="px-4 py-1.5 bg-blue-500 text-white text-[10px] font-black rounded-full hover:scale-105 transition-transform">일괄 보류</button>
+                <button onClick={() => handleBulkStatus('deleted')} className="px-4 py-1.5 bg-red-500 text-white text-[10px] font-black rounded-full hover:scale-105 transition-transform">일괄 삭제</button>
               </div>
             </div>
-            <button onClick={() => setSelectedIds([])} className="text-xs font-black text-white/40 hover:text-white uppercase tracking-widest">Cancel</button>
+            <button onClick={() => setSelectedIds([])} className="text-xs font-black text-white/40 hover:text-white uppercase tracking-widest">선택 취소</button>
           </div>
         </div>
       )}
@@ -201,17 +217,17 @@ export default function RequestsManagementPage() {
                   checked={requests.length > 0 && selectedIds.length === requests.length}
                 />
               </th>
-              <th className="px-6 py-5">Request Detail</th>
-              <th className="px-6 py-5">Intelligence</th>
-              <th className="px-6 py-5">Requester</th>
-              <th className="px-6 py-5 text-right">Actions</th>
+              <th className="px-6 py-5">신청 곡 정보</th>
+              <th className="px-6 py-5">AI 추천</th>
+              <th className="px-6 py-5">신청자</th>
+              <th className="px-6 py-5 text-right">관리 액션</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-hyundai-gray-100">
             {loading ? (
               <tr><td colSpan={5} className="text-center py-32"><div className="animate-spin rounded-full h-8 w-8 border-t-2 border-hyundai-emerald mx-auto"></div></td></tr>
             ) : requests.length === 0 ? (
-              <tr><td colSpan={5} className="text-center py-32 text-hyundai-gray-200 font-black uppercase tracking-[0.3em]">No Data Found</td></tr>
+              <tr><td colSpan={5} className="text-center py-32 text-hyundai-gray-200 font-black uppercase tracking-[0.3em]">검색 결과가 없습니다</td></tr>
             ) : (
               requests.map(req => (
                 <tr key={req.id} className={`hover:bg-hyundai-gray-50/50 transition-colors ${selectedIds.includes(req.id) ? 'bg-hyundai-emerald/[0.03]' : ''}`}>
@@ -235,7 +251,7 @@ export default function RequestsManagementPage() {
                           <a href={req.youtube_url} target="_blank" className="text-hyundai-gray-300 hover:text-red-600 transition-colors"><svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg></a>
                         )}
                         {req.group_count > 1 && (
-                          <span className="text-[9px] font-black bg-hyundai-black text-white px-2 py-0.5 rounded-full uppercase">Groups ({req.group_count})</span>
+                          <span className="text-[9px] font-black bg-hyundai-black text-white px-2 py-0.5 rounded-full uppercase">중복 그룹 ({req.group_count})</span>
                         )}
                       </div>
                     </div>
@@ -243,7 +259,7 @@ export default function RequestsManagementPage() {
                   <td className="px-6 py-5">
                     <div className="flex flex-col items-start gap-2">
                       <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest ${recommendationBadges[req.auto_recommendation as keyof typeof recommendationBadges] || 'bg-gray-100'}`}>
-                        {req.auto_recommendation}
+                        {getBadgeLabel(req.auto_recommendation)}
                       </span>
                       <p className="text-[10px] text-hyundai-gray-400 font-bold leading-tight">{req.auto_reason}</p>
                     </div>

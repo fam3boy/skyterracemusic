@@ -10,6 +10,9 @@ export async function GET(req: NextRequest) {
     // return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  const { searchParams } = new URL(req.url);
+  const forceCurrent = searchParams.get('forceCurrent') === 'true';
+
   try {
     const now = new Date();
     const dayOfWeek = now.getDay(); 
@@ -21,9 +24,15 @@ export async function GET(req: NextRequest) {
        currentThursday.setDate(currentThursday.getDate() - (dayOfWeek + 3));
     }
     
-    const end = new Date(currentThursday);
-    const start = new Date(end);
+    let end = new Date(currentThursday);
+    let start = new Date(end);
     start.setDate(start.getDate() - 7);
+
+    // If triggered manually via "SEND NOW", we might want to include songs approved up to NOW
+    if (forceCurrent) {
+      start = new Date(currentThursday); // From last Thursday 19:00
+      end = new Date(); // Up to now
+    }
 
     // Fetch approved requests with theme info
     const result = await sql`

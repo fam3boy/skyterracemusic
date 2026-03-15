@@ -68,7 +68,7 @@ export default function MailLogsPage() {
           </thead>
           <tbody className="divide-y divide-hyundai-gray-100">
             {loading ? (
-              <tr><td colSpan={5} className="text-center py-20 text-hyundai-gray-200 uppercase font-black tracking-widest">Loading...</td></tr>
+              <tr><td colSpan={5} className="text-center py-20 text-hyundai-gray-200 uppercase font-black tracking-widest">정보를 불러오는 중...</td></tr>
             ) : logs.length === 0 ? (
               <tr><td colSpan={5} className="text-center py-20 text-hyundai-gray-500 italic">발송 이력이 없습니다.</td></tr>
             ) : (
@@ -77,7 +77,7 @@ export default function MailLogsPage() {
                   <td className="px-6 py-4 text-sm">
                     <div className="flex flex-col">
                       <span className="text-[10px] font-bold text-hyundai-emerald bg-hyundai-emerald/5 px-2 py-0.5 rounded w-fit mb-1">
-                        {log.period_start ? `${new Date(log.period_start).toLocaleDateString()} - ${new Date(log.period_end).toLocaleDateString()}` : 'Manual/Unknown'}
+                        {log.period_start ? `${new Date(log.period_start).toLocaleDateString()} - ${new Date(log.period_end).toLocaleDateString()}` : '수동 집계/알 수 없음'}
                       </span>
                       <p className="font-bold text-hyundai-black">{new Date(log.sent_at).toLocaleString()}</p>
                     </div>
@@ -88,10 +88,10 @@ export default function MailLogsPage() {
                   </td>
                   <td className="px-6 py-4 text-center">
                     {log.status === 'success' ? (
-                      <span className="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded">SUCCESS</span>
+                      <span className="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded">성공</span>
                     ) : (
                       <div className="flex flex-col items-center gap-1">
-                        <span className="bg-red-100 text-red-700 text-[10px] font-bold px-2 py-1 rounded">FAILED</span>
+                        <span className="bg-red-100 text-red-700 text-[10px] font-bold px-2 py-1 rounded">실패</span>
                         {log.error_message && (
                           <span className="text-[9px] text-red-400 max-w-[100px] truncate" title={log.error_message}>
                             {log.error_message}

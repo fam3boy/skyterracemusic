@@ -98,7 +98,7 @@ export default function AdminSettingsPage() {
                 value={newPattern}
                 onChange={(e) => setNewPattern(e.target.value)}
               />
-              <button onClick={handleAddPattern} className="px-6 bg-hyundai-black text-white text-[10px] font-black rounded-xl uppercase tracking-widest hover:opacity-90 transition-all">Add</button>
+              <button onClick={handleAddPattern} className="px-6 bg-hyundai-black text-white text-[10px] font-black rounded-xl uppercase tracking-widest hover:opacity-90 transition-all">추가</button>
             </div>
 
             <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
@@ -106,7 +106,7 @@ export default function AdminSettingsPage() {
                 <div key={p.id} className="flex items-center justify-between p-4 bg-hyundai-gray-50 rounded-2xl border border-transparent hover:border-red-100 transition-all group">
                   <div className="flex items-center gap-3">
                     <span className="text-[9px] font-black bg-red-100 text-red-600 px-2 py-0.5 rounded uppercase tracking-tighter">
-                      {p.type}
+                      {p.type === 'WORD' ? '단어' : p.type === 'ARTIST' ? '아티스트' : '링크'}
                     </span>
                     <span className="text-sm font-bold text-hyundai-black">{p.pattern}</span>
                   </div>
@@ -155,17 +155,17 @@ export default function AdminSettingsPage() {
                 onClick={handleAddTemplate}
                 className="w-full py-4 bg-hyundai-black text-white text-[10px] font-black rounded-xl uppercase tracking-widest hover:opacity-90 transition-all"
               >
-                Create Template
+                템플릿 생성
               </button>
             </div>
 
             <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
               {templates.map(t => (
                 <div key={t.id} className="p-5 bg-hyundai-gray-50 rounded-3xl border border-transparent hover:border-hyundai-emerald/20 transition-all group relative">
-                   <div className="flex justify-between items-start mb-2">
-                     <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest ${t.type === 'HOLD' ? 'bg-blue-100 text-blue-600' : 'bg-red-100 text-red-600'}`}>
-                       {t.type}
-                     </span>
+                  <div className="flex justify-between items-start mb-2">
+                    <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest ${t.type === 'HOLD' ? 'bg-blue-100 text-blue-600' : 'bg-red-100 text-red-600'}`}>
+                      {t.type === 'HOLD' ? '심사 보류' : '삭제/제외'}
+                    </span>
                      <button onClick={() => handleDelete(t.id, 'admin_templates')} className="opacity-0 group-hover:opacity-100 text-hyundai-gray-300 hover:text-red-500 transition-all">
                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                      </button>

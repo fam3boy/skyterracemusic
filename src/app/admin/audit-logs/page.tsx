@@ -44,7 +44,7 @@ export default function AuditLogsPage() {
           </thead>
           <tbody className="divide-y divide-hyundai-gray-100">
             {loading ? (
-              <tr><td colSpan={5} className="text-center py-20 uppercase font-black tracking-widest text-hyundai-gray-200">Loading Logs...</td></tr>
+              <tr><td colSpan={5} className="text-center py-20 uppercase font-black tracking-widest text-hyundai-gray-200">로그를 불러오는 중...</td></tr>
             ) : logs.length === 0 ? (
               <tr><td colSpan={5} className="text-center py-20 text-hyundai-gray-500 italic">로그 기록이 없습니다.</td></tr>
             ) : (

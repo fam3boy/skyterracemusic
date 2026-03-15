@@ -21,7 +21,19 @@ export default async function Home() {
       WHERE theme_id = ${activeTheme.id} 
       ORDER BY order_index
     `;
-    tracks = tracksRes.rows;
+    const themeTracks = tracksRes.rows;
+
+    const requestedRes = await sql`
+      SELECT id, title, artist, 'request' as type 
+      FROM song_requests 
+      WHERE theme_id = ${activeTheme.id} 
+      AND status = 'approved'
+      AND deleted_at IS NULL
+      ORDER BY approved_at ASC
+    `;
+    const requestedTracks = requestedRes.rows;
+
+    tracks = [...themeTracks, ...requestedTracks];
   }
 
   return (
@@ -86,7 +98,12 @@ export default async function Home() {
                     {(i + 1).toString().padStart(2, '0')}
                   </span>
                   <div className="flex-grow ml-4">
-                    <p className="font-black text-hyundai-black text-xl group-hover:translate-x-1 transition-transform tracking-tight">{track.title}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-black text-hyundai-black text-xl group-hover:translate-x-1 transition-transform tracking-tight">{track.title}</p>
+                      {track.type === 'request' && (
+                        <span className="text-[9px] font-black bg-hyundai-emerald/10 text-hyundai-emerald px-2 py-0.5 rounded-full uppercase tracking-tighter">User Pick</span>
+                      )}
+                    </div>
                     <p className="text-hyundai-gray-400 font-bold text-sm">{track.artist}</p>
                   </div>
                   <div className="w-10 h-10 rounded-2xl bg-hyundai-gray-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all scale-75 group-hover:scale-100">
