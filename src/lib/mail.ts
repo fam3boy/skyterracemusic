@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
 export async function sendWeeklyReport({
   to,
@@ -15,17 +15,35 @@ export async function sendWeeklyReport({
   html: string;
   text: string;
 }) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.error('RESEND_API_KEY is not defined');
-    return { success: false, error: 'Missing API key' };
+  // Use SMTP settings from environment variables
+  const smtpHost = process.env.SMTP_HOST;
+  const smtpPort = parseInt(process.env.SMTP_PORT || '587');
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+  const smtpFrom = process.env.SMTP_FROM_EMAIL || 'onboarding@resend.dev';
+
+  // Fallback check
+  if (!smtpHost || !smtpUser || !smtpPass) {
+    console.error('SMTP configuration is missing (need SMTP_HOST, SMTP_USER, SMTP_PASS)');
+    return { 
+      success: false, 
+      error: 'SMTP configuration is incomplete. Please check your environment variables.' 
+    };
   }
 
-  const resend = new Resend(apiKey);
+  const transporter = nodemailer.createTransport({
+    host: smtpHost,
+    port: smtpPort,
+    secure: smtpPort === 465,
+    auth: {
+      user: smtpUser,
+      password: smtpPass,
+    },
+  });
 
   try {
-    const data = await resend.emails.send({
-      from: 'Sky Terrace <onboarding@resend.dev>',
+    const info = await transporter.sendMail({
+      from: `"Sky Terrace" <${smtpFrom}>`,
       to: to.split(',').map(e => e.trim()),
       cc: cc ? cc.split(',').map(e => e.trim()) : undefined,
       bcc: bcc ? bcc.split(',').map(e => e.trim()) : undefined,
@@ -34,9 +52,9 @@ export async function sendWeeklyReport({
       text: text,
     });
 
-    return { success: true, data };
+    return { success: true, data: info };
   } catch (error) {
-    console.error('Email sending failed:', error);
+    console.error('SMTP email sending failed:', error);
     return { success: false, error };
   }
 }
