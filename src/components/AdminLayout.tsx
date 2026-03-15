@@ -39,6 +39,8 @@ export default function AdminLayout({
 
 
   const [customLogo, setCustomLogo] = useState<string | null>(null);
+  const [logoMode, setLogoMode] = useState<'text' | 'image' | 'both'>('text');
+  const [brandText, setBrandText] = useState('THE HYUNDAI | SKY TERRACE');
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -53,11 +55,15 @@ export default function AdminLayout({
       if (res.ok) {
         const settings = await res.json();
         if (settings.logo_base64) setCustomLogo(settings.logo_base64);
+        if (settings.logo_mode) setLogoMode(settings.logo_mode);
+        if (settings.brand_text) setBrandText(settings.brand_text);
       }
     } catch (err) {
       console.error('Branding fetch failed', err);
     }
   }
+
+  const [brandTop, brandBottom] = brandText.split('|').map(t => t.trim());
 
   if (status === 'loading') {
     return (
@@ -87,23 +93,22 @@ export default function AdminLayout({
       )}>
         <div className="h-24 px-8 flex items-center justify-between border-b border-white/5">
           <Link href="/admin/dashboard" className="flex items-center gap-3 group">
-             <div className="relative h-10 flex items-center">
-               {customLogo ? (
+             <div className="relative h-10 flex items-center gap-3">
+               {/* Image Logo */}
+               {(logoMode === 'image' || logoMode === 'both') && customLogo && (
                  <img src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
-               ) : (
-                 <>
-                   <img 
-                     src="/logo.png" 
-                     alt="THE HYUNDAI" 
-                     className="h-full w-auto object-contain hidden"
-                     onError={(e) => (e.currentTarget.style.display = 'none')}
-                     onLoad={(e) => (e.currentTarget.style.display = 'block')}
-                   />
-                   <div className="flex flex-col gap-0.5">
-                     <span className="text-hyundai-gold text-[12px] font-bold tracking-normal uppercase block group-hover:text-white transition-colors">운영 시스템</span>
-                     <h2 className="text-xl font-bold tracking-tighter text-white">SKYTERRACE</h2>
-                   </div>
-                 </>
+               )}
+
+               {/* Text Branding */}
+               {(logoMode === 'text' || logoMode === 'both') && (
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-hyundai-gold text-[10px] font-bold tracking-normal uppercase block group-hover:text-white transition-colors">{brandTop}</span>
+                    <h2 className="text-lg font-bold tracking-tighter text-white uppercase leading-none">{brandBottom || brandTop}</h2>
+                  </div>
+               )}
+               
+               {!customLogo && logoMode === 'image' && (
+                  <div className="text-white/20 font-black italic text-xl">NO LOGO</div>
                )}
              </div>
           </Link>

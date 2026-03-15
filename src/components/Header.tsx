@@ -17,6 +17,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [customLogo, setCustomLogo] = useState<string | null>(null);
   const [logoMode, setLogoMode] = useState<'text' | 'image' | 'both'>('text');
+  const [brandText, setBrandText] = useState('THE HYUNDAI | SKY TERRACE');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,11 +35,14 @@ export default function Header() {
         const settings = await res.json();
         if (settings.logo_base64) setCustomLogo(settings.logo_base64);
         if (settings.logo_mode) setLogoMode(settings.logo_mode);
+        if (settings.brand_text) setBrandText(settings.brand_text);
       }
     } catch (err) {
       console.error(err);
     }
   }
+
+  const [brandTop, brandBottom] = brandText.split('|').map(t => t.trim());
 
   const topNavItems = [
     { name: '브랜드 사이트', href: 'https://www.ehyundai.com' },
@@ -76,11 +80,13 @@ export default function Header() {
               {/* Text Branding */}
               {(logoMode === 'text' || logoMode === 'both') && (
                 <div className="flex flex-col first-letter:group-hover:opacity-80 transition-opacity">
-                  <span className="text-2xl font-bold text-hyundai-black tracking-[-0.05em] leading-none">THE HYUNDAI</span>
-                  <div className="flex items-center gap-2 mt-1">
-                     <span className="w-1 h-1 rounded-full bg-hyundai-gold"></span>
-                     <span className="text-[11px] font-bold text-hyundai-gray-400 tracking-normal uppercase">SKY TERRACE</span>
-                  </div>
+                  <span className="text-2xl font-bold text-hyundai-black tracking-[-0.05em] leading-none uppercase">{brandTop}</span>
+                  {brandBottom && (
+                    <div className="flex items-center gap-2 mt-1">
+                       <span className="w-1 h-1 rounded-full bg-hyundai-gold"></span>
+                       <span className="text-[11px] font-bold text-hyundai-gray-400 tracking-normal uppercase">{brandBottom}</span>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

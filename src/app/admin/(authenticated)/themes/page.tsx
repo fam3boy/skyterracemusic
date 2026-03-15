@@ -3,13 +3,20 @@
 import AdminLayout from '@/components/AdminLayout';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, Music, ListMusic, CalendarDays, ClipboardList, Settings2, Plus, X, Trash2, ArrowUp, ArrowDown, Image as ImageIcon } from 'lucide-react';
+import { LayoutDashboard, Music, ListMusic, CalendarDays, ClipboardList, Settings2, Plus, X, Trash2, ArrowUp, ArrowDown, Image as ImageIcon, Search } from 'lucide-react';
 
 export default function ThemesPage() {
   const [themes, setThemes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingTheme, setEditingTheme] = useState<any>(null);
   const [tracks, setTracks] = useState<any[]>([]);
+  
+  // Search states
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searching, setSearching] = useState(false);
+  const [searchTargetIndex, setSearchTargetIndex] = useState<number | null>(null);
 
   useEffect(() => {
     fetchThemes();
@@ -103,6 +110,55 @@ export default function ThemesPage() {
       img.src = event.target?.result as string;
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleYoutubeBlur = async (index: number, url: string) => {
+    if (!url || !url.includes('youtube.com') && !url.includes('youtu.be')) return;
+    if (tracks[index].title) return; // Don't overwrite if title exists
+
+    try {
+      const res = await fetch(`/api/youtube-metadata?url=${encodeURIComponent(url)}`);
+      if (res.ok) {
+        const data = await res.json();
+        const newTracks = [...tracks];
+        newTracks[index].title = data.title;
+        if (!newTracks[index].artist) newTracks[index].artist = data.author || '';
+        setTracks(newTracks);
+      }
+    } catch (err) {
+      console.error('Failed to fetch youtube title', err);
+    }
+  };
+
+  const handleMusicSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchKeyword) return;
+    setSearching(true);
+    try {
+      const res = await fetch(`/api/admin/music-search?keyword=${encodeURIComponent(searchKeyword)}`);
+      if (res.ok) {
+        setSearchResults(await res.json());
+      }
+    } catch (err) {
+      console.error('Search failed', err);
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const selectTrack = (result: any) => {
+    if (searchTargetIndex === null) return;
+    const newTracks = [...tracks];
+    newTracks[searchTargetIndex] = {
+      ...newTracks[searchTargetIndex],
+      title: result.title,
+      artist: result.artist
+    };
+    setTracks(newTracks);
+    setSearchOpen(false);
+    setSearchTargetIndex(null);
+    setSearchResults([]);
+    setSearchKeyword('');
   };
 
   return (
@@ -316,6 +372,14 @@ export default function ThemesPage() {
                               setTracks(newTracks);
                             }}
                           />
+                          <button 
+                            type="button"
+                            onClick={() => { setSearchTargetIndex(i); setSearchOpen(true); }}
+                            className="p-3 bg-hyundai-gray-50 text-hyundai-gray-400 hover:text-hyundai-emerald hover:bg-white rounded-xl transition-all border border-transparent hover:border-hyundai-gray-100"
+                            title="음악 검색"
+                          >
+                            <Search className="w-4 h-4" />
+                          </button>
                           <input
                             placeholder="아티스트"
                             className="w-48 px-4 py-3 bg-white border border-hyundai-gray-200 rounded-xl text-xs font-bold outline-none focus:border-hyundai-emerald transition-all"
@@ -365,9 +429,10 @@ export default function ThemesPage() {
                              <svg className="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
                            </div>
                            <input
-                            placeholder="유튜브 미디어 URL (선택 사항)"
+                            placeholder="유튜브 미디어 URL (선택 사항 - 입력 시 제목 자동 불러오기)"
                             className="flex-grow px-4 py-2.5 bg-white border border-hyundai-gray-200 rounded-lg text-[10px] font-bold outline-none focus:border-red-400 transition-all text-hyundai-gray-500"
                             value={track.youtube_url || ''}
+                            onBlur={(e) => handleYoutubeBlur(i, e.target.value)}
                             onChange={(e) => {
                               const newTracks = [...tracks];
                               newTracks[i].youtube_url = e.target.value;
@@ -397,6 +462,58 @@ export default function ThemesPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Music Search Modal */}
+      {searchOpen && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-6 z-[200] backdrop-blur-md">
+          <div className="bg-white rounded-[2rem] w-full max-w-2xl shadow-3xl animate-in zoom-in-95 duration-200 overflow-hidden flex flex-col max-h-[80vh]">
+            <div className="p-8 border-b border-hyundai-gray-100 flex justify-between items-center bg-hyundai-gray-50">
+               <div>
+                  <h4 className="font-black text-xl text-hyundai-black">한국 음악 검색</h4>
+                  <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-tight mt-1">Maniadb 데이터베이스 연동</p>
+               </div>
+               <button onClick={() => setSearchOpen(false)} className="text-hyundai-gray-400 hover:text-red-500"><X className="w-6 h-6" /></button>
+            </div>
+            
+            <div className="p-8 space-y-6 flex flex-col min-h-0">
+               <form onSubmit={handleMusicSearch} className="flex gap-2">
+                  <input 
+                    autoFocus
+                    type="text" 
+                    placeholder="아티스트 또는 곡명 입력..." 
+                    className="flex-grow px-6 py-4 bg-hyundai-gray-100 border-none rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-hyundai-emerald/10 transition-all"
+                    value={searchKeyword}
+                    onChange={(e) => setSearchKeyword(e.target.value)}
+                  />
+                  <button type="submit" disabled={searching} className="px-8 bg-hyundai-black text-white text-xs font-bold rounded-2xl uppercase tracking-widest disabled:opacity-50">
+                    {searching ? '검색 중...' : '검색'}
+                  </button>
+               </form>
+
+               <div className="flex-grow overflow-y-auto space-y-2 pr-2 custom-scrollbar min-h-[300px]">
+                  {searchResults.length === 0 && !searching && (
+                    <div className="py-20 text-center text-hyundai-gray-300 font-bold uppercase tracking-widest text-[11px]">검색 결과가 없습니다</div>
+                  )}
+                  {searchResults.map((result, i) => (
+                    <button 
+                      key={i} 
+                      onClick={() => selectTrack(result)}
+                      className="w-full flex items-center gap-4 p-4 text-left hover:bg-hyundai-gray-50 rounded-2xl transition-all border border-transparent hover:border-hyundai-gray-100 group"
+                    >
+                       <div className="w-12 h-12 bg-hyundai-gray-200 rounded-lg overflow-hidden shrink-0">
+                          {result.image ? <img src={result.image} alt="" className="w-full h-full object-cover" /> : <Music className="w-full h-full p-3 text-hyundai-gray-400" />}
+                       </div>
+                       <div className="flex-grow min-w-0">
+                          <p className="font-bold text-hyundai-black text-sm truncate group-hover:text-hyundai-emerald transition-colors">{result.title}</p>
+                          <p className="text-[11px] font-bold text-hyundai-gray-400 truncate uppercase mt-0.5">{result.artist} • {result.album}</p>
+                       </div>
+                    </button>
+                  ))}
+               </div>
+            </div>
           </div>
         </div>
       )}

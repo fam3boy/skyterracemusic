@@ -52,11 +52,11 @@ export async function PATCH(req: Request) {
     
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
-      await sql`UPDATE admins SET password = ${hashedPassword} WHERE id = ${id}`;
+      await sql`UPDATE admins SET password_hash = ${hashedPassword} WHERE id = ${id}`;
       await logAudit('CHANGE_ADMIN_PASSWORD', 'admins', id, {}, actingAdminId);
     }
 
-    if (email || nickname) {
+    if (email !== undefined || nickname !== undefined) {
       await sql`
         UPDATE admins 
         SET email = COALESCE(${email}, email), 

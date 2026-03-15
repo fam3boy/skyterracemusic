@@ -22,6 +22,7 @@ export default function AdminSettingsPage() {
   
   const [logoBase64, setLogoBase64] = useState<string | null>(null);
   const [logoMode, setLogoMode] = useState<'text' | 'image' | 'both'>('text');
+  const [brandText, setBrandText] = useState('THE HYUNDAI | SKY TERRACE');
   const [uploadingLogo, setUploadingLogo] = useState(false);
 
   useEffect(() => {
@@ -57,6 +58,7 @@ export default function AdminSettingsPage() {
       const settings = await res.json();
       setLogoBase64(settings.logo_base64 || null);
       setLogoMode(settings.logo_mode || 'text');
+      setBrandText(settings.brand_text || 'THE HYUNDAI | SKY TERRACE');
     }
   }
 
@@ -103,6 +105,15 @@ export default function AdminSettingsPage() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ key: 'logo_mode', value: mode })
+    });
+  };
+
+  const updateBrandText = async (text: string) => {
+    setBrandText(text);
+    await fetch('/api/admin/branding', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: 'brand_text', value: text })
     });
   };
 
@@ -240,7 +251,7 @@ export default function AdminSettingsPage() {
             <h3 className="text-2xl font-black mb-8">시스템 브랜딩 및 로고</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 border-b border-hyundai-gray-100 pb-12 mb-12">
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <div>
                    <label className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest block mb-4">공식 로고 이미지</label>
                    <div className="relative group cursor-pointer border-2 border-dashed border-hyundai-gray-100 rounded-[2rem] p-10 bg-hyundai-gray-50/50 hover:bg-white hover:border-hyundai-gold transition-all duration-500 text-center">
@@ -254,16 +265,32 @@ export default function AdminSettingsPage() {
                       </div>
                    </div>
                 </div>
+
+                <div>
+                   <label className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest block mb-4">브랜드 텍스트 설정</label>
+                   <input 
+                    type="text" 
+                    value={brandText}
+                    onChange={(e) => updateBrandText(e.target.value)}
+                    placeholder="예: THE HYUNDAI | SKY TERRACE"
+                    className="w-full px-6 py-4 bg-hyundai-gray-50 border-none rounded-2xl text-lg font-black text-hyundai-black outline-none focus:ring-4 focus:ring-hyundai-gold/10 transition-all"
+                   />
+                   <p className="mt-4 text-[11px] text-hyundai-gray-400 font-medium leading-relaxed">로고 이미지와 함께 노출하거나 단독으로 노출할 브랜드명을 입력하세요.</p>
+                </div>
               </div>
               
               <div className="space-y-6 flex flex-col items-center justify-center p-10 bg-hyundai-black rounded-[2rem] text-center">
-                 <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest block mb-6">현재 적용 로고 미리보기</label>
-                 <div className="h-20 flex items-center justify-center">
-                   {logoBase64 ? (
-                     <img src={logoBase64} alt="Preview" className="h-full w-auto object-contain" />
-                   ) : (
-                     <div className="text-white/20 font-black italic text-4xl">NO LOGO</div>
-                   )}
+                 <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest block mb-6">현재 적용 스타일 미리보기</label>
+                 <div className="flex items-center gap-6">
+                    {(logoMode === 'image' || logoMode === 'both') && logoBase64 && (
+                      <img src={logoBase64} alt="Logo" className="h-12 w-auto object-contain" />
+                    )}
+                    {(logoMode === 'text' || logoMode === 'both') && (
+                      <span className="text-white text-2xl font-black italic tracking-tighter uppercase whitespace-nowrap">{brandText}</span>
+                    )}
+                    {!logoBase64 && logoMode !== 'text' && (
+                      <div className="text-white/20 font-black italic text-4xl">NO LOGO</div>
+                    )}
                  </div>
                  {uploadingLogo && <p className="text-hyundai-gold text-xs font-bold animate-pulse mt-4">최적화 및 업로드 중...</p>}
               </div>
