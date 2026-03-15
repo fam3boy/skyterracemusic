@@ -64,7 +64,7 @@ export default async function Home() {
            <div className="max-w-4xl space-y-10">
               <div className="space-y-4">
                  <span className="text-hyundai-gold text-[13px] font-bold tracking-[0.6em] uppercase block animate-in fade-in slide-in-from-bottom-4 duration-700">이달의 테라스 선율</span>
-                 <h1 className="text-6xl md:text-[100px] font-bold text-hyundai-black tracking-[-0.06em] leading-[0.85] uppercase animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                 <h1 className="text-6xl md:text-[100px] font-bold text-hyundai-black tracking-[-0.06em] leading-[1.1] uppercase break-keep animate-in fade-in slide-in-from-bottom-8 duration-1000">
                     {activeTheme ? activeTheme.title : "SEASONAL CURATION"}
                  </h1>
               </div>
