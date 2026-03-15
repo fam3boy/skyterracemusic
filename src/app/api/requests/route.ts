@@ -6,32 +6,36 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { title, artist, youtube_url, story, requester_name, requester_contact } = body;
 
-    // Rate Limiting (Throttling)
+    // Rate Limiting (Throttling) - Wrapped in try-catch to prevent failure if table is missing
     const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
-    const throttleRes = await sql`
-      SELECT * FROM request_throttles WHERE ip_address = ${ip}
-    `;
+    try {
+      const throttleRes = await sql`
+        SELECT * FROM request_throttles WHERE ip_address = ${ip}
+      `;
 
-    const now = new Date();
-    if (throttleRes.rowCount > 0) {
-      const throttle = throttleRes.rows[0];
-      const lastRequest = new Date(throttle.last_request_at);
-      const diffMs = now.getTime() - lastRequest.getTime();
-      const diffHours = diffMs / (1000 * 60 * 60);
+      const now = new Date();
+      if (throttleRes.rowCount > 0) {
+        const throttle = throttleRes.rows[0];
+        const lastRequest = new Date(throttle.last_request_at);
+        const diffMs = now.getTime() - lastRequest.getTime();
+        const diffHours = diffMs / (1000 * 60 * 60);
 
-      if (diffHours < 1 && throttle.request_count >= 3) {
-        return NextResponse.json({ 
-          error: '짧은 시간 동안 너무 많은 신청을 하셨습니다. 잠시 후 다시 시도해주세요.' 
-        }, { status: 429 });
-      }
+        if (diffHours < 1 && throttle.request_count >= 3) {
+          return NextResponse.json({ 
+            error: '짧은 시간 동안 너무 많은 신청을 하셨습니다. 잠시 후 다시 시도해주세요.' 
+          }, { status: 429 });
+        }
 
-      if (diffHours >= 1) {
-        await sql`UPDATE request_throttles SET request_count = 1, last_request_at = ${now.toISOString()} WHERE ip_address = ${ip}`;
+        if (diffHours >= 1) {
+          await sql`UPDATE request_throttles SET request_count = 1, last_request_at = ${now.toISOString()} WHERE ip_address = ${ip}`;
+        } else {
+          await sql`UPDATE request_throttles SET request_count = request_count + 1, last_request_at = ${now.toISOString()} WHERE ip_address = ${ip}`;
+        }
       } else {
-        await sql`UPDATE request_throttles SET request_count = request_count + 1, last_request_at = ${now.toISOString()} WHERE ip_address = ${ip}`;
+        await sql`INSERT INTO request_throttles (ip_address) VALUES (${ip})`;
       }
-    } else {
-      await sql`INSERT INTO request_throttles (ip_address) VALUES (${ip})`;
+    } catch (e) {
+      console.warn('Throttling check bypassed (table might be missing):', e);
     }
 
     // Get active theme

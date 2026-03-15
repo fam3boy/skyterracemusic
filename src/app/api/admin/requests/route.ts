@@ -16,9 +16,14 @@ export async function GET(req: Request) {
   const grouped = searchParams.get('grouped') === 'true';
 
   try {
-    // 1. Fetch Banned Patterns for matching
-    const bannedRes = await sql`SELECT type, pattern FROM banned_patterns`;
-    const bannedPatterns = bannedRes.rows;
+    // 1. Fetch Banned Patterns for matching - Handle missing table
+    let bannedPatterns: any[] = [];
+    try {
+      const bannedRes = await sql`SELECT type, pattern FROM banned_patterns`;
+      bannedPatterns = bannedRes.rows;
+    } catch (e) {
+      console.warn('Banned patterns fetch failed (table might be missing):', e);
+    }
 
     let query = `
       SELECT r.*, t.title as theme_title,
@@ -50,6 +55,7 @@ export async function GET(req: Request) {
 
     query += ` ORDER BY r.created_at DESC`;
 
+    // Use sql.query or the tag-like query approach correctly
     const result = await sql.query(query, values);
     let rows = result.rows;
 
@@ -60,14 +66,15 @@ export async function GET(req: Request) {
 
       // Check Banned
       const matchedBanned = bannedPatterns.find(p => {
-        const title = row.title || '';
-        const artist = row.artist || '';
-        const story = row.story || '';
-        const youtubeUrl = row.youtube_url || '';
+        const title = (row.title || '').toLowerCase();
+        const artist = (row.artist || '').toLowerCase();
+        const story = (row.story || '').toLowerCase();
+        const youtubeUrl = (row.youtube_url || '').toLowerCase();
+        const pattern = (p.pattern || '').toLowerCase();
 
-        if (p.type === 'WORD' && (title.includes(p.pattern) || artist.includes(p.pattern) || story.includes(p.pattern))) return true;
-        if (p.type === 'ARTIST' && artist.toLowerCase() === p.pattern.toLowerCase()) return true;
-        if (p.type === 'LINK' && youtubeUrl.includes(p.pattern)) return true;
+        if (p.type === 'WORD' && (title.includes(pattern) || artist.includes(pattern) || story.includes(pattern))) return true;
+        if (p.type === 'ARTIST' && artist === pattern) return true;
+        if (p.type === 'LINK' && youtubeUrl.includes(pattern)) return true;
         return false;
       });
 
@@ -85,11 +92,13 @@ export async function GET(req: Request) {
       return { ...row, auto_recommendation: rec, auto_reason: reason };
     });
 
-    // 3. Handle Grouping
+    // 3. Handle Grouping - Add Null Safety
     if (grouped) {
       const groups: Record<string, any[]> = {};
       rows.forEach(row => {
-        const key = `${row.title.toLowerCase()}|${row.artist.toLowerCase()}`;
+        const title = (row.title || 'Untitled').toLowerCase();
+        const artist = (row.artist || 'Unknown').toLowerCase();
+        const key = `${title}|${artist}`;
         if (!groups[key]) groups[key] = [];
         groups[key].push(row);
       });
