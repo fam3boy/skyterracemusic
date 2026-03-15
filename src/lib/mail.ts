@@ -39,7 +39,7 @@ export async function sendWeeklyReport({
       user: smtpUser,
       password: smtpPass,
     },
-  });
+  } as any);
 
   try {
     const info = await transporter.sendMail({
