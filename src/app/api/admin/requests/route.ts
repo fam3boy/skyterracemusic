@@ -10,58 +10,94 @@ export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url);
   const status = searchParams.get('status');
-  const search = searchParams.get('q');
-  const startDate = searchParams.get('start');
-  const endDate = searchParams.get('end');
+  const q = searchParams.get('q');
+  const start = searchParams.get('start');
+  const end = searchParams.get('end');
+  const grouped = searchParams.get('grouped') === 'true';
 
   try {
-    let queryStr = `
-      SELECT sr.*, mt.title as theme_title,
-             (SELECT COUNT(*) FROM song_requests d 
-              WHERE d.title = sr.title AND d.artist = sr.artist 
-              AND d.id != sr.id AND d.theme_id = sr.theme_id 
-              AND d.status != 'deleted') as duplicate_count
-      FROM song_requests sr
-      LEFT JOIN monthly_themes mt ON sr.theme_id = mt.id
-      WHERE 1=1
+    // 1. Fetch Banned Patterns for matching
+    const bannedRes = await sql`SELECT type, pattern FROM banned_patterns`;
+    const bannedPatterns = bannedRes.rows;
+
+    let query = `
+      SELECT r.*, t.title as theme_title,
+      (SELECT COUNT(*)::int FROM song_requests r2 WHERE r2.id != r.id AND (r2.title = r.title AND r2.artist = r.artist OR r2.youtube_url = r.youtube_url)) as duplicate_count
+      FROM song_requests r
+      LEFT JOIN monthly_themes t ON r.theme_id = t.id
+      WHERE r.deleted_at IS NULL
     `;
-    const params: any[] = [];
+    const values: any[] = [];
 
     if (status && status !== 'all') {
-      params.push(status);
-      queryStr += ` AND sr.status = $${params.length}`;
-      if (status === 'deleted') {
-         queryStr += ` AND sr.deleted_at IS NOT NULL`;
-      } else {
-         queryStr += ` AND sr.deleted_at IS NULL`;
+      values.push(status);
+      query += ` AND r.status = $${values.length}`;
+    }
+
+    if (q) {
+      values.push(`%${q}%`);
+      query += ` AND (r.title ILIKE $${values.length} OR r.artist ILIKE $${values.length} OR r.requester_name ILIKE $${values.length})`;
+    }
+
+    if (start) {
+      values.push(start);
+      query += ` AND r.created_at >= $${values.length}`;
+    }
+    if (end) {
+      values.push(`${end} 23:59:59`);
+      query += ` AND r.created_at <= $${values.length}`;
+    }
+
+    query += ` ORDER BY r.created_at DESC`;
+
+    const result = await sql.query(query, values);
+    let rows = result.rows;
+
+    // 2. Apply Recommendation Logic
+    rows = rows.map(row => {
+      let rec = 'REVIEW';
+      let reason = 'Normal request';
+
+      // Check Banned
+      const matchedBanned = bannedPatterns.find(p => {
+        if (p.type === 'WORD' && (row.title.includes(p.pattern) || row.artist.includes(p.pattern) || row.story?.includes(p.pattern))) return true;
+        if (p.type === 'ARTIST' && row.artist.toLowerCase() === p.pattern.toLowerCase()) return true;
+        if (p.type === 'LINK' && row.youtube_url?.includes(p.pattern)) return true;
+        return false;
+      });
+
+      if (matchedBanned) {
+        rec = 'REJECT';
+        reason = `Banned pattern matched: ${matchedBanned.pattern}`;
+      } else if (row.duplicate_count > 0) {
+        rec = 'REVIEW_CAUTION';
+        reason = `Duplicate requests detected (${row.duplicate_count})`;
+      } else if (row.youtube_url && row.youtube_url.includes('youtube.com/watch?v=')) {
+        rec = 'APPROVE';
+        reason = 'Valid link and no conflicts';
       }
-    } else {
-      // For 'all', exclude soft-deleted items unless 'all' includes them.
-      // Usually 'all' in a CMS means 'all active'. Let's exclude deleted from 'all'.
-      queryStr += ` AND sr.deleted_at IS NULL`;
+
+      return { ...row, auto_recommendation: rec, auto_reason: reason };
+    });
+
+    // 3. Handle Grouping
+    if (grouped) {
+      const groups: Record<string, any[]> = {};
+      rows.forEach(row => {
+        const key = `${row.title.toLowerCase()}|${row.artist.toLowerCase()}`;
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(row);
+      });
+      return NextResponse.json(Object.values(groups).map(group => ({
+        ...group[0],
+        group_items: group,
+        group_count: group.length
+      })));
     }
 
-    if (search) {
-      params.push(`%${search}%`);
-      queryStr += ` AND (sr.title ILIKE $${params.length} OR sr.artist ILIKE $${params.length} OR sr.requester_name ILIKE $${params.length})`;
-    }
-
-    if (startDate) {
-      params.push(startDate);
-      queryStr += ` AND sr.created_at >= $${params.length}`;
-    }
-
-    if (endDate) {
-      params.push(endDate);
-      queryStr += ` AND sr.created_at <= $${params.length}`;
-    }
-
-    queryStr += ` ORDER BY sr.created_at DESC`;
-
-    const result = await sql.query(queryStr, params);
-    return NextResponse.json(result.rows);
+    return NextResponse.json(rows);
   } catch (error: any) {
-    console.error('Requests fetch error:', error);
+    console.error('Requests GET error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
