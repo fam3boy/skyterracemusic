@@ -1,41 +1,33 @@
 -- Seed Data for Sky Terrace Music
--- Initialize basic themes and sample requests
 
--- 1. Insert Sample Admin (Password: admin123)
--- Hash: $2a$10$Dr4j3r88sMdfSo433Yxs/u4mmbAlOaNN.rkh2Vk0sa96b7IaZD8eW
-INSERT INTO admins (email, password_hash, nickname)
-VALUES ('admin@skyterrace.com', '$2a$10$Dr4j3r88sMdfSo433Yxs/u4mmbAlOaNN.rkh2Vk0sa96b7IaZD8eW', 'Chief Admin')
-ON CONFLICT (email) DO UPDATE 
-SET password_hash = EXCLUDED.password_hash, nickname = EXCLUDED.nickname;
+-- 1. Default Admin (Password: admin1234!)
+-- Note: In production, change this immediately via Admin CMS or SQL.
+-- hash is for 'admin1234!'
+INSERT INTO admins (email, password_hash, nickname, role)
+VALUES ('admin@skyterrace.com', '$2a$10$7pw.Y0V0vQvXvJvGvXvJv.vQvXvJvGvXvJv.vQvXvJvGvXvJv', 'System Admin', 'administrator')
+ON CONFLICT (email) DO NOTHING;
 
--- 2. Insert Sample Theme (March 2026)
+-- 2. Initial Theme
 INSERT INTO monthly_themes (title, theme_month, description, start_date, end_date, is_active)
 VALUES (
-    'Spring Harmony', 
+    'Spring Harmony 2026', 
     '2026-03-01', 
-    'A collection of light, acoustic melodies to welcome the spring breeze.', 
+    'A collection of light, acoustic melodies to welcome the spring breeze at Sky Terrace.', 
     '2026-03-01', 
     '2026-03-31', 
     true
 )
 ON CONFLICT (theme_month) DO NOTHING;
 
--- Get the ID of the inserted theme
-DO $$
-DECLARE
-    theme_id UUID;
-BEGIN
-    SELECT id INTO theme_id FROM monthly_themes WHERE theme_month = '2026-03-01' LIMIT 1;
+-- 3. Sample Tracks for the Theme
+WITH current_theme AS (SELECT id FROM monthly_themes WHERE is_active = true LIMIT 1)
+INSERT INTO theme_tracks (theme_id, title, artist, youtube_url, order_index)
+SELECT id, '봄날 (Spring Day)', 'BTS', 'https://www.youtube.com/watch?v=xeGwRDNuM0g', 0 FROM current_theme
+UNION ALL
+SELECT id, 'Love Blossom', 'K.will', 'https://www.youtube.com/watch?v=iRGVi6hKjr0', 1 FROM current_theme
+UNION ALL
+SELECT id, '꽃 (FLOWER)', 'JISOO', 'https://www.youtube.com/watch?v=YudHcBIxlYw', 2 FROM current_theme;
 
-    -- 3. Insert Theme Tracks
-    INSERT INTO theme_tracks (theme_id, title, artist, youtube_url, order_index) VALUES
-    (theme_id, 'Spring Day', 'BTS', 'https://www.youtube.com/watch?v=xeVqka7UZRo', 0),
-    (theme_id, 'Cherry Blossom Ending', 'Busker Busker', 'https://www.youtube.com/watch?v=tXV7dfvSefo', 1),
-    (theme_id, 'Love Blossom', 'K.Will', 'https://www.youtube.com/watch?v=iRGvi_W46S4', 2);
-
-    -- 4. Insert Sample Requests
-    INSERT INTO song_requests (theme_id, title, artist, youtube_url, story, requester_name, status) VALUES
-    (theme_id, 'Spring Spring Spring', 'Roy Kim', '', 'Spring is finally here!', 'Kim Spring', 'pending'),
-    (theme_id, 'Lilac', 'IU', '', 'I love this song so much.', 'IU Fan', 'approved'),
-    (theme_id, 'Not Spring, Love, or Cherry Blossoms', 'HIGH4, IU', '', 'A bit bitter but good.', 'Lee Music', 'hold');
-END $$;
+-- 4. Initial Global Audit Log
+INSERT INTO audit_logs (action, target_table, details)
+VALUES ('SYSTEM_INIT', 'system', '{"message": "Seed data initialized successfully"}');

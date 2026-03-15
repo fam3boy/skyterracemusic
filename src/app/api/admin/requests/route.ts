@@ -70,30 +70,56 @@ export async function PATCH(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  const adminId = (session.user as any).id;
+
   try {
     const { id, status, admin_memo } = await req.json();
 
-    if (status) {
-      const approved_at = status === 'approved' ? new Date().toISOString() : null;
-      const deleted_at = status === 'deleted' ? new Date().toISOString() : null;
+    // 1. Fetch current state
+    const currentRes = await sql`SELECT status, approved_at FROM song_requests WHERE id = ${id}`;
+    if (currentRes.rowCount === 0) {
+      return NextResponse.json({ error: 'Request not found' }, { status: 404 });
+    }
+    const current = currentRes.rows[0];
+
+    // 2. Handle Status Change with Rules
+    if (status && status !== current.status) {
+      // Logic:
+      // - approved -> hold (Allow: administrator might want to re-eval)
+      // - approved -> deleted (Allow: soft delete)
+      // - pending/hold/deleted -> approved (Allow: standard approval)
+      
+      const approved_at = (status === 'approved' && !current.approved_at) 
+                          ? new Date().toISOString() 
+                          : current.approved_at;
+                          
+      const deleted_at = (status === 'deleted') ? new Date().toISOString() : null;
       
       await sql`
         UPDATE song_requests 
         SET status = ${status}, 
-            approved_at = CASE WHEN ${status} = 'approved' THEN ${approved_at} ELSE approved_at END,
-            deleted_at = CASE WHEN ${status} = 'deleted' THEN ${deleted_at} ELSE NULL END
+            approved_at = ${approved_at},
+            deleted_at = ${deleted_at}
         WHERE id = ${id}
       `;
-      await logAudit(`Changed request status to ${status}`, 'song_requests', id);
+      
+      await logAudit(
+        `STATUS_CHANGE: ${current.status} -> ${status}`, 
+        'song_requests', 
+        id, 
+        { from: current.status, to: status },
+        adminId
+      );
     }
 
-    if (admin_memo !== undefined) {
+    // 3. Handle Admin Memo
+    if (admin_memo !== undefined && admin_memo !== current.admin_memo) {
       await sql`
         UPDATE song_requests 
         SET admin_memo = ${admin_memo}
         WHERE id = ${id}
       `;
-      await logAudit('Updated admin memo', 'song_requests', id, { memo: admin_memo });
+      await logAudit('UPDATE_MEMO', 'song_requests', id, { memo: admin_memo }, adminId);
     }
 
     return NextResponse.json({ success: true });

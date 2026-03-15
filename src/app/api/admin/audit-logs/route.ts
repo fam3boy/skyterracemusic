@@ -9,12 +9,15 @@ export async function GET() {
 
   try {
     const result = await sql`
-      SELECT * FROM audit_logs 
-      ORDER BY created_at DESC 
-      LIMIT 100
+      SELECT al.*, a.nickname as admin_name
+      FROM audit_logs al
+      LEFT JOIN admins a ON al.admin_id = a.id
+      ORDER BY al.created_at DESC
+      LIMIT 10
     `;
     return NextResponse.json(result.rows);
   } catch (error: any) {
+    console.error('Audit logs fetch error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

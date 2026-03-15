@@ -31,20 +31,26 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const adminId = (session.user as any).id;
 
   try {
-    const { title, theme_month, description, start_date, end_date, tracks } = await req.json();
+    const { title, theme_month, description, start_date, end_date, tracks, is_active } = await req.json();
 
-    // Insert theme
+    // 1. One Active Theme Check
+    if (is_active) {
+       await sql`UPDATE monthly_themes SET is_active = false WHERE is_active = true`;
+    }
+
+    // 2. Insert theme
     const themeRes = await sql`
-      INSERT INTO monthly_themes (title, theme_month, description, start_date, end_date)
-      VALUES (${title}, ${theme_month}, ${description}, ${start_date}, ${end_date})
+      INSERT INTO monthly_themes (title, theme_month, description, start_date, end_date, is_active)
+      VALUES (${title}, ${theme_month}, ${description}, ${start_date}, ${end_date}, ${!!is_active})
       RETURNING id
     `;
     const themeId = themeRes.rows[0].id;
 
-    // Insert tracks
-    if (tracks && tracks.length > 0) {
+    // 3. Insert tracks
+    if (tracks && Array.isArray(tracks)) {
       for (let i = 0; i < tracks.length; i++) {
         const track = tracks[i];
         await sql`
@@ -54,7 +60,7 @@ export async function POST(req: Request) {
       }
     }
 
-    await logAudit('Created new theme', 'monthly_themes', themeId, { title, theme_month });
+    await logAudit('CREATE_THEME', 'monthly_themes', themeId, { title, theme_month, is_active }, adminId);
 
     return NextResponse.json({ success: true, id: themeId });
   } catch (error: any) {
@@ -66,17 +72,18 @@ export async function POST(req: Request) {
 export async function PATCH(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const adminId = (session.user as any).id;
 
   try {
     const { id, title, theme_month, description, start_date, end_date, tracks, is_active } = await req.json();
 
     if (is_active !== undefined) {
-      if (is_active) {
-        // Deactivate others
+      if (is_active === true) {
+        // Enforce only one active
         await sql`UPDATE monthly_themes SET is_active = false WHERE id != ${id}`;
       }
       await sql`UPDATE monthly_themes SET is_active = ${is_active} WHERE id = ${id}`;
-      await logAudit(`Set theme active status to ${is_active}`, 'monthly_themes', id);
+      await logAudit(`SET_ACTIVE: ${is_active}`, 'monthly_themes', id, null, adminId);
     }
 
     if (title || theme_month || description !== undefined || start_date || end_date) {
@@ -86,14 +93,14 @@ export async function PATCH(req: Request) {
             theme_month = COALESCE(${theme_month}, theme_month),
             description = COALESCE(${description}, description),
             start_date = COALESCE(${start_date}, start_date),
-            end_date = COALESCE(${end_date}, end_date)
+            end_date = COALESCE(${end_date}, end_date),
+            updated_at = CURRENT_TIMESTAMP
         WHERE id = ${id}
       `;
-      await logAudit('Updated theme details', 'monthly_themes', id, { title, theme_month });
+      await logAudit('UPDATE_THEME', 'monthly_themes', id, { title }, adminId);
     }
 
-    if (tracks) {
-      // Sync tracks: simplest is delete and re-insert
+    if (tracks && Array.isArray(tracks)) {
       await sql`DELETE FROM theme_tracks WHERE theme_id = ${id}`;
       for (let i = 0; i < tracks.length; i++) {
         const track = tracks[i];
@@ -102,12 +109,33 @@ export async function PATCH(req: Request) {
           VALUES (${id}, ${track.title}, ${track.artist}, ${track.youtube_url}, ${i})
         `;
       }
-      await logAudit('Synchronized theme tracks', 'monthly_themes', id, { trackCount: tracks.length });
+      await logAudit('SYNC_TRACKS', 'monthly_themes', id, { count: tracks.length }, adminId);
     }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error('Theme PATCH error:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  const session = await getServerSession(authOptions);
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const adminId = (session.user as any).id;
+
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get('id');
+
+  if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });
+
+  try {
+    // Soft delete
+    await sql`UPDATE monthly_themes SET deleted_at = CURRENT_TIMESTAMP, is_active = false WHERE id = ${id}`;
+    await logAudit('DELETE_THEME', 'monthly_themes', id, null, adminId);
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error('Theme DELETE error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

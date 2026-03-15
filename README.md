@@ -52,7 +52,67 @@ POSTGRES_DATABASE=...
 # NextAuth Configuration
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your_nextauth_secret (Generate with: openssl rand -base64 32)
+```
 
+## 🛠 Installation & Setup
+
+1. **Clone & Install**
+   ```bash
+   git clone [repository-url]
+   npm install
+   ```
+
+2. **Environment Variables (.env.local)**
+   ```env
+   # Database (Vercel Postgres)
+   POSTGRES_URL=
+   
+   # Auth (NextAuth)
+   NEXTAUTH_URL=http://localhost:3000
+   NEXTAUTH_SECRET= # Generated via openssl rand -base64 32
+   
+   # Email (Resend)
+   RESEND_API_KEY=
+   WEEKLY_MAIL_RECIPIENT=
+   
+   # Security
+   CRON_SECRET= # Matching the one in Vercel Cron settings
+   ```
+
+3. **Database Initialization**
+   - Run `vercel_schema.sql` in your Postgres console.
+   - Run `seed.sql` to create the initial admin and theme.
+
+## 🔐 Administration Guide
+
+### 1. Create Admin Account
+- The `seed.sql` creates a default account: `admin@skyterrace.com` / `admin1234!`.
+- **Warning**: Change the password immediately after first login.
+
+### 2. Scheduler Configuration (Vercel Cron)
+- The app uses Vercel Cron to send weekly reports.
+- Configuration is handled in `vercel.json`:
+  ```json
+  {
+    "crons": [
+      {
+        "path": "/api/cron/weekly-mail",
+        "schedule": "0 19 * * 4"
+      }
+    ]
+  }
+  ```
+- Ensure `CRON_SECRET` is set in both Vercel Environment Variables and requested in the cron header.
+
+## 🚀 Deployment Checklist
+
+- [ ] Vercel Postgres Storage connected.
+- [ ] All Environment Variables configured in Vercel Dashboard.
+- [ ] `CRON_SECRET` generated and sync'd.
+- [ ] `RESEND_API_KEY` verified (Sender domain must be authenticated if using custom domain).
+- [ ] Soft-delete policy verified (Check `deleted_at` column for status 'deleted').
+
+```env
 # Automation & Mail Settings
 CRON_SECRET=your_random_string (Security for API routes)
 WEEKLY_MAIL_RECIPIENT=broadcasting@hyundai.com

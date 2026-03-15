@@ -15,14 +15,19 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) return null;
 
         const res = await query(
-          "SELECT id, email, password_hash, nickname FROM admins WHERE email = $1",
+          "SELECT id, email, password_hash, nickname, role FROM admins WHERE email = $1",
           [credentials.email]
         );
 
         const admin = res.rows[0];
 
         if (admin && bcrypt.compareSync(credentials.password, admin.password_hash)) {
-          return { id: admin.id, email: admin.email, name: admin.nickname };
+          return { 
+            id: admin.id, 
+            email: admin.email, 
+            name: admin.nickname,
+            role: admin.role
+          };
         }
         return null;
       }
@@ -32,9 +37,17 @@ export const authOptions: NextAuthOptions = {
     signIn: "/admin/login",
   },
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = (user as any).role;
+      }
+      return token;
+    },
     async session({ session, token }) {
       if (token && session.user) {
-        (session.user as any).id = token.sub;
+        (session.user as any).id = token.id;
+        (session.user as any).role = token.role;
       }
       return session;
     }
