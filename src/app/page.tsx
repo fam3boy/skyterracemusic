@@ -65,7 +65,7 @@ export default async function Home() {
       {/* 3. Current Live Theme Section */}
       <PortalSection 
         title={activeTheme ? activeTheme.title : "현재 진행 중인 테마"}
-        subtitle="Monthly Selection"
+        subtitle="이달의 추천 곡"
         moreHref="/request"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -93,8 +93,8 @@ export default async function Home() {
 
       {/* 4. Recent Approved Songs (Premium List) */}
       <PortalSection 
-        title="Live Now: Approved Requests" 
-        subtitle="Operational Updates"
+        title="실시간 승인 현황" 
+        subtitle="최신 신청곡 업데이트"
         moreHref="/status"
         bgGray
       >
@@ -111,7 +111,7 @@ export default async function Home() {
                  </div>
                  <div className="flex items-center gap-10">
                     <div className="hidden md:flex flex-col items-end gap-1">
-                       <span className="text-[9px] font-black text-hyundai-gray-300 uppercase tracking-widest">Scheduled at</span>
+                       <span className="text-[9px] font-black text-hyundai-gray-300 uppercase tracking-widest">방송 예정</span>
                        <span className="text-[11px] font-black text-hyundai-black">{ new Date(track.approved_at).toLocaleDateString() }</span>
                     </div>
                     <div className="h-10 w-px bg-hyundai-gray-100 hidden md:block"></div>
@@ -132,8 +132,8 @@ export default async function Home() {
           {/* Hall of Fame (5 cols) */}
           <div className="lg:col-span-12 xl:col-span-5 space-y-16">
             <div className="space-y-6">
-              <span className="text-hyundai-gold text-[12px] font-black tracking-[0.4em] uppercase block">Hall of Fame</span>
-              <h3 className="text-5xl font-black text-hyundai-black uppercase tracking-tighter leading-none">Popular <br />Aspirations</h3>
+              <span className="text-hyundai-gold text-[12px] font-black tracking-[0.4em] uppercase block">인기 신청곡</span>
+              <h3 className="text-5xl font-black text-hyundai-black uppercase tracking-tighter leading-none">명예의 전당</h3>
             </div>
             <div className="space-y-10">
               {popularTracks.map((track, i) => (
@@ -149,7 +149,7 @@ export default async function Home() {
                       <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest">{track.artist}</p>
                    </div>
                    <div className="text-right">
-                      <p className="text-[10px] font-black text-hyundai-gold uppercase tracking-widest">Score</p>
+                      <p className="text-[10px] font-black text-hyundai-gold uppercase tracking-widest">신청 횟수</p>
                       <p className="text-2xl font-black text-hyundai-black italic">{track.request_count}</p>
                    </div>
                 </div>
@@ -162,8 +162,8 @@ export default async function Home() {
           {/* FAQ / Info (6 style) */}
           <div className="lg:col-span-12 xl:col-span-6 space-y-16">
             <div className="space-y-6">
-              <span className="text-hyundai-gold text-[12px] font-black tracking-[0.4em] uppercase block">Service Notice</span>
-              <h3 className="text-5xl font-black text-hyundai-black uppercase tracking-tighter leading-none">Operational <br />Intelligence</h3>
+              <span className="text-hyundai-gold text-[12px] font-black tracking-[0.4em] uppercase block">서비스 안내</span>
+              <h3 className="text-5xl font-black text-hyundai-black uppercase tracking-tighter leading-none">운영 가이드</h3>
             </div>
             <div className="grid grid-cols-1 gap-4">
               {[
@@ -196,19 +196,19 @@ export default async function Home() {
            <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-hyundai-gold rounded-full blur-[180px] opacity-20"></div>
         </div>
         <div className="portal-container relative z-10 flex flex-col items-center">
-           <span className="text-hyundai-gold text-[13px] font-black tracking-[0.6em] uppercase mb-10 block animate-in fade-in duration-1000">Connect Experience</span>
-           <h2 className="text-5xl md:text-[100px] font-black tracking-[-0.05em] max-w-6xl mx-auto leading-[0.9] uppercase mb-16 animate-in fade-in slide-in-from-bottom-10 duration-[1200ms] delay-300">
-             Your Music, <br />
-             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/20">The Hyundai Identity</span>
-           </h2>
-           <p className="text-white/60 text-lg font-medium max-w-2xl mx-auto mb-20 leading-relaxed uppercase tracking-[0.1em]">현대프리미엄아울렛 대전점 스카이테라스에서 <br />당신의 특별한 선율을 들려주세요.</p>
+            <span className="text-hyundai-gold text-[13px] font-black tracking-[0.6em] uppercase mb-10 block animate-in fade-in duration-1000">당신의 음악을 들려주세요</span>
+            <h2 className="text-5xl md:text-[80px] font-black tracking-[-0.05em] max-w-6xl mx-auto leading-[1.1] uppercase mb-16 animate-in fade-in slide-in-from-bottom-10 duration-[1200ms] delay-300">
+              현대의 감성으로 <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/20">완성하는 테라스의 선율</span>
+            </h2>
+            <p className="text-white/60 text-lg font-medium max-w-2xl mx-auto mb-20 leading-relaxed uppercase tracking-[0.1em]">현대프리미엄아울렛 대전점 스카이테라스에서 <br />당신의 특별한 선율을 들려주세요.</p>
            
            <div className="flex flex-col sm:flex-row gap-6 justify-center w-full max-w-2xl">
               <Link href="/request" className="flex-1 h-20 bg-white text-hyundai-black flex items-center justify-center text-[12px] font-black uppercase tracking-[0.3em] hover:bg-hyundai-gold transition-all transform hover:-translate-y-1 active:scale-95">
-                Register Request
+                신청곡 등록하기
               </Link>
               <Link href="/status" className="flex-1 h-20 border border-white/20 text-white flex items-center justify-center text-[12px] font-black uppercase tracking-[0.3em] hover:bg-white hover:text-hyundai-black transition-all transform hover:-translate-y-1 active:scale-95">
-                Audit Status
+                신청 현황 확인
               </Link>
            </div>
         </div>

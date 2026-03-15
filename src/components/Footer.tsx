@@ -34,21 +34,12 @@ export default function Footer() {
           </div>
 
           {/* Sitemaps */}
-          <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-10">
-            <div className="space-y-6">
-              <h4 className="text-[11px] font-black uppercase tracking-widest text-hyundai-black">지점안내</h4>
-              <ul className="space-y-4">
-                <li><Link href="#" className="text-[13px] text-hyundai-gray-400 hover:text-hyundai-black transition-colors">층별 테마 가이드</Link></li>
-                <li><Link href="#" className="text-[13px] text-hyundai-gray-400 hover:text-hyundai-black transition-colors">편의 서비스</Link></li>
-                <li><Link href="#" className="text-[13px] text-hyundai-gray-400 hover:text-hyundai-black transition-colors">오시는 길</Link></li>
-              </ul>
-            </div>
+          <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-2 gap-10">
             <div className="space-y-6">
               <h4 className="text-[11px] font-black uppercase tracking-widest text-hyundai-black">고객서비스</h4>
               <ul className="space-y-4">
                 <li><Link href="/request" className="text-[13px] text-hyundai-gray-400 hover:text-hyundai-black transition-colors">음악 신청 서비스</Link></li>
-                <li><Link href="/status" className="text-[13px] text-hyundai-gray-400 hover:text-hyundai-black transition-colors">신청 현항 조회</Link></li>
-                <li><Link href="#" className="text-[13px] text-hyundai-gray-400 hover:text-hyundai-black transition-colors">문화센터 강좌</Link></li>
+                <li><Link href="/status" className="text-[13px] text-hyundai-gray-400 hover:text-hyundai-black transition-colors">신청 현황 조회</Link></li>
               </ul>
             </div>
             <div className="space-y-6">
@@ -56,7 +47,6 @@ export default function Footer() {
               <ul className="space-y-4">
                 <li><Link href="/admin/login" className="text-[13px] text-hyundai-gray-400 hover:text-hyundai-black transition-colors">관리자 로그인</Link></li>
                 <li><Link href="/admin" className="text-[13px] text-hyundai-gray-400 hover:text-hyundai-black transition-colors">운영 터미널</Link></li>
-                <li><Link href="#" className="text-[13px] text-hyundai-gray-400 hover:text-hyundai-black transition-colors">시스템 공사항</Link></li>
               </ul>
             </div>
           </div>

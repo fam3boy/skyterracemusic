@@ -141,10 +141,10 @@ export default function PlaylistPage() {
           <div className="bg-hyundai-gray-100/50 p-4 rounded-2xl border border-hyundai-gray-200 flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-hyundai-gray-400 mb-2">
             <div className="flex gap-10">
               <span className="w-8 ml-2">#</span>
-              <span className="w-64">곡 정보 (제목 / 아티스트)</span>
-              <span>유튜브 링크</span>
+              <span className="w-64">음원 상세 정보 (곡명 / 아티스트)</span>
+              <span>유튜브 미디어 링크</span>
             </div>
-            <span className="mr-8">순서 및 관리</span>
+            <span className="mr-8">순서 조정 및 태스크 관리</span>
           </div>
 
           {tracks.length === 0 && (
@@ -187,7 +187,7 @@ export default function PlaylistPage() {
                     <Youtube className="w-4 h-4 text-red-500 shrink-0" />
                     <input 
                       type="text"
-                      placeholder="YouTube URL"
+                      placeholder="YouTube 영상 URL"
                       className="bg-transparent border-none text-[10px] font-bold text-red-900/40 focus:text-red-900 transition-all outline-none w-full"
                       value={track.youtube_url || ''}
                       onChange={(e) => {

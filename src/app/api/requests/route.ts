@@ -90,5 +90,5 @@ export async function GET(req: Request) {
     });
   }
 
-  return NextResponse.json({ error: 'Missing parameters' }, { status: 400 });
+  return NextResponse.json({ error: '필수 파라미터가 누락되었습니다' }, { status: 400 });
 }

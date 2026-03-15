@@ -89,7 +89,7 @@ export default function DashboardPage() {
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
         <div>
           <h2 className="text-3xl font-black text-hyundai-black tracking-tighter uppercase flex items-center gap-3">
-             Operational Insights
+             운영 통계 인사이트
              <span className="w-2 h-2 rounded-full bg-hyundai-gold animate-pulse"></span>
           </h2>
           <p className="text-xs font-bold text-hyundai-gray-400 mt-1 uppercase tracking-widest">실시간 운영 데이터 및 성과 지표 대시보드</p>
@@ -101,7 +101,7 @@ export default function DashboardPage() {
              className="flex items-center gap-2 px-6 py-3 bg-white border border-hyundai-gray-200 text-hyundai-black rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-hyundai-gray-50 transition-all shadow-sm"
            >
              <Download className="w-3.5 h-3.5" />
-             Export Report
+             리포트 내보내기
            </button>
         </div>
       </div>
@@ -112,24 +112,24 @@ export default function DashboardPage() {
         
         <div className="flex items-center gap-3 text-hyundai-black">
           <Filter className="w-4 h-4" />
-          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Filter Terminal</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.2em]">데이터 필터 터미널</span>
         </div>
 
         <div className="flex items-center gap-10 flex-1">
           <div className="space-y-1.5">
-             <label className="text-[9px] font-black text-hyundai-gray-300 uppercase tracking-widest block">Theme Select</label>
+             <label className="text-[9px] font-black text-hyundai-gray-300 uppercase tracking-widest block">테마 선택</label>
              <select 
                className="bg-transparent border-none text-xs font-black text-hyundai-black p-0 outline-none cursor-pointer focus:ring-0 uppercase"
                value={themeId}
                onChange={(e) => setThemeId(e.target.value)}
              >
-               <option value="all">ANY THEME</option>
+               <option value="all">전체 테마</option>
                {themes.map(t => <option key={t.id} value={t.id}>{t.title.toUpperCase()}</option>)}
              </select>
           </div>
 
           <div className="space-y-1.5">
-             <label className="text-[9px] font-black text-hyundai-gray-300 uppercase tracking-widest block">Period Range</label>
+             <label className="text-[9px] font-black text-hyundai-gray-300 uppercase tracking-widest block">조회 기간 설정</label>
              <div className="flex items-center gap-3">
                <input 
                  type="date" 
@@ -148,17 +148,17 @@ export default function DashboardPage() {
           </div>
 
           <div className="space-y-1.5">
-             <label className="text-[9px] font-black text-hyundai-gray-300 uppercase tracking-widest block">Process Status</label>
+             <label className="text-[9px] font-black text-hyundai-gray-300 uppercase tracking-widest block">처리 상태 필터</label>
              <select 
                className="bg-transparent border-none text-xs font-black text-hyundai-black p-0 outline-none cursor-pointer focus:ring-0 uppercase"
                value={status}
                onChange={(e) => setStatus(e.target.value)}
              >
-               <option value="all">ALL STATES</option>
-               <option value="pending">PENDING</option>
-               <option value="approved">APPROVED</option>
-               <option value="hold">ON HOLD</option>
-               <option value="deleted">REJECTED</option>
+               <option value="all">전체 상태</option>
+               <option value="pending">대기 중</option>
+               <option value="approved">승인 완료</option>
+               <option value="hold">보류 중</option>
+               <option value="deleted">반려/삭제</option>
              </select>
           </div>
         </div>
@@ -168,7 +168,7 @@ export default function DashboardPage() {
             onClick={() => { setThemeId('all'); setStartDate(''); setEndDate(''); setStatus('all'); }}
             className="text-[9px] font-black text-red-500 uppercase tracking-widest hover:underline"
           >
-            Clear All
+            Clear All Filters
           </button>
         )}
       </div>
@@ -180,7 +180,7 @@ export default function DashboardPage() {
             <AlertTriangle className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-[10px] font-black text-red-900 tracking-widest uppercase mb-0.5">Operate Alert: Performance Issue Detected</p>
+            <p className="text-[10px] font-black text-red-900 tracking-widest uppercase mb-0.5">운영 알림: 퍼포먼스 이슈 감지</p>
             <p className="text-xs font-bold text-red-600 leading-tight">
               {stats.kpis.approvalRate < 20 ? `승인율이 ${stats.kpis.approvalRate.toFixed(1)}%로 임계치 미달입니다. ` : ''}
               {stats.kpis.deletionRate > 30 ? `삭제율이 ${stats.kpis.deletionRate.toFixed(1)}%로 비정상 유입이 의심됩니다.` : ''}
@@ -191,14 +191,14 @@ export default function DashboardPage() {
 
       {/* 4. KPI Scorecard */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-hyundai-gray-200 border border-hyundai-gray-200">
-        <KPIItem label="Total Requests" value={stats?.kpis.total} icon={<Activity />} trend="up" />
-        <KPIItem label="Approval Rate" value={`${stats?.kpis.approvalRate.toFixed(1)}%`} icon={<CheckCircle />} trend="none" />
-        <KPIItem label="Source Ratio" value={`${((stats?.kpis.with_link / stats?.kpis.total) * 100).toFixed(1)}%`} icon={<Music />} trend="none" />
+        <KPIItem label="전체 신청 건수" value={stats?.kpis.total} icon={<Activity />} trend="up" />
+        <KPIItem label="평균 승인율" value={`${stats?.kpis.approvalRate.toFixed(1)}%`} icon={<CheckCircle />} trend="none" />
+        <KPIItem label="링크 입력 비중" value={`${((stats?.kpis.with_link / stats?.kpis.total) * 100).toFixed(1)}%`} icon={<Music />} trend="none" />
         
         {/* Instant Action */}
         <div className="bg-hyundai-black p-8 flex flex-col justify-between group">
            <div className="flex justify-between items-start">
-             <span className="text-[9px] font-black text-hyundai-gray-400 uppercase tracking-widest">Batch Process</span>
+             <span className="text-[9px] font-black text-hyundai-gray-400 uppercase tracking-widest">일괄 처리 프로세스</span>
              <FileText className="w-4 h-4 text-hyundai-gold" />
            </div>
            <div>
@@ -212,7 +212,7 @@ export default function DashboardPage() {
                 }}
                 className="w-full py-3 bg-hyundai-gold text-hyundai-black text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all shadow-lg shadow-hyundai-gold/10"
               >
-                Execute Dispatch
+                주간 리포트 즉시 발송
               </button>
            </div>
         </div>
@@ -220,7 +220,7 @@ export default function DashboardPage() {
 
       {/* 5. Visualization Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <ChartCard title="Daily Traffic Pipeline" className="lg:col-span-8 h-[450px]">
+        <ChartCard title="일일 트래픽 파이프라인" className="lg:col-span-8 h-[450px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={stats?.trends}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F1F1" />
@@ -231,13 +231,13 @@ export default function DashboardPage() {
                 itemStyle={{fontSize: '11px', textTransform: 'uppercase'}}
               />
               <Legend verticalAlign="top" align="right" height={36} iconType="rect" wrapperStyle={{fontSize: '9px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em'}} />
-              <Line type="step" name="Volume" dataKey="count" stroke="#000000" strokeWidth={3} dot={false} activeDot={{r: 6, strokeWidth: 0}} />
-              <Line type="step" name="Approved" dataKey="approved_count" stroke="#D4AF37" strokeWidth={3} dot={false} />
+              <Line type="step" name="신청 수" dataKey="count" stroke="#000000" strokeWidth={3} dot={false} activeDot={{r: 6, strokeWidth: 0}} />
+              <Line type="step" name="승인 수" dataKey="approved_count" stroke="#D4AF37" strokeWidth={3} dot={false} />
             </LineChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="Task Outcome Dist." className="lg:col-span-4 h-[450px]">
+        <ChartCard title="태스크 처리 결과 분포" className="lg:col-span-4 h-[450px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -258,7 +258,7 @@ export default function DashboardPage() {
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="High Performance Artists" className="lg:col-span-6 h-[400px]">
+        <ChartCard title="인기 아티스트 퍼포먼스" className="lg:col-span-6 h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={stats?.topArtists} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#F1F1F1" />
@@ -270,7 +270,7 @@ export default function DashboardPage() {
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="Peak Usage Matrix (Hourly)" className="lg:col-span-6 h-[400px]">
+        <ChartCard title="시간대별 피크 유입 분석" className="lg:col-span-6 h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={stats?.hourlyDist}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F1F1" />
@@ -288,9 +288,9 @@ export default function DashboardPage() {
         <div className="bg-white p-10">
           <div className="flex justify-between items-center mb-10">
              <h3 className="text-sm font-black flex items-center gap-3 uppercase tracking-widest text-hyundai-black">
-                <Music className="w-4 h-4 text-hyundai-gold" /> Best Performing Tracks
+                <Music className="w-4 h-4 text-hyundai-gold" /> 최다 신청곡 순위
              </h3>
-             <span className="text-[9px] font-black text-white bg-hyundai-black px-2 py-1 uppercase tracking-widest">TOP 10 Ranking</span>
+             <span className="text-[9px] font-black text-white bg-hyundai-black px-2 py-1 uppercase tracking-widest">TOP 10 랭킹</span>
           </div>
           <div className="space-y-2">
             {stats?.topSongs.map((song: any, i: number) => (
@@ -303,7 +303,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-lg font-black text-hyundai-black tracking-tighter">{song.count}<span className="text-[9px] ml-1 text-hyundai-gray-300 uppercase">Requests</span></p>
+                  <p className="text-lg font-black text-hyundai-black tracking-tighter">{song.count}<span className="text-[9px] ml-1 text-hyundai-gray-300 uppercase">건 신청</span></p>
                 </div>
               </div>
             ))}
@@ -313,7 +313,7 @@ export default function DashboardPage() {
         <div className="bg-white p-10">
           <div className="flex justify-between items-center mb-10">
              <h3 className="text-sm font-black flex items-center gap-3 uppercase tracking-widest text-hyundai-black">
-                <Layers className="w-4 h-4 text-hyundai-gold" /> Theme Preference Map
+                <Layers className="w-4 h-4 text-hyundai-gold" /> 테마 선호도 맵핑
              </h3>
              <Activity className="w-4 h-4 text-hyundai-gray-200" />
           </div>
@@ -331,7 +331,7 @@ export default function DashboardPage() {
              <div className="flex items-center gap-4 bg-hyundai-gray-50 p-6">
                 <TrendingUp className="w-8 h-8 text-hyundai-gold" />
                 <div>
-                   <p className="text-[10px] font-black text-hyundai-black uppercase tracking-widest">Growth Recommendation</p>
+                   <p className="text-[10px] font-black text-hyundai-black uppercase tracking-widest">운영 제언 및 피드백</p>
                    <p className="text-xs font-bold text-hyundai-gray-400 leading-tight mt-1">현재 '{stats?.themeDist[0]?.name}' 장르의 신청 비중이 가장 높습니다. <br />해당 테마의 오우라(Aura) 강화를 추천합니다.</p>
                 </div>
              </div>

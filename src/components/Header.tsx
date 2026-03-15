@@ -26,17 +26,12 @@ export default function Header() {
 
   const topNavItems = [
     { name: '브랜드 사이트', href: '#' },
-    { name: '온라인 스토어', href: '#' },
-    { name: '현대백화점 APP', href: '#' },
     { name: 'ENGLISH', href: '#' },
   ];
 
   const mainNavItems = [
-    { name: '지점안내', href: '#' },
-    { name: '쇼핑정보', href: '#' },
-    { name: '서비스/시설', href: '#' },
-    { name: '문화센터', href: '#' },
     { name: '음악신청', href: '/request' },
+    { name: '신청현황', href: '/status' },
   ];
 
   return (
@@ -53,7 +48,7 @@ export default function Header() {
              </Link>
            ))}
            <div className="h-3 w-px bg-hyundai-gray-200"></div>
-           <Link href="/admin" className="text-[10px] font-black text-hyundai-black uppercase tracking-widest">ADMIN PORTAL</Link>
+           <Link href="/admin" className="text-[10px] font-black text-hyundai-black uppercase tracking-widest">관리자 포털</Link>
         </div>
       </div>
 
@@ -104,7 +99,7 @@ export default function Header() {
               href="/request" 
               className="hidden lg:flex h-12 items-center px-8 bg-hyundai-black text-white text-[10px] font-black uppercase tracking-[0.2em] hover:bg-hyundai-gold hover:text-hyundai-black transition-all"
             >
-              Music Service
+              음악 신청 서비스
             </Link>
           </div>
         </div>
@@ -138,9 +133,9 @@ export default function Header() {
            <Link 
              href="/request" 
              onClick={() => setMobileMenuOpen(false)}
-             className="flex w-full h-16 items-center justify-center bg-hyundai-black text-white text-[11px] font-black uppercase tracking-[0.2em]"
+             className="flex h-16 items-center justify-center bg-hyundai-black text-white text-[11px] font-black uppercase tracking-[0.2em]"
            >
-             Music Request Service
+             음악 신청 서비스
            </Link>
         </div>
       </div>

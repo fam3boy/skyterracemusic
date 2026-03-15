@@ -66,7 +66,7 @@ export default function AdminLayout({
       <aside className="w-72 bg-hyundai-black text-white shrink-0 flex flex-col border-r border-white/10 z-50">
         <div className="h-24 px-8 flex items-center border-b border-white/5">
           <Link href="/admin/dashboard" className="flex flex-col gap-0.5 group">
-             <span className="text-hyundai-gold text-[10px] font-black tracking-[0.4em] uppercase block group-hover:text-white transition-colors">Operate System</span>
+             <span className="text-hyundai-gold text-[10px] font-black tracking-[0.4em] uppercase block group-hover:text-white transition-colors">운영 시스템</span>
              <h2 className="text-xl font-black tracking-tighter text-white">SKYTERRACE MUSIC</h2>
           </Link>
         </div>
@@ -101,7 +101,7 @@ export default function AdminLayout({
                </div>
                <div className="overflow-hidden">
                  <p className="text-xs font-black text-white truncate">{session.user?.email}</p>
-                 <p className="text-[10px] font-bold text-hyundai-gray-400 uppercase tracking-widest leading-none mt-1">Administrator</p>
+                  <p className="text-[10px] font-bold text-hyundai-gray-400 uppercase tracking-widest leading-none mt-1">시스템 관리자</p>
                </div>
              </div>
            </div>
@@ -109,9 +109,9 @@ export default function AdminLayout({
             onClick={() => signOut({ callbackUrl: '/admin/login' })}
             className="w-full flex items-center gap-4 px-4 py-3.5 text-xs font-black text-red-400 hover:bg-red-400/10 transition-all uppercase tracking-widest"
           >
-            <LogOut className="w-4 h-4" />
-            Sign Out
-          </button>
+             <LogOut className="w-4 h-4" />
+             로그아웃
+           </button>
         </div>
       </aside>
 
@@ -121,16 +121,16 @@ export default function AdminLayout({
         <header className="h-24 bg-white border-b border-hyundai-gray-200 shrink-0 px-10 flex items-center justify-between z-40">
            <div className="flex items-center gap-4">
               <div className="w-1 h-6 bg-hyundai-black"></div>
-              <div>
-                <h3 className="text-[11px] font-black text-hyundai-gray-400 uppercase tracking-widest mb-0.5">Management Workspace</h3>
-                <p className="text-sm font-black text-hyundai-black uppercase">{navItems.find(i => i.href === pathname)?.name || 'Admin Area'}</p>
-              </div>
+               <div>
+                 <h3 className="text-[11px] font-black text-hyundai-gray-400 uppercase tracking-widest mb-0.5">운영 워크스페이스</h3>
+                 <p className="text-sm font-black text-hyundai-black uppercase">{navItems.find(i => i.href === pathname)?.name || '관리자 영역'}</p>
+               </div>
            </div>
 
            <div className="flex items-center gap-8">
               <div className="flex items-center gap-2 text-hyundai-gray-300">
                 <Search className="w-4 h-4" />
-                <span className="text-[10px] font-black uppercase tracking-widest hidden md:block">Cmd + K for Quick Search</span>
+                 <span className="text-[10px] font-black uppercase tracking-widest hidden md:block">Cmd + K로 빠른 메뉴 검색</span>
               </div>
               <div className="w-px h-6 bg-hyundai-gray-100 hidden md:block"></div>
               <div className="flex items-center gap-6">
@@ -140,8 +140,8 @@ export default function AdminLayout({
                  </button>
                  <div className="flex items-center gap-3">
                     <div className="text-right hidden sm:block">
-                       <p className="text-[10px] font-black text-hyundai-black leading-none mb-1 capitalize">{session.user?.name || 'Administrator'}</p>
-                       <p className="text-[9px] font-bold text-hyundai-gray-400 leading-none">Internal Access</p>
+                        <p className="text-[10px] font-black text-hyundai-black leading-none mb-1 capitalize">{session.user?.name || '관리자'}</p>
+                        <p className="text-[9px] font-bold text-hyundai-gray-400 leading-none">내부 보안 접속 중</p>
                     </div>
                     <div className="w-10 h-10 bg-hyundai-gray-50 border border-hyundai-gray-100 flex items-center justify-center text-hyundai-gray-400">
                        <User className="w-6 h-6" />

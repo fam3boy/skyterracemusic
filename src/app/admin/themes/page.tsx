@@ -226,13 +226,13 @@ export default function ThemesPage() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center border-b-2 border-hyundai-black pb-4">
                     <label className="text-[10px] font-black text-hyundai-black uppercase tracking-[0.2em]">테마 기본 플레이리스트</label>
-                    <button 
-                      type="button"
-                      onClick={() => setTracks([...tracks, { title: '', artist: '', youtube_url: '' }])}
-                      className="px-4 py-2 bg-hyundai-emerald text-white text-[10px] font-black rounded-lg shadow-md hover:scale-105 transition-all uppercase tracking-widest"
-                    >
-                      + 곡 추가하기
-                    </button>
+                      <button 
+                        type="button"
+                        onClick={() => setTracks([...tracks, { title: '', artist: '', youtube_url: '' }])}
+                        className="px-4 py-2 bg-hyundai-emerald text-white text-[10px] font-black rounded-lg shadow-md hover:scale-105 transition-all uppercase tracking-widest"
+                      >
+                        + 신규 곡 추가
+                      </button>
                   </div>
                   
                   <div className="space-y-4">
@@ -302,7 +302,7 @@ export default function ThemesPage() {
                              <svg className="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
                            </div>
                            <input
-                            placeholder="유튜브 URL (선택 사항)"
+                            placeholder="유튜브 미디어 URL (선택 사항)"
                             className="flex-grow px-4 py-2.5 bg-white border border-hyundai-gray-200 rounded-lg text-[10px] font-bold outline-none focus:border-red-400 transition-all text-hyundai-gray-500"
                             value={track.youtube_url || ''}
                             onChange={(e) => {
