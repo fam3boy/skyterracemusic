@@ -1,6 +1,5 @@
 'use client';
 
-import AdminLayout from '@/components/AdminLayout';
 import { useEffect, useState } from 'react';
 import { 
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, 
@@ -8,8 +7,15 @@ import {
 } from 'recharts';
 import { 
   TrendingUp, Download, Filter, FileText, CheckCircle, 
-  Clock, AlertTriangle, Users, Music, Layers, BarChart3 
+  Clock, AlertTriangle, Users, Music, Layers, BarChart3,
+  Calendar, ArrowUpRight, ArrowDownRight, Activity
 } from 'lucide-react';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<any>(null);
@@ -70,286 +76,300 @@ export default function DashboardPage() {
   };
 
   const COLORS = ['#10B981', '#FACC15', '#3B82F6', '#EF4444'];
-  const SOURCE_COLORS = ['#000000', '#D1D5DB'];
 
   if (loading && !stats) return (
-    <AdminLayout>
-      <div className="flex justify-center items-center h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-hyundai-emerald"></div>
-      </div>
-    </AdminLayout>
+    <div className="flex justify-center items-center h-[60vh]">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-hyundai-black"></div>
+    </div>
   );
 
   return (
-    <AdminLayout>
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-10">
+    <div className="space-y-10 animate-in fade-in duration-700">
+      {/* 1. Header Area */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
         <div>
-          <h2 className="text-4xl font-black text-hyundai-black tracking-tight flex items-center gap-3">
-            운영 데이터 대시보드
-            <span className="text-xs bg-hyundai-emerald text-white px-2 py-1 rounded-md uppercase tracking-widest font-bold">Live</span>
+          <h2 className="text-3xl font-black text-hyundai-black tracking-tighter uppercase flex items-center gap-3">
+             Operational Insights
+             <span className="w-2 h-2 rounded-full bg-hyundai-gold animate-pulse"></span>
           </h2>
-          <p className="text-hyundai-gray-500 mt-2 font-medium">데이터 시각화 및 운영 성과 지표 분석 시스템</p>
+          <p className="text-xs font-bold text-hyundai-gray-400 mt-1 uppercase tracking-widest">실시간 운영 데이터 및 성과 지표 대시보드</p>
         </div>
         
-        <button 
-          onClick={exportCSV}
-          className="flex items-center gap-2 px-6 py-3 bg-hyundai-black text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-xl hover:shadow-hyundai-black/20"
-        >
-          <Download className="w-4 h-4" />
-          CSV 리프트 다운로드
-        </button>
+        <div className="flex items-center gap-4">
+           <button 
+             onClick={exportCSV}
+             className="flex items-center gap-2 px-6 py-3 bg-white border border-hyundai-gray-200 text-hyundai-black rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-hyundai-gray-50 transition-all shadow-sm"
+           >
+             <Download className="w-3.5 h-3.5" />
+             Export Report
+           </button>
+        </div>
       </div>
 
-      {/* Filter Bar */}
-      <div className="card-premium p-6 mb-10 border border-hyundai-gray-100 shadow-sm flex flex-wrap items-center gap-6">
-        <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-hyundai-gray-400" />
-          <span className="text-xs font-black uppercase text-hyundai-gray-400 tracking-wider">필터 적용</span>
-        </div>
-        <div className="h-4 w-px bg-hyundai-gray-100 hidden lg:block"></div>
+      {/* 2. Filter Terminal */}
+      <div className="bg-white border border-hyundai-gray-200 p-8 flex flex-wrap items-center gap-8 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-1 h-full bg-hyundai-black"></div>
         
-        <select 
-          className="bg-transparent border-none text-sm font-black text-hyundai-black px-2 outline-none cursor-pointer"
-          value={themeId}
-          onChange={(e) => setThemeId(e.target.value)}
-        >
-          <option value="all">모든 테마</option>
-          {themes.map(t => <option key={t.id} value={t.id}>{t.title}</option>)}
-        </select>
-
-        <div className="flex items-center gap-3">
-          <input 
-            type="date" 
-            className="bg-hyundai-gray-50 border-none text-[10px] font-black px-3 py-2 rounded-lg outline-none uppercase" 
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-          <span className="text-hyundai-gray-300">~</span>
-          <input 
-            type="date" 
-            className="bg-hyundai-gray-50 border-none text-[10px] font-black px-3 py-2 rounded-lg outline-none uppercase" 
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
+        <div className="flex items-center gap-3 text-hyundai-black">
+          <Filter className="w-4 h-4" />
+          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Filter Terminal</span>
         </div>
 
-        <select 
-          className="bg-transparent border-none text-sm font-black text-hyundai-black px-2 outline-none cursor-pointer"
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-        >
-          <option value="all">모든 상태</option>
-          <option value="pending">대기중</option>
-          <option value="approved">승인됨</option>
-          <option value="hold">보류됨</option>
-          <option value="deleted">삭제됨</option>
-        </select>
+        <div className="flex items-center gap-10 flex-1">
+          <div className="space-y-1.5">
+             <label className="text-[9px] font-black text-hyundai-gray-300 uppercase tracking-widest block">Theme Select</label>
+             <select 
+               className="bg-transparent border-none text-xs font-black text-hyundai-black p-0 outline-none cursor-pointer focus:ring-0 uppercase"
+               value={themeId}
+               onChange={(e) => setThemeId(e.target.value)}
+             >
+               <option value="all">ANY THEME</option>
+               {themes.map(t => <option key={t.id} value={t.id}>{t.title.toUpperCase()}</option>)}
+             </select>
+          </div>
+
+          <div className="space-y-1.5">
+             <label className="text-[9px] font-black text-hyundai-gray-300 uppercase tracking-widest block">Period Range</label>
+             <div className="flex items-center gap-3">
+               <input 
+                 type="date" 
+                 className="bg-transparent border-none text-[10px] font-black p-0 outline-none focus:ring-0 uppercase" 
+                 value={startDate}
+                 onChange={(e) => setStartDate(e.target.value)}
+               />
+               <span className="text-hyundai-gray-200 text-xs">/</span>
+               <input 
+                 type="date" 
+                 className="bg-transparent border-none text-[10px] font-black p-0 outline-none focus:ring-0 uppercase" 
+                 value={endDate}
+                 onChange={(e) => setEndDate(e.target.value)}
+               />
+             </div>
+          </div>
+
+          <div className="space-y-1.5">
+             <label className="text-[9px] font-black text-hyundai-gray-300 uppercase tracking-widest block">Process Status</label>
+             <select 
+               className="bg-transparent border-none text-xs font-black text-hyundai-black p-0 outline-none cursor-pointer focus:ring-0 uppercase"
+               value={status}
+               onChange={(e) => setStatus(e.target.value)}
+             >
+               <option value="all">ALL STATES</option>
+               <option value="pending">PENDING</option>
+               <option value="approved">APPROVED</option>
+               <option value="hold">ON HOLD</option>
+               <option value="deleted">REJECTED</option>
+             </select>
+          </div>
+        </div>
 
         {(themeId !== 'all' || startDate || endDate || status !== 'all') && (
           <button 
             onClick={() => { setThemeId('all'); setStartDate(''); setEndDate(''); setStatus('all'); }}
-            className="text-[10px] font-black text-red-500 uppercase tracking-widest hover:underline ml-auto"
+            className="text-[9px] font-black text-red-500 uppercase tracking-widest hover:underline"
           >
-            필터 초기화
+            Clear All
           </button>
         )}
       </div>
 
-      {/* Operational Alerts */}
+      {/* 3. Operational Alerts */}
       {stats && (stats.kpis.approvalRate < 20 || stats.kpis.deletionRate > 30) && (
-        <div className="mb-10 animate-in slide-in-from-top-4 duration-500">
-          <div className="bg-red-50 border-2 border-red-100 p-6 rounded-[2rem] flex items-center gap-6">
-            <div className="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center text-red-600">
-              <AlertTriangle className="w-6 h-6" />
-            </div>
-            <div>
-              <p className="font-black text-red-900 tracking-tight">운영 주의보: 서비스 품질 지표 저하</p>
-              <p className="text-sm text-red-600 font-medium">
-                {stats.kpis.approvalRate < 20 ? `승인율이 현재 ${stats.kpis.approvalRate.toFixed(1)}%로 매우 낮습니다. 선곡 기준을 재검토해 주세요. ` : ''}
-                {stats.kpis.deletionRate > 30 ? `삭제율이 ${stats.kpis.deletionRate.toFixed(1)}%로 높습니다. 이상 유입 여부를 확인하십시오.` : ''}
-              </p>
-            </div>
+        <div className="bg-red-50 border border-red-100 p-6 flex items-center gap-6 animate-in slide-in-from-top-4 duration-500">
+          <div className="w-10 h-10 bg-white border border-red-100 flex items-center justify-center text-red-600 shadow-sm">
+            <AlertTriangle className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-[10px] font-black text-red-900 tracking-widest uppercase mb-0.5">Operate Alert: Performance Issue Detected</p>
+            <p className="text-xs font-bold text-red-600 leading-tight">
+              {stats.kpis.approvalRate < 20 ? `승인율이 ${stats.kpis.approvalRate.toFixed(1)}%로 임계치 미달입니다. ` : ''}
+              {stats.kpis.deletionRate > 30 ? `삭제율이 ${stats.kpis.deletionRate.toFixed(1)}%로 비정상 유입이 의심됩니다.` : ''}
+            </p>
           </div>
         </div>
       )}
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <KPIItem label="전체 신청" value={stats?.kpis.total} icon={<Users />} color="black" />
-        <KPIItem label="승인완료" value={stats?.kpis.approved} sub={`율 ${stats?.kpis.approvalRate.toFixed(1)}%`} icon={<CheckCircle />} color="emerald" />
+      {/* 4. KPI Scorecard */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-hyundai-gray-200 border border-hyundai-gray-200">
+        <KPIItem label="Total Requests" value={stats?.kpis.total} icon={<Activity />} trend="up" />
+        <KPIItem label="Approval Rate" value={`${stats?.kpis.approvalRate.toFixed(1)}%`} icon={<CheckCircle />} trend="none" />
+        <KPIItem label="Source Ratio" value={`${((stats?.kpis.with_link / stats?.kpis.total) * 100).toFixed(1)}%`} icon={<Music />} trend="none" />
         
-        {/* Instant Mail Card (Prominent) */}
-        <div className="card-premium p-8 border-l-4 border-l-hyundai-gold shadow-xl shadow-hyundai-gold/5 lg:col-span-2 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex-grow">
-            <div className="flex justify-between items-center mb-4">
-              <p className="text-xs font-black text-hyundai-gray-400 uppercase tracking-[0.2em]">주간 리포트 즉시 발송</p>
-              <FileText className="w-5 h-5 text-hyundai-gold" />
-            </div>
-            <p className="text-4xl font-black text-hyundai-black tracking-tighter">
-              {stats?.kpis.approved} <span className="text-sm font-bold text-hyundai-gray-400">곡 대기 중</span>
-            </p>
-            <p className="text-[10px] text-hyundai-gray-400 font-bold mt-2 uppercase">현재까지 승인된 모든 곡을 즉시 발송합니다.</p>
-          </div>
-          <button 
-            onClick={async () => {
-              if (confirm('현재까지 승인된 곡들을 포함하여 주간 리포트를 즉시 발송하시겠습니까?')) {
-                const res = await fetch('/api/cron/weekly-mail?forceCurrent=true');
-                if (res.ok) alert('성공적으로 발송되었습니다.'); else alert('발송 중 오류가 발생했습니다.');
-              }
-            }}
-            className="w-full md:w-auto px-8 py-4 bg-hyundai-gold text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-hyundai-gold/20"
-          >
-            지금 즉시 발송하기
-          </button>
+        {/* Instant Action */}
+        <div className="bg-hyundai-black p-8 flex flex-col justify-between group">
+           <div className="flex justify-between items-start">
+             <span className="text-[9px] font-black text-hyundai-gray-400 uppercase tracking-widest">Batch Process</span>
+             <FileText className="w-4 h-4 text-hyundai-gold" />
+           </div>
+           <div>
+              <p className="text-xs font-bold text-white mb-4">현재 승인된 {stats?.kpis.approved}곡을 <br />보고서로 즉시 발송합니다.</p>
+              <button 
+                onClick={async () => {
+                  if (confirm('주간 리포트를 즉시 발송하시겠습니까?')) {
+                    const res = await fetch('/api/cron/weekly-mail?forceCurrent=true');
+                    if (res.ok) alert('성공적으로 발송되었습니다.'); else alert('발송 중 오류가 발생했습니다.');
+                  }
+                }}
+                className="w-full py-3 bg-hyundai-gold text-hyundai-black text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all shadow-lg shadow-hyundai-gold/10"
+              >
+                Execute Dispatch
+              </button>
+           </div>
         </div>
       </div>
 
-      {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
-        <ChartCard title="신청 건수 트렌드" className="lg:col-span-2 h-[400px]">
+      {/* 5. Visualization Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <ChartCard title="Daily Traffic Pipeline" className="lg:col-span-8 h-[450px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={stats?.trends}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
-              <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900}} dy={10} />
-              <YAxis axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900}} />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F1F1" />
+              <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 900, fill: '#999'}} dy={10} />
+              <YAxis axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 900, fill: '#999'}} />
               <Tooltip 
-                contentStyle={{borderRadius: '1.5rem', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', fontWeight: 900}}
-                itemStyle={{fontSize: '12px'}}
+                contentStyle={{borderRadius: '0', border: '1px solid #eee', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontWeight: 900}}
+                itemStyle={{fontSize: '11px', textTransform: 'uppercase'}}
               />
-              <Legend verticalAlign="top" height={36} wrapperStyle={{fontSize: '10px', fontWeight: 900, textTransform: 'uppercase'}} />
-              <Line type="monotone" name="전체 신청" dataKey="count" stroke="#000000" strokeWidth={4} dot={{r: 4, strokeWidth: 2, fill: '#fff'}} activeDot={{r: 8}} />
-              <Line type="monotone" name="승인 건수" dataKey="approved_count" stroke="#10B981" strokeWidth={4} dot={{r: 4, strokeWidth: 2, fill: '#fff'}} />
+              <Legend verticalAlign="top" align="right" height={36} iconType="rect" wrapperStyle={{fontSize: '9px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em'}} />
+              <Line type="step" name="Volume" dataKey="count" stroke="#000000" strokeWidth={3} dot={false} activeDot={{r: 6, strokeWidth: 0}} />
+              <Line type="step" name="Approved" dataKey="approved_count" stroke="#D4AF37" strokeWidth={3} dot={false} />
             </LineChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="신청 상태 분포" className="h-[400px]">
+        <ChartCard title="Task Outcome Dist." className="lg:col-span-4 h-[450px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={stats?.statusDist}
-                innerRadius={70}
-                outerRadius={100}
-                paddingAngle={5}
+                innerRadius={65}
+                outerRadius={95}
+                paddingAngle={8}
                 dataKey="value"
+                stroke="none"
               >
                 {stats?.statusDist.map((entry: any, index: number) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
               <Tooltip />
-              <Legend verticalAlign="bottom" height={36} wrapperStyle={{fontSize: '10px', fontWeight: 900}} />
+              <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{fontSize: '9px', fontWeight: 900, textTransform: 'uppercase'}} />
             </PieChart>
           </ResponsiveContainer>
         </ChartCard>
-      </div>
 
-      {/* Charts Row 2 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-        <ChartCard title="인기 아티스트 TOP 10" className="h-[400px]">
+        <ChartCard title="High Performance Artists" className="lg:col-span-6 h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={stats?.topArtists} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#G3F4F6" />
+              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#F1F1F1" />
               <XAxis type="number" hide />
-              <YAxis dataKey="artist" type="category" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900}} width={100} />
+              <YAxis dataKey="artist" type="category" axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 900, fill: '#000'}} width={100} />
               <Tooltip />
-              <Bar dataKey="count" fill="#000000" radius={[0, 10, 10, 0]} barSize={20} />
+              <Bar dataKey="count" fill="#000000" radius={[0, 4, 4, 0]} barSize={16} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="시간대별 분포" className="h-[400px]">
+        <ChartCard title="Peak Usage Matrix (Hourly)" className="lg:col-span-6 h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={stats?.hourlyDist}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
-              <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900}} />
-              <YAxis axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900}} />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F1F1" />
+              <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 900, fill: '#000'}} />
+              <YAxis axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 900, fill: '#999'}} />
               <Tooltip />
-              <Bar dataKey="count" fill="#10B981" radius={[10, 10, 0, 0]} />
+              <Bar dataKey="count" fill="#D4AF37" radius={[4, 4, 0, 0]} barSize={24} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
       </div>
 
-      {/* Tables Row */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-        <div className="card-premium p-8">
-          <div className="flex justify-between items-center mb-8">
-             <h3 className="text-xl font-black flex items-center gap-3">
-               <Music className="w-5 h-5" /> 최다 신청 곡 리스트
+      {/* 6. Detail View */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-px bg-hyundai-gray-200 border border-hyundai-gray-200">
+        <div className="bg-white p-10">
+          <div className="flex justify-between items-center mb-10">
+             <h3 className="text-sm font-black flex items-center gap-3 uppercase tracking-widest text-hyundai-black">
+                <Music className="w-4 h-4 text-hyundai-gold" /> Best Performing Tracks
              </h3>
-             <span className="text-[10px] font-black text-hyundai-gray-400 uppercase tracking-widest">TOP 10</span>
+             <span className="text-[9px] font-black text-white bg-hyundai-black px-2 py-1 uppercase tracking-widest">TOP 10 Ranking</span>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-2">
             {stats?.topSongs.map((song: any, i: number) => (
-              <div key={i} className="flex items-center justify-between p-4 bg-hyundai-gray-50 rounded-2xl hover:bg-white border border-transparent hover:border-hyundai-gray-100 transition-all shadow-sm shadow-transparent hover:shadow-lg">
-                <div className="flex items-center gap-4">
-                  <span className="text-xl font-black text-hyundai-gray-200 w-6">{(i + 1).toString().padStart(2, '0')}</span>
+              <div key={i} className="flex items-center justify-between p-4 bg-hyundai-gray-50 border border-hyundai-gray-100 hover:bg-white hover:shadow-xl hover:shadow-black/5 hover:-translate-y-0.5 transition-all group">
+                <div className="flex items-center gap-5">
+                  <span className="text-lg font-black text-hyundai-gray-200 w-6 group-hover:text-hyundai-gold transition-colors">{(i + 1).toString().padStart(2, '0')}</span>
                   <div>
-                    <p className="font-black text-hyundai-black text-sm">{song.title}</p>
-                    <p className="text-[10px] font-bold text-hyundai-gray-400 uppercase tracking-tight">{song.artist}</p>
+                    <p className="font-black text-hyundai-black text-xs uppercase tracking-tight">{song.title}</p>
+                    <p className="text-[9px] font-bold text-hyundai-gray-400 uppercase tracking-widest leading-none mt-1">{song.artist}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-lg font-black text-hyundai-black">{song.count}<span className="text-xs ml-1 text-hyundai-gray-400">회</span></p>
+                  <p className="text-lg font-black text-hyundai-black tracking-tighter">{song.count}<span className="text-[9px] ml-1 text-hyundai-gray-300 uppercase">Requests</span></p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="card-premium p-8">
-          <div className="flex justify-between items-center mb-8">
-             <h3 className="text-xl font-black flex items-center gap-3">
-               <Layers className="w-5 h-5" /> 테마별 선호도
+        <div className="bg-white p-10">
+          <div className="flex justify-between items-center mb-10">
+             <h3 className="text-sm font-black flex items-center gap-3 uppercase tracking-widest text-hyundai-black">
+                <Layers className="w-4 h-4 text-hyundai-gold" /> Theme Preference Map
              </h3>
-             <BarChart3 className="w-4 h-4 text-hyundai-gray-300" />
+             <Activity className="w-4 h-4 text-hyundai-gray-200" />
           </div>
-          <div className="h-[400px]">
+          <div className="h-[450px]">
             <ResponsiveContainer width="100%" height="100%">
                <BarChart data={stats?.themeDist} layout="vertical">
                  <XAxis type="number" hide />
-                 <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900}} width={120} />
+                 <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 900, fill: '#000'}} width={120} />
                  <Tooltip />
-                 <Bar dataKey="value" fill="#FACC15" radius={[0, 10, 10, 0]} />
+                 <Bar dataKey="value" fill="#000000" radius={[0, 4, 4, 0]} barSize={20} />
                </BarChart>
             </ResponsiveContainer>
           </div>
+          <div className="mt-8 border-t border-hyundai-gray-100 pt-8">
+             <div className="flex items-center gap-4 bg-hyundai-gray-50 p-6">
+                <TrendingUp className="w-8 h-8 text-hyundai-gold" />
+                <div>
+                   <p className="text-[10px] font-black text-hyundai-black uppercase tracking-widest">Growth Recommendation</p>
+                   <p className="text-xs font-bold text-hyundai-gray-400 leading-tight mt-1">현재 '{stats?.themeDist[0]?.name}' 장르의 신청 비중이 가장 높습니다. <br />해당 테마의 오우라(Aura) 강화를 추천합니다.</p>
+                </div>
+             </div>
+          </div>
         </div>
       </div>
-    </AdminLayout>
+    </div>
   );
 }
 
-function KPIItem({ label, value, sub, icon, color }: any) {
-  const colorMap = {
-    black: 'border-l-hyundai-black text-hyundai-black',
-    emerald: 'border-l-hyundai-emerald text-hyundai-emerald',
-    gold: 'border-l-hyundai-gold text-hyundai-gold',
-    red: 'border-l-red-500 text-red-500'
-  };
-
+function KPIItem({ label, value, icon, trend }: any) {
   return (
-    <div className={`card-premium p-8 border-l-4 ${colorMap[color as keyof typeof colorMap]} shadow-xl shadow-hyundai-black/5`}>
-      <div className="flex justify-between items-start mb-4">
-        <p className="text-xs font-black text-hyundai-gray-400 uppercase tracking-[0.2em]">{label}</p>
-        <div className="text-hyundai-gray-300">{icon}</div>
+    <div className="bg-white p-8 group overflow-hidden relative">
+      <div className="flex justify-between items-start mb-6">
+        <span className="text-[9px] font-black text-hyundai-gray-400 uppercase tracking-[0.2em]">{label}</span>
+        <div className="text-hyundai-gray-200 group-hover:text-hyundai-gold transition-colors">{icon}</div>
       </div>
       <div className="flex items-baseline gap-2">
         <p className="text-4xl font-black tracking-tighter text-hyundai-black">{value}</p>
-        {sub && <span className="text-xs font-black uppercase text-hyundai-gray-400">{sub}</span>}
+        <div className="flex items-center">
+           {trend === 'up' && <ArrowUpRight className="w-4 h-4 text-hyundai-gold" />}
+           {trend === 'down' && <ArrowDownRight className="w-4 h-4 text-red-500" />}
+        </div>
       </div>
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-hyundai-gold/0 group-hover:bg-hyundai-gold transition-all duration-500"></div>
     </div>
   );
 }
 
 function ChartCard({ title, children, className }: any) {
   return (
-    <div className={`card-premium p-8 flex flex-col ${className}`}>
-      <h3 className="text-sm font-black text-hyundai-black uppercase tracking-widest mb-8 flex items-center gap-3">
-        <div className="w-1.5 h-1.5 rounded-full bg-hyundai-emerald"></div>
-        {title}
-      </h3>
+    <div className={`bg-white border border-hyundai-gray-200 shadow-sm p-10 flex flex-col ${className}`}>
+      <div className="flex items-center gap-3 mb-10">
+        <div className="w-1.5 h-6 bg-hyundai-black"></div>
+        <h3 className="text-[11px] font-black text-hyundai-black uppercase tracking-[0.2em]">
+          {title}
+        </h3>
+      </div>
       <div className="flex-grow">
         {children}
       </div>

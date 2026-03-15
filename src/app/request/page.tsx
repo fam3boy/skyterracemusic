@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { isValidYouTubeUrl } from '@/utils/youtube';
 import { useRouter } from 'next/navigation';
-import { Search, Youtube, Music, User, Send, CheckCircle, Copy, ArrowLeft, AlertCircle, Sparkles } from 'lucide-react';
+import { Search, Youtube, Music, User, Send, CheckCircle, Copy, ArrowLeft, AlertCircle, Sparkles, ChevronRight, Info, Disc, Clock } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -40,7 +40,7 @@ export default function RequestPage() {
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [duplicateFound, setDuplicateFound] = useState(false);
-  const [activeThemeId, setActiveThemeId] = useState<string | null>(null);
+  const [activeTheme, setActiveTheme] = useState<any>(null);
 
   const debouncedTitle = useDebounce(formData.title, 500);
   const debouncedArtist = useDebounce(formData.artist, 500);
@@ -53,7 +53,7 @@ export default function RequestPage() {
         if (res.ok) {
           const themes = await res.json();
           const active = themes.find((t: any) => t.is_active);
-          if (active) setActiveThemeId(active.id);
+          if (active) setActiveTheme(active);
         }
       } catch (e) {
         console.error('Failed to init themes', e);
@@ -71,12 +71,12 @@ export default function RequestPage() {
       setShowSuggestions(false);
     }
 
-    if (debouncedTitle.length >= 2 && debouncedArtist.length >= 2 && activeThemeId) {
+    if (debouncedTitle.length >= 2 && debouncedArtist.length >= 2 && activeTheme) {
       checkDuplicate(debouncedTitle, debouncedArtist);
     } else {
       setDuplicateFound(false);
     }
-  }, [debouncedTitle, debouncedArtist, activeThemeId]);
+  }, [debouncedTitle, debouncedArtist, activeTheme]);
 
   const fetchSuggestions = async (query: string) => {
     try {
@@ -93,7 +93,7 @@ export default function RequestPage() {
 
   const checkDuplicate = async (title: string, artist: string) => {
     try {
-      const res = await fetch(`/api/requests?theme_id=${activeThemeId}&title=${encodeURIComponent(title)}&artist=${encodeURIComponent(artist)}`);
+      const res = await fetch(`/api/requests?theme_id=${activeTheme.id}&title=${encodeURIComponent(title)}&artist=${encodeURIComponent(artist)}`);
       if (res.ok) {
         const data = await res.json();
         setDuplicateFound(data.isDuplicate);
@@ -114,8 +114,8 @@ export default function RequestPage() {
     setError(null);
 
     // Final Validation
-    if (!formData.title || !formData.artist) {
-      setError('곡명과 아티스트명은 필수입니다.');
+    if (!formData.title && inputMode === 'manual') {
+      setError('곡명을 입력해주세요.');
       setLoading(false);
       return;
     }
@@ -144,202 +144,276 @@ export default function RequestPage() {
   };
 
   return (
-    <div className="max-w-xl mx-auto px-6 py-8 md:py-16">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-10">
-        <Link href="/" className="p-2 hover:bg-hyundai-gray-100 rounded-full transition-colors order-first">
-          <ArrowLeft className="w-6 h-6 text-hyundai-gray-500" />
-        </Link>
-        <div className="text-center absolute left-1/2 -translate-x-1/2">
-           <div className="bg-hyundai-emerald/10 text-hyundai-emerald px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-2 inline-block">
-             Song Request
+    <div className="bg-white min-h-screen pb-40">
+      {/* 1. Industrial Header (Breadcrumbs included) */}
+      <div className="border-b border-hyundai-gray-100 bg-white">
+        <div className="portal-container">
+           <div className="h-14 flex items-center gap-4 text-[10px] font-black text-hyundai-gray-400 uppercase tracking-widest">
+              <Link href="/" className="hover:text-hyundai-black transition-colors">Digital Portal</Link>
+              <span className="w-1.5 h-px bg-hyundai-gray-200"></span>
+              <span className="text-hyundai-black">Music Request Center</span>
            </div>
         </div>
       </div>
 
-      <div className="text-center mb-12 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-        <h1 className="text-3xl font-black text-hyundai-black mb-3 leading-tight">스카이테라스에<br />당신의 노래를 들려주세요</h1>
-        <p className="text-hyundai-gray-500 text-sm">함께 나누고 싶은 고품격 아울렛의 감성</p>
-      </div>
-
-      {/* Input Mode Tabs */}
-      <div className="flex bg-hyundai-gray-100 p-1.5 rounded-2xl mb-8 border border-hyundai-gray-200">
-        <button 
-          onClick={() => setInputMode('link')}
-          className={cn(
-            "flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all",
-            inputMode === 'link' ? "bg-white text-hyundai-black shadow-sm" : "text-hyundai-gray-400 hover:text-hyundai-gray-500"
-          )}
-        >
-          <Youtube className="w-4 h-4" />
-          유튜브 링크로 신청
-        </button>
-        <button 
-          onClick={() => setInputMode('manual')}
-          className={cn(
-            "flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all",
-            inputMode === 'manual' ? "bg-white text-hyundai-black shadow-sm" : "text-hyundai-gray-400 hover:text-hyundai-gray-500"
-          )}
-        >
-          <Music className="w-4 h-4" />
-          직접 입력
-        </button>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-8">
-        {error && (
-          <div className="bg-red-50 border border-red-100 p-4 rounded-xl flex items-center gap-3 text-red-600 animate-in shake duration-500">
-            <AlertCircle className="w-5 h-5 shrink-0" />
-            <p className="text-xs font-bold leading-tight">{error}</p>
-          </div>
-        )}
-
-        {/* Dynamic Fields based on Mode */}
-        {inputMode === 'link' ? (
-          <div className="card-premium p-6 space-y-6">
-            <div className="space-y-4">
-               <label className="flex items-center gap-2 text-xs font-black text-hyundai-gray-400 uppercase tracking-widest">
-                 <Youtube className="w-3.5 h-3.5 text-red-500" />
-                 YouTube URL
-               </label>
-               <input 
-                 type="url" 
-                 placeholder="https://www.youtube.com/watch?v=..."
-                 className="w-full bg-hyundai-gray-100 border-none rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-hyundai-emerald transition-all"
-                 value={formData.youtube_url}
-                 onChange={(e) => setFormData({...formData, youtube_url: e.target.value})}
-               />
-               <p className="text-[10px] text-hyundai-gray-400 leading-relaxed italic">* 유튜브 영상 하단의 '공유' 버튼을 눌러 링크를 복사해 오시면 정확합니다.</p>
-            </div>
-          </div>
-        ) : (
-          <div className="card-premium p-6 space-y-6">
-            <div className="grid grid-cols-1 gap-6 relative">
+      <div className="portal-container pt-24 md:pt-32">
+        {/* 2. Section Hero */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-16 border-b-4 border-hyundai-black pb-16 mb-24">
+           <div className="space-y-6 max-w-3xl">
               <div className="space-y-4">
-                <label className="flex items-center gap-2 text-xs font-black text-hyundai-gray-400 uppercase tracking-widest">
-                  <Music className="w-3.5 h-3.5 text-hyundai-emerald" />
-                  Song Title
-                </label>
-                <div className="relative">
-                  <input 
-                    type="text" 
-                    placeholder="곡 제목을 입력하세요"
-                    className="w-full bg-hyundai-gray-100 border-none rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-hyundai-emerald transition-all"
-                    value={formData.title}
-                    onChange={(e) => setFormData({...formData, title: e.target.value})}
-                    onFocus={() => setShowSuggestions(suggestions.length > 0)}
-                  />
-                  {showSuggestions && (
-                    <div className="absolute top-[calc(100%+8px)] left-0 right-0 bg-white shadow-2xl rounded-2xl border border-hyundai-gray-100 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
-                       <div className="px-4 py-3 bg-hyundai-gray-100 text-[10px] font-black uppercase text-hyundai-gray-400 flex justify-between">
-                         <span>Recommended</span>
-                         <Sparkles className="w-3 h-3" />
-                       </div>
-                       <div className="max-h-48 overflow-y-auto">
-                         {suggestions.map((s, i) => (
-                           <button 
-                             key={i} 
-                             type="button"
-                             onClick={() => selectSuggestion(s)}
-                             className="w-full px-5 py-3 text-left hover:bg-hyundai-gray-50 transition-colors flex flex-col gap-0.5"
-                           >
-                             <span className="text-sm font-bold text-hyundai-black">{s.title}</span>
-                             <span className="text-xs text-hyundai-gray-400">{s.artist}</span>
-                           </button>
-                         ))}
-                       </div>
-                    </div>
-                  )}
-                </div>
+                 <span className="text-hyundai-gold text-[12px] font-black tracking-[0.4em] uppercase block animate-in fade-in slide-in-from-bottom-2 duration-500">Service Registration</span>
+                 <h1 className="text-5xl md:text-8xl font-black text-hyundai-black tracking-[-0.04em] leading-[0.9] uppercase animate-in fade-in slide-in-from-bottom-4 duration-700">Digital <br />Audience <br />Participation</h1>
               </div>
-
-              <div className="space-y-4">
-                <label className="flex items-center gap-2 text-xs font-black text-hyundai-gray-400 uppercase tracking-widest">
-                  <User className="w-3.5 h-3.5 text-hyundai-emerald" />
-                  Artist
-                </label>
-                <input 
-                  type="text" 
-                  placeholder="가수 이름을 입력하세요"
-                  className="w-full bg-hyundai-gray-100 border-none rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-hyundai-emerald transition-all"
-                  value={formData.artist}
-                  onChange={(e) => setFormData({...formData, artist: e.target.value})}
-                />
+              <p className="text-lg md:text-xl font-medium text-hyundai-gray-500 leading-relaxed animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300">함께 나누고 싶은 고품격 아울렛의 감성, 당신의 노래를 들려주세요. <br className="hidden md:block" />현대백화점 대전점 스카이테라스의 소리를 당신이 채웁니다.</p>
+           </div>
+           
+           <div className="flex flex-col gap-6 w-full md:w-auto">
+              <div className="bg-hyundai-gray-50 p-8 border border-hyundai-gray-100 space-y-4">
+                 <div className="flex items-center gap-3">
+                    <Clock className="w-5 h-5 text-hyundai-gold" />
+                    <span className="text-[11px] font-black uppercase tracking-widest text-hyundai-black">Audit Schedule</span>
+                 </div>
+                 <div className="space-y-1">
+                    <p className="text-[13px] font-bold text-hyundai-black">매주 목요일 19:00</p>
+                    <p className="text-[11px] font-medium text-hyundai-gray-400">일괄 검토 및 승인 상태 업데이트</p>
+                 </div>
               </div>
-
-              {duplicateFound && (
-                <div className="bg-hyundai-gold/10 border border-hyundai-gold/20 p-4 rounded-xl flex items-center gap-3 animate-in fade-in zoom-in-95 duration-500">
-                   <AlertCircle className="w-4 h-4 text-hyundai-gold shrink-0" />
-                   <p className="text-[11px] font-bold text-hyundai-gold leading-tight">앗! 이미 누군가 신청한 곡입니다. <br /><span className="opacity-70 font-medium">관리자가 중복 승인할 가능성이 낮으니 확인 부탁드려요.</span></p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Common Optional Fields */}
-        <div className="space-y-6">
-          <div className="space-y-4">
-            <label className="flex items-center gap-2 text-xs font-black text-hyundai-gray-400 uppercase tracking-widest ml-4">
-               Requester Info
-            </label>
-            <div className="grid grid-cols-2 gap-4">
-              <input 
-                type="text" 
-                placeholder="성함 (익명가능)"
-                className="w-full bg-white border border-hyundai-gray-200 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-hyundai-emerald"
-                value={formData.requester_name}
-                onChange={(e) => setFormData({...formData, requester_name: e.target.value})}
-              />
-              <input 
-                type="text" 
-                placeholder="연락처 (선택)"
-                className="w-full bg-white border border-hyundai-gray-200 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-hyundai-emerald"
-                value={formData.requester_contact}
-                onChange={(e) => setFormData({...formData, requester_contact: e.target.value})}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <label className="flex items-center gap-2 text-xs font-black text-hyundai-gray-400 uppercase tracking-widest ml-4">
-               Your Story
-            </label>
-            <textarea 
-              rows={4}
-              placeholder="곡과 관련된 추억이나 신청 이유를 자유롭게 적어주세요 (최대 200자)"
-              className="w-full bg-white border border-hyundai-gray-200 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-hyundai-emerald resize-none"
-              maxLength={200}
-              value={formData.story}
-              onChange={(e) => setFormData({...formData, story: e.target.value})}
-            />
-          </div>
+              <div className="bg-hyundai-black p-8 text-white space-y-1">
+                 <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">Current Theme</p>
+                 <p className="text-lg font-black uppercase tracking-tight">{activeTheme ? activeTheme.title : "GENERAL SELECTION"}</p>
+              </div>
+           </div>
         </div>
 
-        <button 
-          type="submit" 
-          disabled={loading}
-          className={cn(
-            "w-full py-5 rounded-2xl font-black text-lg shadow-xl shadow-hyundai-emerald/20 transition-all flex items-center justify-center gap-3",
-            loading ? "bg-hyundai-gray-200 text-hyundai-gray-400 cursor-not-allowed" : "bg-hyundai-emerald text-white hover:bg-hyundai-black hover:scale-[1.02] active:scale-[0.98]"
-          )}
-        >
-          {loading ? (
-            <div className="animate-spin rounded-full h-6 w-6 border-2 border-white/30 border-t-white"></div>
-          ) : (
-            <>
-              신청 완료하기
-              <Send className="w-5 h-5" />
-            </>
-          )}
-        </button>
-      </form>
+        {/* 3. Operational Form */}
+        <div className="max-w-6xl mx-auto">
+           <form onSubmit={handleSubmit} className="space-y-32">
+              {error && (
+                <div className="p-10 bg-red-50 border-l-8 border-red-600 flex items-center gap-6 text-red-600 animate-in slide-in-from-top-4">
+                  <AlertCircle className="w-8 h-8 shrink-0" />
+                  <p className="text-lg font-black uppercase tracking-tight leading-none">{error}</p>
+                </div>
+              )}
 
-      <div className="mt-12 text-center">
-        <p className="text-[11px] text-hyundai-gray-400 leading-relaxed uppercase tracking-tighter">
-          현대프리미엄아울렛 대전점 스카이테라스 신청곡 운영실<br />
-          © HYUNDAI PREMIUM OUTLET DAEJEON
-        </p>
+              {/* Step 01: Methodology */}
+              <div className="space-y-16">
+                 <div className="space-y-4">
+                    <span className="text-3xl font-black text-hyundai-gray-200 uppercase tracking-tighter block italic">01/Methodology</span>
+                    <h3 className="text-4xl font-black text-hyundai-black uppercase tracking-tight">Select Input Protocol</h3>
+                 </div>
+                 
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-hyundai-gray-100 border border-hyundai-gray-100 overflow-hidden">
+                    <button 
+                      type="button"
+                      onClick={() => setInputMode('link')}
+                      className={cn(
+                        "flex flex-col items-center justify-center gap-6 py-24 transition-all duration-700 relative group overflow-hidden",
+                        inputMode === 'link' ? "bg-white text-hyundai-black" : "bg-transparent text-hyundai-gray-300 hover:text-hyundai-gray-500"
+                      )}
+                    >
+                       <Youtube className={cn("w-12 h-12 transition-all duration-700", inputMode === 'link' ? "scale-110 text-red-600" : "opacity-30")} />
+                       <div className="text-center space-y-1 relative z-10">
+                          <span className="text-[11px] font-black uppercase tracking-[0.3em] block">Protocol A</span>
+                          <span className="text-xl font-black uppercase tracking-tight">YouTube Integration</span>
+                       </div>
+                       {inputMode === 'link' && <div className="absolute bottom-0 left-0 right-0 h-2 bg-hyundai-black"></div>}
+                    </button>
+                    
+                    <button 
+                      type="button"
+                      onClick={() => setInputMode('manual')}
+                      className={cn(
+                        "flex flex-col items-center justify-center gap-6 py-24 transition-all duration-700 relative group overflow-hidden",
+                        inputMode === 'manual' ? "bg-white text-hyundai-black" : "bg-transparent text-hyundai-gray-300 hover:text-hyundai-gray-500"
+                      )}
+                    >
+                       <Disc className={cn("w-12 h-12 transition-all duration-700", inputMode === 'manual' ? "scale-110 text-hyundai-emerald animate-[spin_4s_linear_infinite]" : "opacity-30")} />
+                       <div className="text-center space-y-1 relative z-10">
+                          <span className="text-[11px] font-black uppercase tracking-[0.3em] block">Protocol B</span>
+                          <span className="text-xl font-black uppercase tracking-tight">Manual Metadata Entry</span>
+                       </div>
+                       {inputMode === 'manual' && <div className="absolute bottom-0 left-0 right-0 h-2 bg-hyundai-black"></div>}
+                    </button>
+                 </div>
+              </div>
+
+              {/* Step 02: Track Identity */}
+              <div className="space-y-16">
+                 <div className="space-y-4">
+                    <span className="text-3xl font-black text-hyundai-gray-200 uppercase tracking-tighter block italic">02/Track Identity</span>
+                    <h3 className="text-4xl font-black text-hyundai-black uppercase tracking-tight">Capture Audio Assets</h3>
+                 </div>
+
+                 <div className="grid grid-cols-1 gap-12">
+                    {inputMode === 'link' ? (
+                       <div className="space-y-6">
+                          <div className="space-y-4">
+                             <div className="flex justify-between items-end">
+                                <label className="text-[11px] font-black text-hyundai-gray-400 uppercase tracking-[0.3em]">Youtube Resource Link</label>
+                                <span className="text-[10px] font-bold text-hyundai-emerald uppercase tracking-widest">Global Link Verified</span>
+                             </div>
+                             <div className="relative">
+                                <input 
+                                  type="url" 
+                                  placeholder="HTTPS://WWW.YOUTUBE.COM/WATCH?V=REFERENCE_ID"
+                                  className="w-full h-24 bg-hyundai-gray-50 border-none px-10 text-xl font-black uppercase tracking-tight focus:bg-white focus:ring-4 focus:ring-hyundai-black/5 transition-all outline-none placeholder:text-hyundai-gray-200"
+                                  value={formData.youtube_url}
+                                  onChange={(e) => setFormData({...formData, youtube_url: e.target.value})}
+                                />
+                                <div className="absolute right-10 top-1/2 -translate-y-1/2 w-10 h-10 bg-hyundai-black flex items-center justify-center text-white">
+                                   <Search className="w-5 h-5" strokeWidth={2.5} />
+                                </div>
+                             </div>
+                             <div className="flex gap-2">
+                                <Info className="w-4 h-4 text-hyundai-gold mt-0.5" />
+                                <p className="text-[11px] text-hyundai-gray-400 font-medium leading-relaxed uppercase tracking-wider italic">유튜브 영상 하단의 공유 버튼을 통해 복사한 URL을 입력해 주세요. 정확한 링크는 선곡 승인 확률을 높입니다.</p>
+                             </div>
+                          </div>
+                       </div>
+                    ) : (
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                          <div className="space-y-4 relative">
+                             <label className="text-[11px] font-black text-hyundai-gray-400 uppercase tracking-[0.3em]">Track Title</label>
+                             <input 
+                               type="text" 
+                               placeholder="예) 봄이 좋냐"
+                               className="w-full h-20 bg-hyundai-gray-50 border-none px-8 text-xl font-black uppercase tracking-tight focus:bg-white focus:ring-4 focus:ring-hyundai-black/5 transition-all outline-none"
+                               value={formData.title}
+                               onChange={(e) => setFormData({...formData, title: e.target.value})}
+                               onFocus={() => setShowSuggestions(suggestions.length > 0)}
+                             />
+                             {showSuggestions && (
+                               <div className="absolute top-[calc(100%+8px)] left-0 right-0 bg-white shadow-3xl border border-hyundai-gray-100 z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+                                  <div className="divide-y divide-hyundai-gray-50">
+                                    {suggestions.map((s, i) => (
+                                      <button 
+                                        key={i} 
+                                        type="button"
+                                        onClick={() => selectSuggestion(s)}
+                                        className="w-full px-8 py-6 text-left hover:bg-hyundai-gray-50 transition-all flex flex-col gap-1"
+                                      >
+                                        <span className="text-lg font-black text-hyundai-black uppercase tracking-tight">{s.title}</span>
+                                        <span className="text-[11px] text-hyundai-gray-400 font-bold uppercase tracking-widest">{s.artist}</span>
+                                      </button>
+                                    ))}
+                                  </div>
+                               </div>
+                             )}
+                          </div>
+                          <div className="space-y-4">
+                             <label className="text-[11px] font-black text-hyundai-gray-400 uppercase tracking-[0.3em]">Lead Artist</label>
+                             <input 
+                               type="text" 
+                               placeholder="예) 10CM"
+                               className="w-full h-20 bg-hyundai-gray-50 border-none px-8 text-xl font-black uppercase tracking-tight focus:bg-white focus:ring-4 focus:ring-hyundai-black/5 transition-all outline-none"
+                               value={formData.artist}
+                               onChange={(e) => setFormData({...formData, artist: e.target.value})}
+                             />
+                          </div>
+                       </div>
+                    )}
+                 </div>
+
+                 {duplicateFound && (
+                   <div className="p-10 bg-hyundai-gold/5 border border-hyundai-gold/20 flex items-start gap-8">
+                      <Sparkles className="w-8 h-8 text-hyundai-gold shrink-0 mt-1" />
+                      <div>
+                         <p className="text-xl font-black text-hyundai-gold uppercase tracking-tight">High Priority Signal Detected</p>
+                         <p className="text-[13px] font-medium text-hyundai-gray-500 mt-2 leading-relaxed uppercase tracking-wider">이미 승인된 신청곡이거나, 다른 고객이 먼저 신청한 곡입니다. <br />중복 신청 시 관리자의 선곡 큐레이션 알고리즘에 의해 우선순위가 조정될 수 있습니다.</p>
+                      </div>
+                   </div>
+                 )}
+              </div>
+
+              {/* Step 03: Narrative & Ownership */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 pt-24 border-t-2 border-hyundai-gray-100">
+                 {/* Story */}
+                 <div className="space-y-12">
+                    <div className="space-y-4">
+                       <span className="text-2xl font-black text-hyundai-gray-200 uppercase tracking-tighter block italic">03/Context</span>
+                       <h3 className="text-3xl font-black text-hyundai-black uppercase tracking-tight">Reason & Narrative</h3>
+                    </div>
+                    <div className="space-y-4">
+                       <label className="text-[11px] font-black text-hyundai-gray-400 uppercase tracking-[0.3em]">Audit Memo / Public Story</label>
+                       <textarea 
+                         rows={8}
+                         placeholder="곡과 관련된 추억이나 신청 이유를 자유롭게 기록해 주세요. (심사 시 반영됩니다)"
+                         className="w-full bg-hyundai-gray-50 border-none px-10 py-10 text-lg font-bold leading-relaxed focus:bg-white focus:ring-4 focus:ring-hyundai-black/5 transition-all outline-none resize-none placeholder:text-hyundai-gray-200"
+                         maxLength={200}
+                         value={formData.story}
+                         onChange={(e) => setFormData({...formData, story: e.target.value})}
+                       />
+                       <div className="flex justify-end">
+                          <span className="text-[10px] font-black text-hyundai-gray-300 uppercase tracking-[0.4em]">{formData.story.length} / 200 DATA_POINTS</span>
+                       </div>
+                    </div>
+                 </div>
+
+                 {/* Requester */}
+                 <div className="space-y-12">
+                    <div className="space-y-4">
+                       <span className="text-2xl font-black text-hyundai-gray-200 uppercase tracking-tighter block italic">04/Ownership</span>
+                       <h3 className="text-3xl font-black text-hyundai-black uppercase tracking-tight">Requester Profile</h3>
+                    </div>
+                    <div className="space-y-10">
+                       <div className="space-y-4">
+                          <label className="text-[11px] font-black text-hyundai-gray-400 uppercase tracking-[0.3em]">Alias / Real Name</label>
+                          <input 
+                            type="text" 
+                            placeholder="사용자 고유 명칭 입력"
+                            className="w-full h-20 bg-hyundai-gray-50 border-none px-8 text-xl font-black uppercase tracking-tight focus:bg-white focus:ring-4 focus:ring-hyundai-black/5 transition-all outline-none"
+                            value={formData.requester_name}
+                            onChange={(e) => setFormData({...formData, requester_name: e.target.value})}
+                          />
+                       </div>
+                       <div className="space-y-4">
+                          <label className="text-[11px] font-black text-hyundai-gray-400 uppercase tracking-[0.3em]">Contact Identification</label>
+                          <input 
+                            type="text" 
+                            placeholder="010-0000-0000"
+                            className="w-full h-20 bg-hyundai-gray-50 border-none px-8 text-xl font-black tracking-[0.2em] focus:bg-white focus:ring-4 focus:ring-hyundai-black/5 transition-all outline-none"
+                            value={formData.requester_contact}
+                            onChange={(e) => setFormData({...formData, requester_contact: e.target.value})}
+                          />
+                          <p className="text-[10px] text-hyundai-gray-300 font-black uppercase tracking-[0.2em] mt-3">PROCESSED UNDER ENCRYPTED SECURE CHANNEL</p>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+
+              {/* Step Final: Execution */}
+              <div className="pt-32 border-t-8 border-hyundai-black flex flex-col items-center gap-16">
+                 <div className="space-y-6 text-center max-w-2xl">
+                    <h4 className="text-3xl font-black text-hyundai-black uppercase tracking-tight leading-none italic">Submission Fulfillment</h4>
+                    <p className="text-sm font-medium text-hyundai-gray-400 leading-relaxed uppercase tracking-wider">
+                       제출하신 데이터는 현대프리미엄아울렛 대전점 스카이테라스의 큐레이션 센터로 전송됩니다. <br />
+                       운영 정책에 따라 선별된 곡들은 정규 방송 시간에 실시간으로 송출됩니다.
+                    </p>
+                 </div>
+                 
+                 <button 
+                   type="submit" 
+                   disabled={loading}
+                   className={cn(
+                     "btn-portal-primary w-full h-24 text-2xl tracking-[0.4em] font-black group relative transform hover:-translate-y-2 active:translate-y-0 active:scale-95 duration-500",
+                     loading && "opacity-50 cursor-not-allowed"
+                   )}
+                 >
+                   {loading ? (
+                     <div className="flex items-center justify-center gap-6">
+                        <div className="w-8 h-8 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
+                        <span>PROCESSING_QUEUE</span>
+                     </div>
+                   ) : (
+                     <div className="flex items-center justify-center gap-6">
+                        <span>COMMIT REQUEST</span>
+                        <ArrowLeft className="w-8 h-8 rotate-180 group-hover:translate-x-2 transition-transform duration-500" strokeWidth={3} />
+                     </div>
+                   )}
+                 </button>
+              </div>
+           </form>
+        </div>
       </div>
     </div>
   );

@@ -1,9 +1,29 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
+import { 
+  LayoutDashboard, 
+  Music, 
+  ListMusic, 
+  CalendarDays, 
+  History, 
+  ClipboardList, 
+  Settings2, 
+  LogOut,
+  ChevronRight,
+  User,
+  Bell,
+  Search
+} from 'lucide-react';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export default function AdminLayout({
   children,
@@ -12,6 +32,7 @@ export default function AdminLayout({
 }) {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -21,82 +42,122 @@ export default function AdminLayout({
 
   if (status === 'loading') {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-hyundai-gray-100">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-hyundai-emerald"></div>
+      <div className="flex justify-center items-center min-h-screen bg-hyundai-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-hyundai-black"></div>
       </div>
     );
   }
 
   if (!session) return null;
 
+  const navItems = [
+    { name: '대시보드', href: '/admin/dashboard', icon: LayoutDashboard },
+    { name: '신청곡 관리', href: '/admin/requests', icon: Music },
+    { name: '플레이리스트', href: '/admin/playlist', icon: ListMusic },
+    { name: '월별 테마', href: '/admin/themes', icon: CalendarDays },
+    { name: '발송 로그', href: '/admin/mail-logs', icon: History },
+    { name: '활동 로그', href: '/admin/audit-logs', icon: ClipboardList },
+    { name: '시스템 설정', href: '/admin/settings', icon: Settings2 },
+  ];
+
   return (
-    <div className="flex min-h-screen bg-hyundai-gray-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-hyundai-black text-white shrink-0">
-        <div className="p-6">
-          <h2 className="text-xl font-bold tracking-tighter text-hyundai-gold">SKY TERRACE <span className="text-white font-light text-xs align-top uppercase">관리자</span></h2>
+    <div className="flex min-h-screen bg-hyundai-gray-50 font-sans antialiased">
+      {/* 1. Lateral Navigation (Operate Sidebar) */}
+      <aside className="w-72 bg-hyundai-black text-white shrink-0 flex flex-col border-r border-white/10 z-50">
+        <div className="h-24 px-8 flex items-center border-b border-white/5">
+          <Link href="/admin/dashboard" className="flex flex-col gap-0.5 group">
+             <span className="text-hyundai-gold text-[10px] font-black tracking-[0.4em] uppercase block group-hover:text-white transition-colors">Operate System</span>
+             <h2 className="text-xl font-black tracking-tighter text-white">SKYTERRACE MUSIC</h2>
+          </Link>
         </div>
         
-        <nav className="mt-6 space-y-1">
-          <Link href="/admin/dashboard" className="flex items-center gap-3 px-6 py-4 hover:bg-white/10 transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-            대시보드
-          </Link>
-          <Link href="/admin/requests" className="flex items-center gap-3 px-6 py-4 hover:bg-white/10 transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-            </svg>
-            신청곡 관리
-          </Link>
-          <Link href="/admin/playlist" className="flex items-center gap-3 px-6 py-4 hover:bg-white/10 transition-colors text-hyundai-gold">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-            </svg>
-            플레이리스트 관리
-          </Link>
-          <Link href="/admin/themes" className="flex items-center gap-3 px-6 py-4 hover:bg-white/10 transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            월별 테마 설정
-          </Link>
-          <Link href="/admin/mail-logs" className="flex items-center gap-3 px-6 py-4 hover:bg-white/10 transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-            발송 이력 및 로그
-          </Link>
-          <Link href="/admin/audit-logs" className="flex items-center gap-3 px-6 py-4 hover:bg-white/10 transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-            </svg>
-            활동 로그
-          </Link>
-          <Link href="/admin/settings" className="flex items-center gap-3 px-6 py-4 hover:bg-white/10 transition-colors text-hyundai-emerald">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            자동화 설정
-          </Link>
-          <button 
-            onClick={() => signOut({ callbackUrl: '/admin/login' })}
-            className="w-full flex items-center gap-3 px-6 py-4 hover:bg-red-900/40 text-red-400 transition-colors text-left"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            로그아웃
-          </button>
+        <nav className="flex-1 py-8 px-4 space-y-1">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link 
+                key={item.href}
+                href={item.href} 
+                className={cn(
+                  "flex items-center gap-4 px-4 py-3.5 transition-all text-sm font-bold uppercase tracking-tight",
+                  isActive 
+                    ? "bg-hyundai-gold text-hyundai-black shadow-lg shadow-hyundai-gold/20" 
+                    : "text-hyundai-gray-400 hover:text-white hover:bg-white/5"
+                )}
+              >
+                <item.icon className={cn("w-4 h-4", isActive ? "text-hyundai-black" : "text-current")} />
+                {item.name}
+                {isActive && <ChevronRight className="ml-auto w-4 h-4 text-hyundai-black/40" />}
+              </Link>
+            );
+          })}
         </nav>
+
+        <div className="p-4 border-t border-white/5 space-y-2">
+           <div className="p-4 bg-white/5 rounded-sm">
+             <div className="flex items-center gap-3">
+               <div className="w-8 h-8 rounded-full bg-hyundai-gold flex items-center justify-center text-hyundai-black font-black text-xs uppercase">
+                 {session.user?.email?.[0] || 'A'}
+               </div>
+               <div className="overflow-hidden">
+                 <p className="text-xs font-black text-white truncate">{session.user?.email}</p>
+                 <p className="text-[10px] font-bold text-hyundai-gray-400 uppercase tracking-widest leading-none mt-1">Administrator</p>
+               </div>
+             </div>
+           </div>
+           <button 
+            onClick={() => signOut({ callbackUrl: '/admin/login' })}
+            className="w-full flex items-center gap-4 px-4 py-3.5 text-xs font-black text-red-400 hover:bg-red-400/10 transition-all uppercase tracking-widest"
+          >
+            <LogOut className="w-4 h-4" />
+            Sign Out
+          </button>
+        </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-grow p-10 overflow-auto">
-        {children}
-      </main>
+      {/* 2. Main Workspace */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        {/* Global Operate Header */}
+        <header className="h-24 bg-white border-b border-hyundai-gray-200 shrink-0 px-10 flex items-center justify-between z-40">
+           <div className="flex items-center gap-4">
+              <div className="w-1 h-6 bg-hyundai-black"></div>
+              <div>
+                <h3 className="text-[11px] font-black text-hyundai-gray-400 uppercase tracking-widest mb-0.5">Management Workspace</h3>
+                <p className="text-sm font-black text-hyundai-black uppercase">{navItems.find(i => i.href === pathname)?.name || 'Admin Area'}</p>
+              </div>
+           </div>
+
+           <div className="flex items-center gap-8">
+              <div className="flex items-center gap-2 text-hyundai-gray-300">
+                <Search className="w-4 h-4" />
+                <span className="text-[10px] font-black uppercase tracking-widest hidden md:block">Cmd + K for Quick Search</span>
+              </div>
+              <div className="w-px h-6 bg-hyundai-gray-100 hidden md:block"></div>
+              <div className="flex items-center gap-6">
+                 <button className="relative text-hyundai-gray-400 hover:text-hyundai-black transition-colors">
+                    <Bell className="w-5 h-5" />
+                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-hyundai-gold rounded-full"></span>
+                 </button>
+                 <div className="flex items-center gap-3">
+                    <div className="text-right hidden sm:block">
+                       <p className="text-[10px] font-black text-hyundai-black leading-none mb-1 capitalize">{session.user?.name || 'Administrator'}</p>
+                       <p className="text-[9px] font-bold text-hyundai-gray-400 leading-none">Internal Access</p>
+                    </div>
+                    <div className="w-10 h-10 bg-hyundai-gray-50 border border-hyundai-gray-100 flex items-center justify-center text-hyundai-gray-400">
+                       <User className="w-6 h-6" />
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </header>
+
+        {/* Content Area */}
+        <main className="flex-1 overflow-auto bg-[#F7F8FA]">
+           <div className="p-10 min-h-full">
+              {children}
+           </div>
+        </main>
+      </div>
     </div>
   );
 }

@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   description: "현대프리미엄아울렛 대전점 3F 스카이테라스 신청곡 웹앱",
 };
 
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -19,20 +22,12 @@ export default function RootLayout({
     <html lang="ko">
       <body className={inter.className}>
         <Providers>
-          <div className="min-h-screen flex flex-col">
-            <header className="bg-white border-b border-hyundai-gray-200 py-4 px-6 flex justify-between items-center sticky top-0 z-50">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-hyundai-emerald rounded-full"></div>
-                <h1 className="text-xl font-bold tracking-tight text-hyundai-emerald">HYUNDAI <span className="text-hyundai-black font-medium">PREMIUM OUTLETS DAEJEON</span></h1>
-              </div>
-            </header>
-            <main className="flex-grow">
+          <div className="min-h-screen flex flex-col bg-white">
+            <Header />
+            <main className="flex-grow pt-[120px] md:pt-[144px]">
               {children}
             </main>
-            <footer className="bg-hyundai-gray-100 border-t border-hyundai-gray-200 py-8 px-6 text-center text-sm text-hyundai-gray-500">
-              <p>© {new Date().getFullYear()} HYUNDAI PREMIUM OUTLETS DAEJEON. All rights reserved.</p>
-              <p className="mt-1 text-xs">3F 스카이테라스 뮤직 플레이어</p>
-            </footer>
+            <Footer />
           </div>
         </Providers>
       </body>
