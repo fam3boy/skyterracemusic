@@ -51,11 +51,11 @@
   }
   
   .section-title {
-    @apply text-3xl md:text-5xl font-bold tracking-tighter uppercase text-hyundai-black leading-[1.1];
+    @apply text-3xl md:text-5xl font-bold tracking-tighter text-hyundai-black leading-[1.1];
   }
 
   .section-subtitle {
-    @apply text-[12px] font-bold uppercase tracking-normal text-hyundai-gold mb-6 block;
+    @apply text-[12px] font-bold uppercase tracking-widest text-hyundai-gold mb-6 block;
   }
   
   .card-portal {
@@ -63,15 +63,15 @@
   }
 
   .btn-portal-primary {
-    @apply bg-hyundai-black text-white px-12 py-6 text-[16px] font-bold uppercase tracking-tight hover:bg-hyundai-gray-800 transition-all duration-500 text-center relative overflow-hidden;
+    @apply bg-hyundai-black text-white px-12 py-6 text-[16px] font-semibold tracking-wider hover:bg-hyundai-gray-800 transition-all duration-500 text-center relative overflow-hidden;
   }
 
   .btn-portal-outline {
-    @apply border border-hyundai-black text-hyundai-black px-12 py-6 text-[16px] font-bold uppercase tracking-tight hover:bg-hyundai-black hover:text-white transition-all duration-500 text-center;
+    @apply border border-hyundai-black text-hyundai-black px-12 py-6 text-[16px] font-semibold tracking-wider hover:bg-hyundai-black hover:text-white transition-all duration-500 text-center;
   }
   
   .link-portal {
-    @apply text-[12px] font-bold text-hyundai-gray-500 hover:text-hyundai-black transition-colors uppercase tracking-tight;
+    @apply text-[12px] font-medium text-hyundai-gray-500 hover:text-hyundai-black transition-colors tracking-tight;
   }
 
   .premium-gradient {
