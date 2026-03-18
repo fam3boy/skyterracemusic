@@ -65,7 +65,7 @@ export default async function Home() {
               className="w-full h-full object-cover" 
               alt="" 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/10 to-transparent"></div>
           </div>
         )}
         

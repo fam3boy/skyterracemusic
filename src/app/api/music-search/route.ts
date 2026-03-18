@@ -9,54 +9,90 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'Keyword is required' }, { status: 400 });
   }
 
+  const results: any[] = [];
+  const seenIds = new Set<string>();
+
+  const addToResults = (items: any[]) => {
+    items.forEach(item => {
+      const id = `${item.title}-${item.artist}`.toLowerCase().replace(/\s+/g, '');
+      if (!seenIds.has(id)) {
+        seenIds.add(id);
+        results.push(item);
+      }
+    });
+  };
+
+  // 1. Try Maniadb (10s timeout)
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-    // Maniadb API (Search for songs) - Definitive URL & Key
-    const maniadbUrl = `http://www.maniadb.com/api/search/${encodeURIComponent(keyword.trim())}?sr=song&display=25&key=example&v=0.5`;
+    const maniadbUrl = `http://www.maniadb.com/api/search/${encodeURIComponent(keyword.trim())}?sr=song&display=20&key=example&v=0.5`;
     
     console.log('Fetching Maniadb:', maniadbUrl);
 
     const response = await fetch(maniadbUrl, { 
       signal: controller.signal,
       headers: { 
-        'Accept': 'application/xml',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
       }
     });
+    
     clearTimeout(timeoutId);
-    if (!response.ok) throw new Error(`Maniadb search failed: ${response.status}`);
 
-    const xmlData = await response.text();
-
-    const parser = new XMLParser({
-      ignoreAttributes: false,
-      attributeNamePrefix: ""
-    });
-    const jsonObj = parser.parse(xmlData);
-
-    const items = jsonObj.rss?.channel?.item || [];
-    const results = (Array.isArray(items) ? items : [items]).map((item: any) => {
-      const title = (item.title || '').replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1').replace(/<[^>]*>?/gm, '');
-      const artistObj = item['maniadb:artist'] || item.author || {};
-      const artist = typeof artistObj === 'string' ? artistObj : (artistObj.name || 'Unknown Artist');
-      const albumObj = item['maniadb:album'] || {};
-      
-      return {
-        title: title || 'Unknown Title',
-        artist: artist,
-        album: albumObj.title || '',
-        image: albumObj.image || ''
-      };
-    });
-
-    return NextResponse.json(results);
-  } catch (error: any) {
-    console.error('Public music search error:', error);
-    if (error.name === 'AbortError') {
-      return NextResponse.json({ error: '음악 데이터베이스(Maniadb) 응답이 너무 늦습니다. 다시 한 번 검색 버튼을 눌러주세요. (Timeout: 30s)' }, { status: 504 });
+    if (response.ok) {
+      const xmlData = await response.text();
+      const parser = new XMLParser({
+        ignoreAttributes: false,
+        attributeNamePrefix: ""
+      });
+      const jsonObj = parser.parse(xmlData);
+      const items = jsonObj.rss?.channel?.item || [];
+      const maniadbResults = (Array.isArray(items) ? items : [items]).map((item: any) => {
+        const title = (item.title || '').replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1').replace(/<[^>]*>?/gm, '');
+        const artistObj = item['maniadb:artist'] || item.author || {};
+        const artist = typeof artistObj === 'string' ? artistObj : (artistObj.name || 'Unknown Artist');
+        const albumObj = item['maniadb:album'] || {};
+        
+        return {
+          title: title || 'Unknown Title',
+          artist: artist,
+          album: albumObj.title || '',
+          image: albumObj.image || '',
+          source: 'maniadb'
+        };
+      });
+      addToResults(maniadbResults);
     }
-    return NextResponse.json({ error: '데이터 불러오기에 실패했습니다. 잠시 후 다시 시도해 주세요.' }, { status: 500 });
+  } catch (error) {
+    console.error('Maniadb attempt failed:', error);
   }
+
+  // 2. Fallback to iTunes (Always run if results are low, or if Maniadb failed)
+  if (results.length < 10) {
+    try {
+      const itunesUrl = `https://itunes.apple.com/search?term=${encodeURIComponent(keyword.trim())}&country=kr&media=music&entity=song&limit=20`;
+      console.log('Fetching iTunes Fallback:', itunesUrl);
+      
+      const response = await fetch(itunesUrl, {
+         headers: { 'User-Agent': 'Mozilla/5.0' }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const itunesResults = (data.results || []).map((item: any) => ({
+          title: item.trackName,
+          artist: item.artistName,
+          album: item.collectionName,
+          image: item.artworkUrl100?.replace('100x100bb', '400x400bb') || '',
+          source: 'itunes'
+        }));
+        addToResults(itunesResults);
+      }
+    } catch (error) {
+      console.error('iTunes attempt failed:', error);
+    }
+  }
+
+  return NextResponse.json(results);
 }
