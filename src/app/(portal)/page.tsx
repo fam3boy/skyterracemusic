@@ -62,10 +62,10 @@ export default async function Home() {
           <div className="absolute inset-0 z-0">
             <img 
               src={activeTheme.background_base64} 
-              className="w-full h-full object-cover" 
+              className="w-full h-full object-cover blur-[2px] opacity-80" 
               alt="" 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/10 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent"></div>
           </div>
         )}
         
@@ -73,15 +73,15 @@ export default async function Home() {
            <Music className="w-full h-full -rotate-12 translate-x-1/4" />
         </div>
         
-        <div className="portal-container relative z-10 w-full">
+        <div className="portal-container relative z-10 w-full text-shadow-sm">
            <div className="max-w-5xl space-y-12">
               <div className="space-y-6">
                  <span className="text-hyundai-gold text-[14px] font-bold tracking-[0.5em] uppercase block animate-in fade-in slide-in-from-bottom-4 duration-700">이달의 테라스 선율</span>
-                  <h1 className="text-5xl md:text-[80px] font-black text-hyundai-black tracking-[-0.06em] leading-[1.1] uppercase break-keep whitespace-pre-wrap animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                  <h1 className="text-5xl md:text-[80px] font-black text-hyundai-black tracking-[-0.06em] leading-[1.1] uppercase break-keep whitespace-pre-wrap animate-in fade-in slide-in-from-bottom-8 duration-1000 drop-shadow-sm">
                     {activeTheme ? activeTheme.title : "SEASONAL CURATION"}
                   </h1>
                </div>
-               <p className="text-lg md:text-2xl font-medium text-hyundai-gray-500 leading-[1.7] max-w-3xl break-keep animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
+               <p className="text-lg md:text-2xl font-medium text-hyundai-gray-500 leading-[1.7] max-w-3xl break-keep animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 drop-shadow-sm">
                   {activeTheme?.description || "현대프리미엄아울렛 대전점 스카이테라스의 공간에 영감을 불어넣는 공식 컬렉션입니다."}
                </p>
               <div className="flex flex-col sm:flex-row gap-6 pt-6 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
