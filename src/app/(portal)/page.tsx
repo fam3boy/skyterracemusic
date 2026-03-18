@@ -134,27 +134,28 @@ export default async function Home() {
           subtitle="SEASONAL SELECTIONS"
           moreHref="/request"
         >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {themeTracks.slice(0, 8).map((track, i) => (
-            <div key={i} className="group cursor-pointer">
-              <div className="relative aspect-square bg-hyundai-gray-50 overflow-hidden">
-                 <div className="absolute inset-0 flex items-center justify-center opacity-40">
-                    <Music className="w-12 h-12 text-hyundai-gray-200 group-hover:scale-110 transition-transform duration-700" />
-                 </div>
-                 {/* Hover Overlay */}
-                 <div className="absolute inset-0 bg-hyundai-black/0 group-hover:bg-hyundai-black/5 transition-all flex items-center justify-center">
-                 </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {themeTracks.slice(0, 8).map((track, i) => (
+              <div key={i} className="group cursor-pointer">
+                <div className="relative aspect-square bg-hyundai-gray-50 overflow-hidden">
+                   <div className="absolute inset-0 flex items-center justify-center opacity-40">
+                      <Music className="w-12 h-12 text-hyundai-gray-200 group-hover:scale-110 transition-transform duration-700" />
+                   </div>
+                   {/* Hover Overlay */}
+                   <div className="absolute inset-0 bg-hyundai-black/0 group-hover:bg-hyundai-black/5 transition-all flex items-center justify-center">
+                   </div>
+                </div>
+                <div className="py-6 space-y-1 text-left">
+                  <h4 className="text-[17px] font-bold text-hyundai-black truncate tracking-tight">{track.title}</h4>
+                  <p className="text-[13px] font-semibold text-hyundai-gray-400 tracking-wide uppercase">{track.artist}</p>
+                </div>
               </div>
-              <div className="py-6 space-y-1 text-left">
-                <h4 className="text-[17px] font-bold text-hyundai-black truncate tracking-tight">{track.title}</h4>
-                <p className="text-[13px] font-semibold text-hyundai-gray-400 tracking-wide uppercase">{track.artist}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </PortalSection>
+            ))}
+          </div>
+        </PortalSection>
+      </div>
 
-      {/* 4. Recent Approved Songs (Premium List) */}
+      {/* 5. Recent Approved Songs (Premium List) */}
       <PortalSection 
         title="실시간 승인 현황" 
         subtitle="LIVE SELECTION UPDATES"
@@ -183,7 +184,59 @@ export default async function Home() {
         </div>
       </PortalSection>
 
-      {/* 6. Location & Space Section */}
+      {/* 6. Popular Requests & Guidelines */}
+      <section className="py-32 bg-white">
+        <div className="portal-container grid grid-cols-1 lg:grid-cols-2 gap-24">
+          
+          <div className="space-y-12 text-left">
+            <div className="space-y-4">
+              <span className="text-hyundai-accent text-[12px] font-bold tracking-[0.4em] uppercase block">HALL OF FAME</span>
+              <h3 className="text-4xl font-bold text-hyundai-black tracking-tight">명예의 전당</h3>
+            </div>
+            <div className="border border-hyundai-gray-100 divide-y divide-hyundai-gray-100">
+              {popularTracks.map((track, i) => (
+                <div key={i} className="flex items-center gap-6 p-6 hover:bg-hyundai-gray-50 transition-colors">
+                   <div className="w-12 h-12 bg-hyundai-black text-white flex items-center justify-center font-bold italic text-sm">
+                     0{i + 1}
+                   </div>
+                   <div className="flex-grow min-w-0">
+                      <h6 className="text-[16px] font-bold text-hyundai-black truncate tracking-tight">{track.title}</h6>
+                      <p className="text-[12px] font-semibold text-hyundai-gray-400 truncate uppercase tracking-wide">{track.artist}</p>
+                   </div>
+                   <div className="text-right">
+                      <span className="text-[10px] font-bold text-hyundai-gray-300 block mb-0.5">COUNT</span>
+                      <p className="text-xl font-bold text-hyundai-black italic">{track.request_count}</p>
+                   </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-12 text-left">
+            <div className="space-y-4">
+              <span className="text-hyundai-accent text-[12px] font-bold tracking-[0.4em] uppercase block">GUIDELINES</span>
+              <h3 className="text-4xl font-bold text-hyundai-black tracking-tight">운영 안내</h3>
+            </div>
+            <div className="space-y-6">
+              {[
+                { q: "스마트 큐레이션 엔진 운영", a: "현대백화점의 전문 음악 큐레이터와 AI 엔진이 시간대별 방문객의 연령대와 매장 무드를 분석하여 최적의 선곡 시점을 결정합니다." },
+                { q: "콘텐츠 안전 및 클린 정책", a: "공공장소의 쾌적함을 위해 부장절한 표현, 혐오 표현, 정치적 색채가 짙은 곡은 시스템에서 자동 필터링되며 수동 검토를 거쳐 제외됩니다." },
+                { q: "실시간 방송 알림 (준비중)", a: "신청하신 곡이 선정되면 고객님의 고유 번호를 통해 실시간 방송 예정 시각을 본 서비스에서 확인하실 수 있습니다." },
+                { q: "개인정보 보호 정책", a: "수집된 정보는 익명화되어 선곡 지표로만 활용되며, 고유 번호 분실 시 복구가 어려우니 반드시 화면을 캡처하거나 번호를 보관해 주세요." }
+              ].map((item, i) => (
+                <div key={i} className="p-8 bg-hyundai-gray-50 border border-hyundai-gray-100 space-y-4">
+                  <h6 className="text-[16px] font-bold text-hyundai-black tracking-tight">{item.q}</h6>
+                  <p className="text-[13px] text-hyundai-gray-500 font-medium leading-relaxed break-keep">
+                    {item.a}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Location & Space Section */}
       <section id="location" className="py-32 bg-white overflow-hidden">
         <div className="portal-container">
            <div className="flex flex-col md:flex-row justify-between items-end gap-12 mb-16">
@@ -232,7 +285,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 7. Premium CTA Banner */}
+      {/* 8. Premium CTA Banner */}
       <section className="bg-hyundai-black py-40 text-center text-white relative overflow-hidden">
         <div className="portal-container relative z-10 space-y-12">
             <h2 className="text-4xl md:text-6xl font-bold tracking-tight max-w-4xl mx-auto leading-tight">
