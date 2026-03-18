@@ -15,6 +15,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const now = new Date();
+    const dayOfWeek = now.getDay();
     const end = new Date(now);
     const start = new Date(now);
     start.setDate(start.getDate() - 7);
