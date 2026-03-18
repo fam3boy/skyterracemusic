@@ -52,12 +52,9 @@ export default function Header() {
 
   const [brandTop, brandBottom] = brandText.split('|').map(t => t.trim());
 
-  const topNavItems = [
-    { name: '브랜드 사이트', href: 'https://www.ehyundai.com' },
-  ];
+  const topNavItems: { name: string; href: string }[] = [];
 
   const mainNavItems = [
-    { name: '음악신청', href: '/request' },
     { name: '신청현황', href: '/status' },
   ];
 
@@ -97,12 +94,6 @@ export default function Header() {
                 )}
               </div>
             </Link>
-
-            {/* Branch Dropdown Indicator (Reference Site Style) */}
-            <div className="hidden md:flex items-center gap-2 px-4 py-2 border border-hyundai-gray-200 rounded-full cursor-pointer hover:bg-hyundai-gray-50 transition-colors">
-               <span className="text-[13px] font-bold text-hyundai-black">대전점</span>
-               <svg className="w-3 h-3 text-hyundai-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-            </div>
           </div>
 
           {/* Large Center Navigation */}
@@ -119,15 +110,10 @@ export default function Header() {
                 {item.name}
               </Link>
             ))}
-            <a href="https://www.ehyundai.com" target="_blank" className="text-[17px] font-bold tracking-tight text-hyundai-black hover:text-hyundai-accent transition-colors">지점안내</a>
-            <a href="#" className="text-[17px] font-bold tracking-tight text-hyundai-black hover:text-hyundai-accent transition-colors">서비스·이벤트</a>
           </nav>
 
           {/* Right Actions */}
           <div className="flex items-center gap-4">
-            <button className="w-12 h-12 flex items-center justify-center hover:bg-hyundai-gray-50 transition-colors">
-               <Search className="w-6 h-6 text-hyundai-black" strokeWidth={2} />
-            </button>
             <button 
               className="lg:hidden w-12 h-12 flex items-center justify-center hover:bg-hyundai-gray-50 transition-colors"
               onClick={() => setMobileMenuOpen(true)}
