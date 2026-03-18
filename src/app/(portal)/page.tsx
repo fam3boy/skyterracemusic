@@ -41,11 +41,16 @@ export default async function Home() {
     `;
     requestedTracks = requestedRes.rows;
 
-    // Simulate popular tracks based on request counts
+    // Fetch Hall of Fame reset date
+    const settingsRes = await sql`SELECT value FROM system_settings WHERE key = 'hall_of_fame_reset_at'`;
+    const resetAt = settingsRes.rows[0]?.value || '1970-01-01';
+
+    // Simulate popular tracks based on request counts after the last reset
     const popularRes = await sql`
       SELECT title, artist, COUNT(*) as request_count
       FROM song_requests
       WHERE deleted_at IS NULL
+      AND created_at > ${resetAt}
       GROUP BY title, artist
       ORDER BY request_count DESC
       LIMIT 5
@@ -132,7 +137,7 @@ export default async function Home() {
         <PortalSection 
           title={activeTheme ? activeTheme.title : "현재 진행 중인 테마"}
           subtitle="SEASONAL SELECTIONS"
-          moreHref="/request"
+          moreHref="/playlist"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {themeTracks.slice(0, 8).map((track, i) => (
@@ -221,7 +226,6 @@ export default async function Home() {
               {[
                 { q: "스마트 큐레이션 엔진 운영", a: "현대백화점의 전문 음악 큐레이터와 AI 엔진이 시간대별 방문객의 연령대와 매장 무드를 분석하여 최적의 선곡 시점을 결정합니다." },
                 { q: "콘텐츠 안전 및 클린 정책", a: "공공장소의 쾌적함을 위해 부장절한 표현, 혐오 표현, 정치적 색채가 짙은 곡은 시스템에서 자동 필터링되며 수동 검토를 거쳐 제외됩니다." },
-                { q: "실시간 방송 알림 (준비중)", a: "신청하신 곡이 선정되면 고객님의 고유 번호를 통해 실시간 방송 예정 시각을 본 서비스에서 확인하실 수 있습니다." },
                 { q: "개인정보 보호 정책", a: "수집된 정보는 익명화되어 선곡 지표로만 활용되며, 고유 번호 분실 시 복구가 어려우니 반드시 화면을 캡처하거나 번호를 보관해 주세요." }
               ].map((item, i) => (
                 <div key={i} className="p-8 bg-hyundai-gray-50 border border-hyundai-gray-100 space-y-4">

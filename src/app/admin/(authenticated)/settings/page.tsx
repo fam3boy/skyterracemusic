@@ -296,28 +296,27 @@ export default function AdminSettingsPage() {
               </div>
             </div>
 
-            <div className="space-y-6">
-               <label className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest block">로고 노출 스타일 설정</label>
-               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                 {[
-                   { id: 'text', label: '텍스트 브랜드만', desc: '기본 텍스트 브랜드 노출' },
-                   { id: 'image', label: '이미지 로고만', desc: '업로드된 이미지만 노출' },
-                   { id: 'both', label: '이미지 + 텍스트', desc: '이미지와 텍스트 병합 노출' }
-                 ].map(mode => (
-                   <button
-                    key={mode.id}
-                    onClick={() => updateLogoMode(mode.id)}
-                    className={cn(
-                      "flex flex-col items-start p-6 rounded-3xl border-2 transition-all text-left",
-                      logoMode === mode.id 
-                        ? "bg-white border-hyundai-gold shadow-lg shadow-hyundai-gold/10" 
-                        : "bg-hyundai-gray-50 border-transparent hover:border-hyundai-gray-200"
-                    )}
-                   >
-                     <p className={cn("text-sm font-bold mb-1", logoMode === mode.id ? "text-hyundai-black" : "text-hyundai-gray-400")}>{mode.label}</p>
-                     <p className="text-[10px] font-medium text-hyundai-gray-400 leading-tight">{mode.desc}</p>
-                   </button>
-                 ))}
+            <div className="space-y-6 pt-10 border-t border-hyundai-gray-100">
+               <label className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest block font-bold">데이터 운영 관리</label>
+               <div className="bg-red-50 p-8 rounded-3xl border border-red-100 flex flex-col md:flex-row justify-between items-center gap-6">
+                  <div className="text-left">
+                     <p className="text-sm font-bold text-red-900 mb-1">명예의 전당 데이터 초기화</p>
+                     <p className="text-[11px] text-red-600 font-medium">현재까지 집계된 모든 인기 곡 순위를 초기화하고 오늘부터 새로 집계합니다.</p>
+                  </div>
+                  <button 
+                    onClick={async () => {
+                      if (!confirm('명예의 전당 집계 데이터를 초기화하시겠습니까? 오늘 이후 신청곡부터 새로 집계됩니다.')) return;
+                      const res = await fetch('/api/admin/branding', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ key: 'hall_of_fame_reset_at', value: new Date().toISOString() })
+                      });
+                      if (res.ok) alert('명예의 전당이 초기화되었습니다.');
+                    }}
+                    className="px-8 py-4 bg-red-600 text-white text-[13px] font-bold rounded-xl uppercase tracking-tight hover:bg-red-700 transition-all shadow-lg shadow-red-200"
+                  >
+                    지금 초기화하기
+                  </button>
                </div>
             </div>
           </div>
