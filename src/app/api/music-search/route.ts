@@ -23,18 +23,24 @@ export async function GET(req: Request) {
   };
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s absolute limit
+  const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s absolute limit
 
   // 1. Define Search Tasks
   const maniadbTask = async () => {
     try {
       const maniadbUrl = `http://www.maniadb.com/api/search/${encodeURIComponent(keyword.trim())}?sr=song&display=25&key=example&v=0.5`;
+      
+      // Secondary controller for just Maniadb to fail fast
+      const mController = new AbortController();
+      const mTimeout = setTimeout(() => mController.abort(), 3000); 
+
       const response = await fetch(maniadbUrl, { 
-        signal: controller.signal,
+        signal: mController.signal,
         headers: { 
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         }
       });
+      clearTimeout(mTimeout);
       if (!response.ok) return [];
       const xmlData = await response.text();
       const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "" });
