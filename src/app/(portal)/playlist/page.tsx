@@ -40,7 +40,7 @@ export default async function PlaylistPage() {
 
     // 3. Fetch approved guest requests
     const requestedRes = await sql`
-      SELECT id, title, artist, approved_at, requester_name
+      SELECT id, title, artist, approved_at, requester_name, image
       FROM song_requests 
       WHERE status = 'approved'
       AND deleted_at IS NULL
@@ -87,10 +87,14 @@ export default async function PlaylistPage() {
            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-12">
               {themeTracks.map((track, i) => (
                 <div key={track.id} className="group flex items-center gap-6 p-4 hover:bg-hyundai-gray-50 transition-all duration-300">
-                   <div className="relative w-20 h-20 bg-hyundai-gray-100 flex items-center justify-center overflow-hidden">
-                      <Music className="w-8 h-8 text-hyundai-gray-300 group-hover:scale-110 transition-transform duration-500" />
+                   <div className="relative w-20 h-20 bg-hyundai-gray-100 flex items-center justify-center overflow-hidden border border-hyundai-gray-100 group-hover:border-hyundai-gray-200 transition-all">
+                      {track.image ? (
+                        <img src={track.image} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt={track.title} />
+                      ) : (
+                        <Music className="w-8 h-8 text-hyundai-gray-300 group-hover:scale-110 transition-transform duration-500" />
+                      )}
                       <div className="absolute inset-0 bg-hyundai-black/0 group-hover:bg-hyundai-black/5 transition-all"></div>
-                      <span className="absolute bottom-1 right-2 text-[10px] font-bold text-hyundai-gray-300">0{(i+1).toString().slice(-2)}</span>
+                      <span className="absolute bottom-1 right-2 text-[10px] font-bold text-hyundai-gray-300">{(i+1).toString().padStart(2, '0')}</span>
                    </div>
                    <div className="flex-1 min-w-0">
                       <h4 className="text-[16px] font-bold text-hyundai-black truncate tracking-tight uppercase">{track.title}</h4>
@@ -127,7 +131,15 @@ export default async function PlaylistPage() {
               {guestRequests.length > 0 ? guestRequests.map((track, i) => (
                 <div key={track.id} className="flex items-center justify-between p-8 hover:bg-hyundai-gray-50/50 transition-all">
                    <div className="flex items-center gap-10 flex-1 min-w-0">
-                      <span className="text-[14px] font-bold text-hyundai-gray-300 w-8">{(i+1).toString().padStart(2, '0')}</span>
+                      <div className="relative w-16 h-16 bg-hyundai-gray-50 shrink-0 border border-hyundai-gray-100 overflow-hidden">
+                         {track.image ? (
+                           <img src={track.image} className="w-full h-full object-cover" alt="" />
+                         ) : (
+                           <div className="w-full h-full flex items-center justify-center">
+                              <Music className="w-6 h-6 text-hyundai-gray-200" />
+                           </div>
+                         )}
+                      </div>
                       <div className="min-w-0 space-y-1">
                          <h5 className="text-[17px] font-bold text-hyundai-black tracking-tight truncate uppercase">{track.title}</h5>
                          <p className="text-[12px] font-semibold text-hyundai-gray-400 tracking-wider uppercase truncate">{track.artist}</p>

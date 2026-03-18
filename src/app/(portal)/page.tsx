@@ -32,7 +32,7 @@ export default async function Home() {
     themeTracks = tracksRes.rows;
 
     const requestedRes = await sql`
-      SELECT id, title, artist, approved_at, 'request' as type 
+      SELECT id, title, artist, approved_at, image, 'request' as type 
       FROM song_requests 
       WHERE status = 'approved'
       AND deleted_at IS NULL
@@ -142,13 +142,16 @@ export default async function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {themeTracks.slice(0, 8).map((track, i) => (
               <div key={i} className="group cursor-pointer">
-                <div className="relative aspect-square bg-hyundai-gray-50 overflow-hidden">
-                   <div className="absolute inset-0 flex items-center justify-center opacity-40">
-                      <Music className="w-12 h-12 text-hyundai-gray-200 group-hover:scale-110 transition-transform duration-700" />
+                <div className="relative aspect-square bg-hyundai-gray-50 overflow-hidden border border-hyundai-gray-100/50 group-hover:border-hyundai-gray-200 transition-all duration-700">
+                   <div className="absolute inset-0 flex items-center justify-center">
+                      {track.image ? (
+                        <img src={track.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={track.title} />
+                      ) : (
+                        <Music className="w-12 h-12 text-hyundai-gray-100 group-hover:scale-110 transition-transform duration-700" />
+                      )}
                    </div>
-                   {/* Hover Overlay */}
-                   <div className="absolute inset-0 bg-hyundai-black/0 group-hover:bg-hyundai-black/5 transition-all flex items-center justify-center">
-                   </div>
+                   {/* Gradient Overlay for better text separation if needed, though here we have space below */}
+                   <div className="absolute inset-0 bg-hyundai-black/0 group-hover:bg-hyundai-black/5 transition-all"></div>
                 </div>
                 <div className="py-6 space-y-1 text-left">
                   <h4 className="text-[17px] font-bold text-hyundai-black truncate tracking-tight">{track.title}</h4>
@@ -164,16 +167,24 @@ export default async function Home() {
       <PortalSection 
         title="실시간 승인 현황" 
         subtitle="LIVE SELECTION UPDATES"
-        moreHref="/status"
+        moreHref="/playlist"
         bgGray
       >
         <div className="bg-white border border-hyundai-gray-100 divide-y divide-hyundai-gray-50">
            {requestedTracks.map((track, i) => (
              <div key={i} className="group flex items-center justify-between p-8 hover:bg-hyundai-gray-50 transition-all duration-300">
                <div className="flex items-center gap-10">
-                  <span className="text-[14px] font-bold text-hyundai-gray-300 w-8">{ (i+1).toString().padStart(2, '0') }</span>
+                  <div className="relative w-12 h-12 bg-hyundai-gray-50 shrink-0 border border-hyundai-gray-50 overflow-hidden">
+                     {track.image ? (
+                       <img src={track.image} className="w-full h-full object-cover" alt="" />
+                     ) : (
+                       <div className="w-full h-full flex items-center justify-center">
+                          <Music className="w-5 h-5 text-hyundai-gray-200" />
+                       </div>
+                     )}
+                  </div>
                   <div className="space-y-1 text-left">
-                     <h5 className="text-[18px] font-bold text-hyundai-black tracking-tight">{track.title}</h5>
+                     <h5 className="text-[18px] font-bold text-hyundai-black tracking-tight uppercase">{track.title}</h5>
                      <p className="text-[12px] font-semibold text-hyundai-gray-400 tracking-wider uppercase">{track.artist}</p>
                   </div>
                </div>
