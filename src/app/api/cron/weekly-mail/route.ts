@@ -15,24 +15,9 @@ export async function GET(req: NextRequest) {
 
   try {
     const now = new Date();
-    const dayOfWeek = now.getDay(); 
-    const currentThursday = new Date(now);
-    currentThursday.setHours(19, 0, 0, 0);
-    
-    // Logic: If it's before Thursday 19:00, the "target" Thursday is last week.
-    if (dayOfWeek < 4 || (dayOfWeek === 4 && now.getHours() < 19)) {
-       currentThursday.setDate(currentThursday.getDate() - (dayOfWeek + 3));
-    }
-    
-    let end = new Date(currentThursday);
-    let start = new Date(end);
+    const end = new Date(now);
+    const start = new Date(now);
     start.setDate(start.getDate() - 7);
-
-    // If triggered manually via "SEND NOW", we might want to include songs approved up to NOW
-    if (forceCurrent) {
-      start = new Date(currentThursday); // From last Thursday 19:00
-      end = new Date(); // Up to now
-    }
 
     // Fetch approved requests with theme info
     const result = await sql`

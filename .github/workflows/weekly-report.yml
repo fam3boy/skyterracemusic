@@ -1,0 +1,17 @@
+name: Weekly Music Report
+
+on:
+  schedule:
+    # Runs every Thursday at 09:00 UTC (18:00 KST)
+    - cron: '0 9 * * 4'
+  workflow_dispatch: # Allows manual triggering from GitHub UI
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Weekly Report API
+        run: |
+          curl -X GET "${{ secrets.APP_URL }}/api/cron/weekly-mail" \
+          -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+          -H "Content-Type: application/json"
