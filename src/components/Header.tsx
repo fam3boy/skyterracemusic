@@ -64,78 +64,81 @@ export default function Header() {
   return (
     <header className={cn(
       "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-      isScrolled ? "bg-white/95 backdrop-blur-xl shadow-sm" : "bg-white"
+      isScrolled ? "bg-white shadow-sm" : "bg-white"
     )}>
+      {/* Top Utility Bar */}
+      <div className="hidden lg:block border-b border-hyundai-gray-100 bg-[#f8f8f8]">
+        <div className="portal-container h-11 flex justify-end items-center gap-8">
+           {topNavItems.map((item) => (
+             <a key={item.name} href={item.href} className="text-[12px] font-medium text-hyundai-gray-500 hover:text-hyundai-black transition-colors">{item.name}</a>
+           ))}
+           <div className="flex items-center gap-6 border-l border-hyundai-gray-200 pl-8 ml-2">
+              <Link href="/admin" className="text-[12px] font-medium text-hyundai-gray-500 hover:text-hyundai-black">관리자</Link>
+              <div className="flex items-center gap-1 cursor-pointer group">
+                 <span className="text-[12px] font-medium text-hyundai-black">KOREAN</span>
+                 <svg className="w-3 h-3 text-hyundai-gray-400 group-hover:text-hyundai-black transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+              </div>
+           </div>
+        </div>
+      </div>
+
       {/* Main Bar */}
       <div className="border-b border-hyundai-gray-200">
         <div className="portal-container h-24 flex justify-between items-center">
-          {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-4 group">
-            <div className="relative h-12 flex items-center gap-5">
-              {/* Image Logo */}
-              {(logoMode === 'image' || logoMode === 'both') && customLogo ? (
-                <img src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
-              ) : (logoMode === 'image' && !customLogo) ? (
-                 <img 
-                   src="/logo.png" 
-                   alt="THE HYUNDAI" 
-                   className="h-full w-auto object-contain hidden"
-                   onError={(e) => (e.currentTarget.style.display = 'none')}
-                   onLoad={(e) => (e.currentTarget.style.display = 'block')}
-                 />
-              ) : null}
+          {/* Brand Logo & Branch Info */}
+          <div className="flex items-center gap-10">
+            <Link href="/" className="flex items-center group">
+              <div className="relative h-10 flex items-center">
+                {/* Image Logo */}
+                {(logoMode === 'image' || logoMode === 'both') && customLogo ? (
+                  <img src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
+                ) : (
+                  <span className="text-2xl md:text-3xl font-bold text-hyundai-black tracking-[-0.05em] leading-none uppercase">{brandTop || 'THE HYUNDAI'}</span>
+                )}
+              </div>
+            </Link>
 
-              {/* Text Branding */}
-              {(logoMode === 'text' || logoMode === 'both') && (
-                <div className="flex flex-col first-letter:group-hover:opacity-80 transition-opacity">
-                  <span className="text-2xl font-bold text-hyundai-black tracking-[-0.05em] leading-none uppercase">{brandTop}</span>
-                  {brandBottom && (
-                    <div className="flex items-center gap-2 mt-1">
-                       <span className="w-1 h-1 rounded-full bg-hyundai-gold"></span>
-                       <span className="text-[11px] font-bold text-hyundai-gray-400 tracking-normal uppercase">{brandBottom}</span>
-                    </div>
-                  )}
-                </div>
-              )}
+            {/* Branch Dropdown Indicator (Reference Site Style) */}
+            <div className="hidden md:flex items-center gap-2 px-4 py-2 border border-hyundai-gray-200 rounded-full cursor-pointer hover:bg-hyundai-gray-50 transition-colors">
+               <span className="text-[13px] font-bold text-hyundai-black">대전점</span>
+               <svg className="w-3 h-3 text-hyundai-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
             </div>
-          </Link>
+          </div>
 
-          {/* Center Navigation */}
-          <nav className="hidden lg:flex items-center gap-14">
+          {/* Large Center Navigation */}
+          <nav className="hidden lg:flex items-center gap-16">
             {mainNavItems.map((item) => (
               <Link 
                 key={item.name} 
                 href={item.href}
                 className={cn(
-                  "text-[15px] font-bold tracking-tighter transition-all relative py-2 group uppercase",
-                  pathname === item.href ? "text-hyundai-black" : "text-hyundai-gray-500 hover:text-hyundai-black"
+                  "text-[17px] font-bold tracking-tight transition-all relative py-2 group",
+                  pathname === item.href ? "text-hyundai-accent" : "text-hyundai-black hover:text-hyundai-accent"
                 )}
               >
                 {item.name}
-                <span className={cn(
-                  "absolute bottom-[-2px] left-0 h-0.5 bg-hyundai-black transition-all duration-300",
-                  pathname === item.href ? "w-full" : "w-0 group-hover:w-full"
-                )}></span>
               </Link>
             ))}
+            <a href="https://www.ehyundai.com" target="_blank" className="text-[17px] font-bold tracking-tight text-hyundai-black hover:text-hyundai-accent transition-colors">지점안내</a>
+            <a href="#" className="text-[17px] font-bold tracking-tight text-hyundai-black hover:text-hyundai-accent transition-colors">서비스·이벤트</a>
           </nav>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <button className="w-12 h-12 flex items-center justify-center hover:bg-hyundai-gray-50 transition-colors">
-               <Search className="w-5 h-5 text-hyundai-black" strokeWidth={2.5} />
+               <Search className="w-6 h-6 text-hyundai-black" strokeWidth={2} />
             </button>
             <button 
               className="lg:hidden w-12 h-12 flex items-center justify-center hover:bg-hyundai-gray-50 transition-colors"
               onClick={() => setMobileMenuOpen(true)}
             >
-               <Menu className="w-6 h-6 text-hyundai-black" strokeWidth={2.5} />
+               <Menu className="w-7 h-7 text-hyundai-black" strokeWidth={2} />
             </button>
             <Link 
               href="/request" 
-              className="hidden lg:flex h-12 items-center px-8 bg-hyundai-black text-white text-[14px] font-bold uppercase tracking-tight hover:bg-hyundai-gold hover:text-hyundai-black transition-all"
+              className="hidden lg:flex h-14 items-center px-10 bg-hyundai-black text-white text-[15px] font-bold tracking-tight hover:bg-hyundai-accent transition-all"
             >
-              음악 신청 서비스
+              음악 신청하기
             </Link>
           </div>
         </div>

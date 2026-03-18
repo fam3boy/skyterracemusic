@@ -194,298 +194,233 @@ export default function RequestPage() {
         </div>
       </div>
 
-      <div className="portal-container pt-24 md:pt-32">
-        {/* 2. Hero */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-16 border-b-2 border-hyundai-black pb-16 mb-24">
-           <div className="space-y-6 max-w-3xl">
-              <div className="space-y-4">
-                 <span className="text-hyundai-gold text-sm font-bold tracking-[0.4em] uppercase block">신청 서비스 등록</span>
-                 <h1 className="text-4xl md:text-7xl font-bold text-hyundai-black tracking-[-0.03em] leading-[1] uppercase">스카이테라스 <br />음악 신청 <br />데스크</h1>
-              </div>
-              <p className="text-lg md:text-xl font-medium text-hyundai-gray-500 leading-relaxed">함께 나누고 싶은 고품격 아울렛의 감성, 당신의 노래를 들려주세요. <br className="hidden md:block" />현대백화점 대전점 스카이테라스의 소리를 당신이 채웁니다.</p>
+      <div className="portal-container pt-32 md:pt-48">
+        {/* 2. Top Portal Header (Hyundai Style) */}
+        <div className="mb-20">
+           <div className="flex justify-between items-end border-b-2 border-hyundai-black pb-6 mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-hyundai-black tracking-tighter">글쓰기</h1>
+              <span className="text-[13px] font-medium text-hyundai-gray-500">
+                <span className="text-hyundai-accent mr-1 font-bold">•</span>
+                는 필수 입력항목 입니다.
+              </span>
            </div>
-           
-           <div className="flex flex-col gap-6 w-full md:w-auto">
-              <div className="bg-hyundai-gray-50 p-8 border border-hyundai-gray-100 space-y-4">
-                 <div className="flex items-center gap-3">
-                    <Clock className="w-5 h-5 text-hyundai-gold" />
-                    <span className="text-xs font-bold uppercase tracking-widest text-hyundai-black">정기 심사 및 방송 안내</span>
-                 </div>
-                 <div className="space-y-1">
-                    <p className="text-sm font-bold text-hyundai-black">매주 목요일 19:00</p>
-                    <p className="text-[13px] font-medium text-hyundai-gray-400">일괄 검토 및 승인 상태 업데이트</p>
-                 </div>
-              </div>
-              <div className="bg-hyundai-black p-8 text-white space-y-1">
-                 <p className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-40">진행 중인 테마</p>
-                 <p className="text-lg font-bold uppercase tracking-tight">{activeTheme ? activeTheme.title : "일반 선곡 리스트"}</p>
-              </div>
-           </div>
+           <p className="text-[14px] font-medium text-hyundai-gray-500 px-2 tracking-tight">
+             현대프리미엄아울렛 대전점 스카이테라스의 소중한 의견을 들려주세요. 불건전하거나 광고성 게시물은 통보 없이 삭제될 수 있습니다.
+           </p>
         </div>
 
         {/* 3. Operational Form */}
-        <div className="max-w-6xl mx-auto">
-           <form onSubmit={handleSubmit} className="space-y-32">
+        <div className="bg-white">
+           <form onSubmit={handleSubmit} className="space-y-12">
               {error && (
-                <div className="p-10 bg-red-50 border-l-4 border-red-600 flex items-center gap-6 text-red-600">
-                  <AlertCircle className="w-8 h-8 shrink-0" />
-                  <p className="text-lg font-bold tracking-tight leading-none">{error}</p>
+                <div className="p-8 bg-red-50 border border-red-100 flex items-center gap-6 text-red-600 mb-10">
+                  <AlertCircle className="w-6 h-6 shrink-0" />
+                  <p className="text-base font-bold tracking-tight">{error}</p>
                 </div>
               )}
 
-              {/* Step 01: Integrated Search Flow */}
-              <div className="space-y-16">
-                 <div className="space-y-4">
-                    <span className="text-2xl font-bold text-hyundai-gray-300 tracking-tighter block italic">01/곡 정보 입력</span>
-                    <h3 className="text-3xl font-bold text-hyundai-black tracking-tight">신청 곡 통합 검색</h3>
+              {/* Integrated Search Row */}
+              <div className="form-row border-t-2 border-hyundai-black">
+                 <div className="form-label">
+                    신청곡 검색<span className="required-mark">*</span>
                  </div>
-                 
-                 <div className="grid grid-cols-1 gap-12 bg-hyundai-gray-50/50 p-10 md:p-16 border-y border-hyundai-gray-100">
-                    <div className="space-y-12">
-                        {/* Selected Track Card (Always visible if data exists) */}
-                        {formData.title && !showManualFields && (
-                          <div className="p-10 bg-white border border-hyundai-emerald shadow-xl animate-in fade-in slide-in-from-left-8 duration-500">
-                             <div className="flex flex-col md:flex-row items-center gap-8">
-                                <div className="w-32 h-32 bg-hyundai-gray-50 shrink-0 border border-hyundai-gray-100 flex items-center justify-center overflow-hidden">
-                                   {formData.image ? (
-                                     <img src={formData.image} alt="" className="w-full h-full object-cover" />
-                                   ) : (
-                                     <Disc className="w-16 h-16 text-hyundai-emerald/20 animate-[spin_12s_linear_infinite]" />
-                                   )}
-                                </div>
-                                <div className="flex-grow space-y-2 text-center md:text-left min-w-0">
-                                   <div className="flex items-center justify-center md:justify-start gap-3">
-                                      <CheckCircle className="w-4 h-4 text-hyundai-emerald" />
-                                      <span className="text-xs font-bold text-hyundai-emerald uppercase tracking-[0.2em]">최종 선택된 곡</span>
-                                   </div>
-                                   <h4 className="text-3xl font-bold text-hyundai-black tracking-tight leading-none truncate">{formData.title}</h4>
-                                   <p className="text-lg font-semibold text-hyundai-gray-400 tracking-wide truncate">{formData.artist}</p>
-                                </div>
-                                <button 
-                                  type="button"
-                                  onClick={() => {
-                                    setFormData(prev => ({ ...prev, title: '', artist: '', image: '' }));
-                                    setHasSearched(false);
-                                  }}
-                                  className="px-8 h-14 border border-hyundai-black text-sm font-semibold tracking-wider hover:bg-hyundai-black hover:text-white transition-all whitespace-nowrap"
-                                >
-                                  다른 곡 검색
-                                </button>
-                             </div>
-                          </div>
-                        )}
-
-                        {/* Direct Search Input */}
-                        {(!formData.title || showManualFields) && (
-                          <div className="space-y-8">
-                             <div className="flex flex-col gap-6">
-                                <div className="relative group">
-                                   <div className="absolute left-10 top-1/2 -translate-y-1/2">
-                                      <Search className="w-6 h-6 text-hyundai-gray-300 group-focus-within:text-hyundai-black transition-colors" />
-                                   </div>
-                                   <input 
-                                     type="text" 
-                                     autoComplete="off"
-                                     placeholder="아티스트 또는 곡명으로 검색해 보세요" 
-                                     className="w-full h-24 pl-20 pr-40 bg-white border border-hyundai-gray-200 text-xl font-semibold outline-none focus:border-hyundai-black focus:ring-4 focus:ring-hyundai-black/5 transition-all shadow-sm"
-                                     value={searchKeyword}
-                                     onChange={(e) => setSearchKeyword(e.target.value)}
-                                     onKeyDown={(e) => e.key === 'Enter' && handleMusicSearch(e)}
-                                   />
-                                   <button 
-                                     type="button"
-                                     onClick={handleMusicSearch}
-                                     disabled={searching || !searchKeyword}
-                                     className="absolute right-4 top-4 bottom-4 px-10 bg-hyundai-black text-white text-[15px] font-bold uppercase hover:bg-hyundai-gray-800 transition-all disabled:opacity-20"
-                                   >
-                                      {searching ? '조회 중' : '검색'}
-                                   </button>
-                                </div>
-                                
-                                <p className="text-[13px] font-medium text-hyundai-gray-400 tracking-wide px-2">
-                                  최신 가요부터 클래식까지 통합 데이터베이스에서 조회합니다.
-                                </p>
-                             </div>
-
-                             {/* Search Results Display (Inline) */}
-                             {(searchResults.length > 0 || searching) && (
-                               <div className="bg-white border border-hyundai-gray-100 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500">
-                                  <div className="max-h-[480px] overflow-y-auto scrollbar-hide divide-y divide-hyundai-gray-50">
-                                     {searching ? (
-                                       <div className="py-24 flex flex-col items-center justify-center gap-6 text-hyundai-gray-300">
-                                          <div className="w-12 h-12 border-2 border-hyundai-gray-50 border-t-hyundai-gold rounded-full animate-spin"></div>
-                                          <p className="font-bold text-[14px] tracking-widest">데이터베이스 통신 중...</p>
+                 <div className="form-field space-y-6">
+                    {(!formData.title || showManualFields) && (
+                      <div className="flex flex-col gap-4">
+                        <div className="relative group">
+                          <input 
+                            type="text" 
+                            autoComplete="off"
+                            placeholder="아티스트 또는 곡명을 입력해 주세요" 
+                            className="input-hyundai pr-32"
+                            value={searchKeyword}
+                            onChange={(e) => setSearchKeyword(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleMusicSearch(e)}
+                          />
+                          <button 
+                            type="button"
+                            onClick={handleMusicSearch}
+                            disabled={searching || !searchKeyword}
+                            className="absolute right-0 top-0 bottom-0 px-10 bg-hyundai-black text-white text-[14px] font-bold hover:bg-hyundai-accent transition-all disabled:opacity-20"
+                          >
+                             {searching ? '조회 중' : '검색'}
+                          </button>
+                        </div>
+                        
+                        {/* Search Results Display (Inline) */}
+                        {(searchResults.length > 0 || searching) && (
+                          <div className="border border-hyundai-gray-100 shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+                             <div className="max-h-[400px] overflow-y-auto divide-y divide-hyundai-gray-50">
+                                {searching ? (
+                                  <div className="py-20 flex flex-col items-center justify-center gap-4 text-hyundai-gray-300">
+                                     <div className="w-8 h-8 border-2 border-hyundai-gray-50 border-t-hyundai-accent rounded-full animate-spin"></div>
+                                     <p className="font-bold text-[12px] tracking-widest">데이터 조회 중...</p>
+                                  </div>
+                                ) : (
+                                  searchResults.map((result, i) => (
+                                    <button 
+                                      key={i} 
+                                      type="button"
+                                      onClick={() => selectMusicResult(result)}
+                                      className="w-full flex items-center gap-6 p-6 text-left hover:bg-hyundai-gray-50 transition-all group"
+                                    >
+                                       <div className="w-16 h-16 bg-hyundai-gray-100 shrink-0 overflow-hidden relative border border-hyundai-gray-50">
+                                          {result.image ? <img src={result.image} alt="" className="w-full h-full object-cover" /> : <Music className="w-full h-full p-4 text-hyundai-gray-300" />}
                                        </div>
-                                     ) : (
-                                       searchResults.map((result, i) => (
-                                         <button 
-                                           key={i} 
-                                           type="button"
-                                           onClick={() => selectMusicResult(result)}
-                                           className="w-full flex items-center gap-8 p-8 text-left hover:bg-hyundai-gray-50 transition-all group border-l-4 border-transparent hover:border-hyundai-black"
-                                         >
-                                            <div className="w-20 h-20 bg-hyundai-gray-100 shrink-0 overflow-hidden relative border border-hyundai-gray-50">
-                                               {result.image ? <img src={result.image} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" /> : <Music className="w-full h-full p-6 text-hyundai-gray-300" />}
-                                            </div>
-                                            <div className="flex-grow min-w-0">
-                                               <p className="font-bold text-hyundai-black text-2xl truncate tracking-tight">{result.title}</p>
-                                               <p className="text-[15px] font-semibold text-hyundai-gray-400 truncate mt-1 tracking-wide">{result.artist}</p>
-                                            </div>
-                                            <div className="w-12 h-12 rounded-full border border-hyundai-gray-100 flex items-center justify-center group-hover:bg-hyundai-black group-hover:border-hyundai-black transition-all">
-                                               <ChevronRight className="w-6 h-6 text-hyundai-gray-200 group-hover:text-white" />
-                                            </div>
-                                         </button>
-                                       ))
-                                     )}
-                                  </div>
-                               </div>
-                             )}
-
-                             {/* No Results Fallback */}
-                             {hasSearched && searchResults.length === 0 && !searching && (
-                               <div className="p-12 bg-hyundai-gray-50 border border-dashed border-hyundai-gray-200 text-center space-y-6">
-                                  <p className="text-lg font-semibold text-hyundai-gray-400">검색 결과가 없습니다.</p>
-                                  <button 
-                                    type="button"
-                                    onClick={() => { setShowManualFields(true); setHasSearched(false); }}
-                                    className="px-10 h-16 bg-white border border-hyundai-black text-hyundai-black text-sm font-bold tracking-widest hover:bg-hyundai-black hover:text-white transition-all shadow-lg"
-                                  >
-                                    직접 정보 입력하여 신청하기
-                                  </button>
-                               </div>
-                             )}
-
-                             {/* Silent Manual Trigger */}
-                             {!hasSearched && !searching && searchResults.length === 0 && (
-                               <div className="pt-4 flex justify-center">
-                                  <button 
-                                    type="button" 
-                                    onClick={() => setShowManualFields(!showManualFields)}
-                                    className="text-[12px] font-semibold text-hyundai-gray-400 hover:text-hyundai-black transition-colors border-b border-hyundai-gray-100 pb-1"
-                                  >
-                                    원하는 결과가 없나요? {showManualFields ? '검색으로 돌아가기' : '직접 입력하기'}
-                                  </button>
-                               </div>
-                             )}
-                          </div>
-                        )}
-
-                        {/* Manual Form Area (Visible when direct entry is selected) */}
-                        {showManualFields && (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 border-t-2 border-hyundai-black pt-16 animate-in slide-in-from-bottom-8 duration-700">
-                             <div className="space-y-4 relative">
-                                <label className="text-[13px] font-bold text-hyundai-gray-400 tracking-widest">곡 제목</label>
-                                <input 
-                                  type="text" 
-                                  required
-                                  autoComplete="off"
-                                  placeholder="곡 제목을 입력해 주세요"
-                                  className="w-full h-20 bg-white border border-hyundai-gray-100 px-8 text-xl font-semibold tracking-tight focus:ring-4 focus:ring-hyundai-black/5 transition-all outline-none shadow-sm"
-                                  value={formData.title}
-                                  onChange={(e) => setFormData({...formData, title: e.target.value})}
-                                  onFocus={() => setShowSuggestions(suggestions.length > 0)}
-                                />
-                                {showSuggestions && (
-                                  <div className="absolute top-[calc(100%+8px)] left-0 right-0 bg-white shadow-3xl border border-hyundai-gray-100 z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-300">
-                                     <div className="divide-y divide-hyundai-gray-50">
-                                       {suggestions.map((s, i) => (
-                                         <button 
-                                           key={i} 
-                                           type="button"
-                                           onClick={() => selectSuggestion(s)}
-                                           className="w-full px-8 py-6 text-left hover:bg-hyundai-gray-50 transition-all flex flex-col gap-1"
-                                         >
-                                           <span className="text-xl font-bold text-hyundai-black tracking-tight">{s.title}</span>
-                                           <span className="text-sm text-hyundai-gray-400 font-medium tracking-wide">{s.artist}</span>
-                                         </button>
-                                       ))}
-                                     </div>
-                                  </div>
+                                       <div className="flex-grow min-w-0">
+                                          <p className="font-bold text-hyundai-black text-xl truncate tracking-tight">{result.title}</p>
+                                          <p className="text-[14px] font-semibold text-hyundai-gray-400 truncate tracking-wide">{result.artist}</p>
+                                       </div>
+                                       <ChevronRight className="w-5 h-5 text-hyundai-gray-200 group-hover:text-hyundai-accent transition-colors" />
+                                    </button>
+                                  ))
                                 )}
                              </div>
-                             <div className="space-y-4">
-                                <label className="text-[13px] font-bold text-hyundai-gray-400 tracking-widest">아티스트명</label>
-                                <input 
-                                  type="text" 
-                                  required
-                                  autoComplete="off"
-                                  placeholder="아티스트명을 입력해 주세요"
-                                  className="w-full h-20 bg-white border border-hyundai-gray-100 px-8 text-xl font-semibold tracking-tight focus:ring-4 focus:ring-hyundai-black/5 transition-all outline-none shadow-sm"
-                                  value={formData.artist}
-                                  onChange={(e) => setFormData({...formData, artist: e.target.value})}
-                                />
-                             </div>
                           </div>
                         )}
-                    </div>
-                 </div>
 
-                 {duplicateFound && (
-                   <div className="p-8 bg-hyundai-gold/5 border border-hyundai-gold/10 flex items-start gap-6">
-                      <Sparkles className="w-6 h-6 text-hyundai-gold shrink-0 mt-1" />
-                      <div>
-                         <p className="text-lg font-bold text-hyundai-gold tracking-tight">중복 신청 가능성 감지</p>
-                         <p className="text-[13px] font-medium text-hyundai-gray-500 mt-1 leading-relaxed">이미 승인된 신청곡이거나, 다른 고객이 먼저 신청한 곡입니다.</p>
+                        {hasSearched && searchResults.length === 0 && !searching && (
+                          <div className="p-6 bg-hyundai-gray-50 border border-dashed border-hyundai-gray-200 text-center space-y-4">
+                             <p className="text-sm font-semibold text-hyundai-gray-400">검색 결과가 없습니다.</p>
+                             <button type="button" onClick={() => { setShowManualFields(true); setHasSearched(false); }} className="text-sm font-bold border-b border-hyundai-black pb-0.5">직접 입력하기</button>
+                          </div>
+                        )}
                       </div>
-                   </div>
-                 )}
+                    )}
+
+                    {/* Selected Track Display */}
+                    {formData.title && !showManualFields && (
+                      <div className="p-8 bg-hyundai-gray-50 border border-hyundai-gray-200 flex items-center gap-8 group">
+                         <div className="w-24 h-24 bg-white shrink-0 border border-hyundai-gray-200 overflow-hidden">
+                            {formData.image ? <img src={formData.image} alt="" className="w-full h-full object-cover" /> : <Disc className="w-12 h-12 text-hyundai-gray-200 animate-spin" />}
+                         </div>
+                         <div className="flex-grow min-w-0">
+                            <span className="text-[11px] font-bold text-hyundai-accent tracking-widest uppercase block mb-1">SELECTED TRACK</span>
+                            <h4 className="text-2xl font-bold text-hyundai-black tracking-tight truncate">{formData.title}</h4>
+                            <p className="text-base font-semibold text-hyundai-gray-400 truncate">{formData.artist}</p>
+                         </div>
+                         <button type="button" onClick={() => { setFormData(prev => ({ ...prev, title: '', artist: '', image: '' })); setHasSearched(false); }} className="px-6 h-12 border border-hyundai-black text-[13px] font-bold hover:bg-hyundai-black hover:text-white transition-all">재검색</button>
+                      </div>
+                    )}
+
+                    {!hasSearched && !searching && !formData.title && (
+                       <button type="button" onClick={() => setShowManualFields(!showManualFields)} className="text-[13px] font-bold text-hyundai-gray-400 hover:text-hyundai-black transition-colors underline underline-offset-4 decoration-hyundai-gray-200">
+                          {showManualFields ? '검색 모드로 전환' : '원하는 검색 결과가 없으신가요? 직접 입력'}
+                       </button>
+                    )}
+                 </div>
               </div>
 
-              {/* Step 02: Narrative */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 pt-24 border-t border-hyundai-gray-100">
-                  <div className="space-y-12">
-                     <div className="space-y-4">
-                        <span className="text-2xl font-bold text-hyundai-gray-300 tracking-tighter block italic">02/신청 사연</span>
-                        <h3 className="text-3xl font-bold text-hyundai-black tracking-tight">선곡의 이유와 추억 (선택사항)</h3>
+              {/* Manual Entry Grid (Conditional) */}
+              {showManualFields && (
+                <>
+                  <div className="form-row">
+                     <div className="form-label">
+                        곡 제목<span className="required-mark">*</span>
                      </div>
-                     <textarea 
-                       rows={8}
-                       placeholder="심사 시 반영될 사연을 입력해 주세요. (선택)"
-                       className="w-full bg-hyundai-gray-50 border border-hyundai-gray-100 px-10 py-10 text-lg font-medium leading-relaxed focus:bg-white focus:ring-4 focus:ring-hyundai-black/5 transition-all outline-none resize-none placeholder:text-hyundai-gray-300"
-                       maxLength={200}
-                       value={formData.story}
-                       onChange={(e) => setFormData({...formData, story: e.target.value})}
-                     />
+                     <div className="form-field">
+                        <input 
+                          type="text" 
+                          required
+                          autoComplete="off"
+                          placeholder="곡 제목을 입력해 주세요"
+                          className="input-hyundai"
+                          value={formData.title}
+                          onChange={(e) => setFormData({...formData, title: e.target.value})}
+                        />
+                     </div>
                   </div>
+                  <div className="form-row">
+                     <div className="form-label">
+                        아티스트명<span className="required-mark">*</span>
+                     </div>
+                     <div className="form-field">
+                        <input 
+                          type="text" 
+                          required
+                          autoComplete="off"
+                          placeholder="아티스트명을 입력해 주세요"
+                          className="input-hyundai"
+                          value={formData.artist}
+                          onChange={(e) => setFormData({...formData, artist: e.target.value})}
+                        />
+                     </div>
+                  </div>
+                </>
+              )}
 
-                  <div className="space-y-12">
-                     <div className="space-y-4">
-                        <span className="text-2xl font-bold text-hyundai-gray-300 tracking-tighter block italic">03/정보 확인</span>
-                        <h3 className="text-3xl font-bold text-hyundai-black tracking-tight">신청자 프로필 (선택사항)</h3>
-                     </div>
-                     <div className="space-y-8">
-                        <input 
-                          type="text" 
-                          autoComplete="off"
-                          placeholder="성함 또는 닉네임 (선택)"
-                          className="w-full h-20 bg-hyundai-gray-50 border border-hyundai-gray-100 px-8 text-xl font-semibold focus:ring-4 focus:ring-hyundai-black/5 outline-none transition-all shadow-sm"
-                          value={formData.requester_name}
-                          onChange={(e) => setFormData({...formData, requester_name: e.target.value})}
-                        />
-                        <input 
-                          type="text" 
-                          autoComplete="off"
-                          placeholder="연락처 (010-0000-0000) (선택)"
-                          className="w-full h-20 bg-hyundai-gray-50 border border-hyundai-gray-100 px-8 text-xl font-semibold focus:ring-4 focus:ring-hyundai-black/5 outline-none transition-all shadow-sm"
-                          value={formData.requester_contact}
-                          onChange={(e) => setFormData({...formData, requester_contact: e.target.value})}
-                        />
-                     </div>
-                  </div>
+              {/* Story Section */}
+              <div className="form-row">
+                 <div className="form-label">
+                    신청 사연
+                 </div>
+                 <div className="form-field">
+                    <textarea 
+                      rows={6}
+                      placeholder="함께 나누고 싶은 이야기나 신청 배경을 입력해 주세요 (최대 200자)"
+                      className="textarea-hyundai"
+                      maxLength={200}
+                      value={formData.story}
+                      onChange={(e) => setFormData({...formData, story: e.target.value})}
+                    />
+                 </div>
               </div>
 
-              {/* Execution */}
-              <div className="pt-32 border-t-4 border-hyundai-black flex flex-col items-center">
-                 <button 
-                   type="submit" 
-                   disabled={loading}
-                   className={cn(
-                     "btn-portal-primary w-full h-28 text-2xl tracking-widest font-bold group relative transform hover:-translate-y-2 active:translate-y-0 active:scale-95 duration-500 shadow-xl shadow-hyundai-black/10",
-                     loading && "opacity-50 cursor-not-allowed"
-                   )}
-                 >
-                    {loading ? "전송 중..." : "신청서 전송하기"}
-                 </button>
+              {/* Requester Info */}
+              <div className="form-row">
+                 <div className="form-label">
+                    성함 / 닉네임
+                 </div>
+                 <div className="form-field">
+                    <input 
+                      type="text" 
+                      autoComplete="off"
+                      placeholder="실명 또는 닉네임을 입력해 주세요"
+                      className="input-hyundai md:max-w-sm"
+                      value={formData.requester_name}
+                      onChange={(e) => setFormData({...formData, requester_name: e.target.value})}
+                    />
+                 </div>
+              </div>
+
+              <div className="form-row">
+                 <div className="form-label">
+                    연락처
+                 </div>
+                 <div className="form-field">
+                    <input 
+                      type="text" 
+                      autoComplete="off"
+                      placeholder="010-0000-0000"
+                      className="input-hyundai md:max-w-sm"
+                      value={formData.requester_contact}
+                      onChange={(e) => setFormData({...formData, requester_contact: e.target.value})}
+                    />
+                    <p className="mt-3 text-[13px] font-medium text-hyundai-gray-400">송출 확정 시 안내 문자가 발송될 수 있습니다.</p>
+                 </div>
+              </div>
+
+              {/* Submit Area */}
+              <div className="pt-20 pb-40 flex flex-col items-center gap-8">
+                 <div className="p-8 bg-[#f8f8f8] border border-hyundai-gray-100 text-center w-full">
+                    <p className="text-[14px] font-medium text-hyundai-gray-500 leading-relaxed">
+                       입력하신 정보는 신청곡 관리 목적으로만 사용되며, <br className="hidden md:block" /> 
+                       개인정보처리방침에 따라 안전하게 보호됩니다.
+                    </p>
+                 </div>
+                 <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+                    <Link href="/" className="btn-portal-outline px-20">취소</Link>
+                    <button 
+                      type="submit" 
+                      disabled={loading || !formData.title}
+                      className={cn(
+                        "btn-portal-primary px-32",
+                        (loading || !formData.title) && "opacity-20 cursor-not-allowed"
+                      )}
+                    >
+                       {loading ? "전송 중..." : "신청서 등록"}
+                    </button>
+                 </div>
               </div>
            </form>
         </div>

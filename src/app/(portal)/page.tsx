@@ -56,37 +56,33 @@ export default async function Home() {
   return (
     <div className="bg-white">
       {/* 1. Sophisticated Theme Hero */}
-      <section className="relative pt-48 pb-32 overflow-hidden border-b border-hyundai-gray-100 min-h-[700px] flex items-center">
+      <section className="relative pt-32 md:pt-48 pb-32 overflow-hidden border-b border-hyundai-gray-100 min-h-[600px] flex items-center bg-white">
         {/* Blurred Background Image */}
         {activeTheme?.background_base64 && (
           <div className="absolute inset-0 z-0">
             <img 
               src={activeTheme.background_base64} 
-              className="w-full h-full object-cover blur-[2px] opacity-80" 
+              className="w-full h-full object-cover blur-[10px] opacity-10" 
               alt="" 
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-white/95 via-transparent to-white"></div>
           </div>
         )}
         
-        <div className="absolute top-0 right-0 w-1/2 h-full opacity-[0.03] pointer-events-none z-0">
-           <Music className="w-full h-full -rotate-12 translate-x-1/4" />
-        </div>
-        
-        <div className="portal-container relative z-10 w-full text-shadow-sm">
-           <div className="max-w-5xl space-y-12">
-              <div className="space-y-6">
-                 <span className="text-hyundai-gold text-[14px] font-bold tracking-[0.5em] uppercase block animate-in fade-in slide-in-from-bottom-4 duration-700">이달의 테라스 선율</span>
-                  <h1 className="text-5xl md:text-[80px] font-bold text-hyundai-black tracking-[-0.04em] leading-[1.1] break-keep whitespace-pre-wrap animate-in fade-in slide-in-from-bottom-8 duration-1000 drop-shadow-sm">
-                    {activeTheme ? activeTheme.title : "Seasonal Curation"}
+        <div className="portal-container relative z-10 w-full text-left">
+           <div className="max-w-4xl space-y-12">
+              <div className="space-y-4">
+                 <span className="text-hyundai-accent text-[14px] font-bold tracking-[0.4em] uppercase block">THIS MONTH'S CURATION</span>
+                  <h1 className="text-5xl md:text-[80px] font-bold text-hyundai-black tracking-[-0.04em] leading-[1.1] break-keep">
+                    {activeTheme ? activeTheme.title : "스카이테라스 선율"}
                   </h1>
                </div>
-               <p className="text-lg md:text-2xl font-medium text-hyundai-gray-500 leading-[1.7] max-w-3xl break-keep animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 drop-shadow-sm">
+               <p className="text-lg md:text-xl font-medium text-hyundai-gray-500 leading-relaxed max-w-2xl break-keep">
                   {activeTheme?.description || "현대프리미엄아울렛 대전점 스카이테라스의 공간에 영감을 불어넣는 공식 컬렉션입니다."}
                </p>
-              <div className="flex flex-col sm:flex-row gap-6 pt-6 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
-                 <Link href="/request" className="btn-portal-primary h-20 px-16 flex items-center justify-center text-[16px]">음악 신청하기</Link>
-                 <Link href="/status" className="btn-portal-outline h-20 px-16 flex items-center justify-center text-[16px]">현황 조회하기</Link>
+              <div className="flex flex-col sm:flex-row gap-4 pt-6">
+                 <Link href="/request" className="btn-portal-primary h-20 px-12 flex items-center justify-center text-[16px]">음악 신청하기</Link>
+                 <Link href="/status" className="btn-portal-outline h-20 px-12 flex items-center justify-center text-[16px]">신청 현황 조회</Link>
               </div>
            </div>
         </div>
@@ -98,26 +94,23 @@ export default async function Home() {
       {/* 3. Current Live Theme Section */}
       <PortalSection 
         title={activeTheme ? activeTheme.title : "현재 진행 중인 테마"}
-        subtitle="이달의 추천 곡"
+        subtitle="SEASONAL SELECTIONS"
         moreHref="/request"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {themeTracks.slice(0, 8).map((track, i) => (
-            <div key={i} className="card-portal group cursor-pointer overflow-hidden border-none text-left">
-              <div className="relative aspect-square bg-[#F5F5F5] transition-all duration-700 group-hover:bg-hyundai-black">
-                 <div className="absolute inset-0 flex items-center justify-center p-16">
-                    <Music className="w-16 h-16 text-hyundai-gray-200 group-hover:scale-110 group-hover:text-white/20 transition-all duration-700" />
+            <div key={i} className="group cursor-pointer">
+              <div className="relative aspect-square bg-hyundai-gray-50 overflow-hidden">
+                 <div className="absolute inset-0 flex items-center justify-center opacity-40">
+                    <Music className="w-12 h-12 text-hyundai-gray-200 group-hover:scale-110 transition-transform duration-700" />
                  </div>
-                 <div className="absolute inset-0 bg-hyundai-black/0 group-hover:bg-hyundai-black/40 transition-all flex items-center justify-center">
-                    <PlayCircle className="w-16 h-16 text-white opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-out" strokeWidth={1} />
+                 {/* Hover Overlay */}
+                 <div className="absolute inset-0 bg-hyundai-black/0 group-hover:bg-hyundai-black/5 transition-all flex items-center justify-center">
                  </div>
-                  <div className="absolute top-6 left-6 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="text-[12px] font-bold text-white uppercase tracking-widest px-4 py-1.5 border border-white/20">Track {(i+1).toString().padStart(2, '0')}</span>
-                  </div>
               </div>
-              <div className="py-8 space-y-2">
-                <h4 className="text-xl font-bold text-hyundai-black truncate tracking-tighter">{track.title}</h4>
-                <p className="text-[14px] font-semibold text-hyundai-gray-400 tracking-widest uppercase">{track.artist}</p>
+              <div className="py-6 space-y-1 text-left">
+                <h4 className="text-[17px] font-bold text-hyundai-black truncate tracking-tight">{track.title}</h4>
+                <p className="text-[13px] font-semibold text-hyundai-gray-400 tracking-wide uppercase">{track.artist}</p>
               </div>
             </div>
           ))}
@@ -127,105 +120,78 @@ export default async function Home() {
       {/* 4. Recent Approved Songs (Premium List) */}
       <PortalSection 
         title="실시간 승인 현황" 
-        subtitle="최신 신청곡 업데이트"
+        subtitle="LIVE SELECTION UPDATES"
         moreHref="/status"
         bgGray
       >
-        <div className="bg-white border border-hyundai-gray-100">
-           <div className="grid grid-cols-1 divide-y divide-hyundai-gray-50 text-left">
-             {requestedTracks.map((track, i) => (
-               <div key={i} className="group flex items-center justify-between px-12 py-10 hover:bg-hyundai-gray-50 transition-all duration-500">
-                 <div className="flex items-center gap-14">
-                    <span className="text-3xl font-bold text-hyundai-gray-100 w-12 group-hover:text-hyundai-gold transition-colors duration-500 italic">{(i+1).toString().padStart(2, '0')}</span>
-                    <div className="space-y-1">
-                       <h5 className="text-2xl font-bold text-hyundai-black tracking-tight group-hover:translate-x-1 transition-transform duration-500">{track.title}</h5>
-                       <p className="text-[13px] font-semibold text-hyundai-gray-400 tracking-wider uppercase">{track.artist}</p>
-                    </div>
-                 </div>
-                  <div className="flex items-center gap-10">
-                    <div className="hidden md:flex flex-col items-end gap-1.5 text-right">
-                       <span className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-normal">방송 예정</span>
-                       <span className="text-[14px] font-semibold text-hyundai-black">{ new Date(track.approved_at).toLocaleDateString() }</span>
-                    </div>
-                    <div className="h-10 w-px bg-hyundai-gray-100 hidden md:block"></div>
-                    <div className="w-12 h-12 rounded-full border border-hyundai-gray-200 flex items-center justify-center group-hover:bg-hyundai-black group-hover:text-white transition-all overflow-hidden shrink-0">
-                       <ArrowUpRight className="w-5 h-5 opacity-40 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                 </div>
+        <div className="bg-white border border-hyundai-gray-100 divide-y divide-hyundai-gray-50">
+           {requestedTracks.map((track, i) => (
+             <div key={i} className="group flex items-center justify-between p-8 hover:bg-hyundai-gray-50 transition-all duration-300">
+               <div className="flex items-center gap-10">
+                  <span className="text-[14px] font-bold text-hyundai-gray-300 w-8">{ (i+1).toString().padStart(2, '0') }</span>
+                  <div className="space-y-1 text-left">
+                     <h5 className="text-[18px] font-bold text-hyundai-black tracking-tight">{track.title}</h5>
+                     <p className="text-[12px] font-semibold text-hyundai-gray-400 tracking-wider uppercase">{track.artist}</p>
+                  </div>
                </div>
-             ))}
-           </div>
+                <div className="flex items-center gap-8">
+                  <div className="hidden md:flex flex-col items-end gap-1 text-right">
+                     <span className="text-[10px] font-bold text-hyundai-accent uppercase tracking-widest">방송 예정</span>
+                     <span className="text-[13px] font-semibold text-hyundai-black">{ new Date(track.approved_at).toLocaleDateString() }</span>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-hyundai-gray-200 group-hover:text-hyundai-black transition-colors" />
+               </div>
+             </div>
+           ))}
         </div>
       </PortalSection>
 
-      {/* 5. Popular Requests & FAQ Mixed (High Contrast) */}
-      <section className="py-40 bg-white">
-        <div className="portal-container grid grid-cols-1 lg:grid-cols-12 gap-24">
+      {/* 5. Popular Requests & Guidelines */}
+      <section className="py-32 bg-white">
+        <div className="portal-container grid grid-cols-1 lg:grid-cols-2 gap-24">
           
-          {/* Hall of Fame (5 cols) */}
-          <div className="lg:col-span-12 xl:col-span-5 space-y-16">
-            <div className="flex flex-col gap-6 animate-in slide-in-from-bottom-8 duration-1000">
-              <span className="text-hyundai-gold text-[16px] font-bold tracking-normal uppercase block">
-                Music & Lifestyle at THE HYUNDAI
-              </span>
-              <h3 className="text-5xl font-bold text-hyundai-black tracking-tighter leading-none">명예의 전당</h3>
+          <div className="space-y-12 text-left">
+            <div className="space-y-4">
+              <span className="text-hyundai-accent text-[12px] font-bold tracking-[0.4em] uppercase block">HALL OF FAME</span>
+              <h3 className="text-4xl font-bold text-hyundai-black tracking-tight">명예의 전당</h3>
             </div>
-            <div className="grid grid-cols-1 gap-px bg-hyundai-gray-100 border border-hyundai-gray-100">
+            <div className="border border-hyundai-gray-100 divide-y divide-hyundai-gray-100">
               {popularTracks.map((track, i) => (
-                <div key={i} className="flex items-center gap-8 group p-8 bg-white hover:bg-hyundai-gray-50 transition-all duration-500">
-                   <div className="relative">
-                      <div className="w-16 h-16 bg-hyundai-black text-white flex items-center justify-center p-4">
-                        <span className="text-xl font-bold italic">0{i + 1}</span>
-                      </div>
-                      {i === 0 && <Star className="absolute -top-2 -right-2 w-5 h-5 text-hyundai-gold fill-hyundai-gold shadow-sm" />}
+                <div key={i} className="flex items-center gap-6 p-6 hover:bg-hyundai-gray-50 transition-colors">
+                   <div className="w-12 h-12 bg-hyundai-black text-white flex items-center justify-center font-bold italic text-sm">
+                     0{i + 1}
                    </div>
-                   <div className="flex-grow space-y-1 text-left min-w-0">
-                      <h6 className="text-lg font-bold text-hyundai-black tracking-tight truncate">{track.title}</h6>
-                      <p className="text-[13px] font-semibold text-hyundai-gray-400 truncate mt-1 uppercase tracking-wide">{track.artist}</p>
+                   <div className="flex-grow min-w-0">
+                      <h6 className="text-[16px] font-bold text-hyundai-black truncate tracking-tight">{track.title}</h6>
+                      <p className="text-[12px] font-semibold text-hyundai-gray-400 truncate uppercase tracking-wide">{track.artist}</p>
                    </div>
-                   <div className="text-right shrink-0">
-                      <span className="text-[10px] font-bold text-hyundai-gray-300 uppercase tracking-normal mb-1">신청 횟수</span>
-                      <p className="text-2xl font-bold text-hyundai-black italic">{track.request_count}</p>
+                   <div className="text-right">
+                      <span className="text-[10px] font-bold text-hyundai-gray-300 block mb-0.5">COUNT</span>
+                      <p className="text-xl font-bold text-hyundai-black italic">{track.request_count}</p>
                    </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="hidden xl:block xl:col-span-1 w-px bg-hyundai-gray-100 h-full mx-auto"></div>
-
-          {/* FAQ / Info (6 style) */}
-          <div className="lg:col-span-12 xl:col-span-6 space-y-16">
-            <div className="space-y-6">
-              <span className="text-hyundai-gold text-[14px] font-bold tracking-normal uppercase block">서비스 안내</span>
-              <h3 className="text-5xl font-bold text-hyundai-black tracking-tighter leading-none">운영 가이드</h3>
+          <div className="space-y-12 text-left">
+            <div className="space-y-4">
+              <span className="text-hyundai-accent text-[12px] font-bold tracking-[0.4em] uppercase block">GUIDELINES</span>
+              <h3 className="text-4xl font-bold text-hyundai-black tracking-tight">운영 안내</h3>
             </div>
-            <div className="grid grid-cols-1 gap-4 text-left">
+            <div className="space-y-6">
               {[
-                { q: "신청곡 송출 알고리즘", a: "현대백화점 대전점의 공간 무드와 현재 시간대별 유동인구 텐션을 고려하여 선곡 큐레이션이 작동합니다." },
-                { q: "콘텐츠 가이드라인", a: "쾌적한 쇼핑 환경을 위해 저작권이 확보되지 않은 음원이나 부적절한 가사가 포함된 신청곡은 필터링됩니다." },
-                { q: "조회 UUID 보안 안내", a: "개인화된 음악 경험을 위해 발급되는 신청곡 UUID는 본인 확인을 위한 고유 식별값이며 외부에 노출되지 않도록 주의 바랍니다." }
+                { q: "공간에 무드에 맞춘 스마트 선곡", a: "현대백화점 대전점의 공간 무드와 시간대별 분위기를 고려하여 큐레이션 엔진이 작동합니다." },
+                { q: "콘텐츠 안전 가이드라인", a: "쾌적한 쇼핑 환경을 위해 부적절한 가사가 포함된 음원은 시스템에서 필터링될 수 있습니다." },
+                { q: "조회 번호 보안 및 개인화", a: "발급되는 36자리 고유 번호는 본인 확인을 위한 식별값입니다. 외부에 노출되지 않도록 주의 바랍니다." }
               ].map((item, i) => (
-                <div key={i} className="p-10 bg-white border border-hyundai-gray-100 hover:border-hyundai-black transition-all cursor-pointer group hover:shadow-2xl hover:shadow-black/[0.03]">
-                  <div className="flex justify-between items-center">
-                    <h6 className="text-lg font-bold text-hyundai-black tracking-tight transition-colors group-hover:text-hyundai-gold">{item.q}</h6>
-                    <div className="w-10 h-10 border border-hyundai-gray-100 flex items-center justify-center group-hover:bg-hyundai-black group-hover:text-white transition-all">
-                       <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-                    </div>
-                  </div>
-                  <p className="text-[13px] text-hyundai-gray-500 font-medium mt-6 leading-relaxed max-w-lg">
+                <div key={i} className="p-8 bg-hyundai-gray-50 border border-hyundai-gray-100 space-y-4">
+                  <h6 className="text-[16px] font-bold text-hyundai-black tracking-tight">{item.q}</h6>
+                  <p className="text-[13px] text-hyundai-gray-500 font-medium leading-relaxed">
                     {item.a}
                   </p>
                 </div>
               ))}
-            </div>
-            <div className="pt-10 text-left">
-              <h3 className="text-4xl md:text-5xl font-bold tracking-tighter text-hyundai-black mb-12">
-               당신의 감성을 <br /> 들려주세요
-            </h3>
-            <Link href="/request" className="btn-portal-outline border-hyundai-black text-hyundai-black hover:bg-hyundai-black hover:text-white text-[16px]">
-               음악 신청하기
-            </Link>
             </div>
           </div>
 
@@ -233,27 +199,20 @@ export default async function Home() {
       </section>
 
       {/* 6. Premium CTA Banner */}
-      <section className="bg-hyundai-black py-48 text-center text-white relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
-           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] bg-hyundai-emerald rounded-full blur-[200px]"></div>
-           <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-hyundai-gold rounded-full blur-[180px] opacity-20"></div>
-        </div>
-        <div className="portal-container relative z-10 flex flex-col items-center">
-             <span className="text-hyundai-gold text-[16px] font-bold tracking-[0.6em] uppercase mb-10 block animate-in fade-in duration-1000">당신의 음악을 들려주세요</span>
-            <h2 className="text-5xl md:text-[80px] font-bold tracking-[-0.05em] max-w-6xl mx-auto leading-[1.1] mb-16 animate-in fade-in slide-in-from-bottom-10 duration-[1200ms] delay-300">
-              현대의 감성으로 <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/20">완성하는 테라스의 선율</span>
+      <section className="bg-hyundai-black py-40 text-center text-white relative overflow-hidden">
+        <div className="portal-container relative z-10 space-y-12">
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tight max-w-4xl mx-auto leading-tight">
+              당신의 감성으로 완성하는 <br />
+              <span className="text-hyundai-accent">스카이테라스의 소리</span>
             </h2>
-            <p className="text-white/60 text-lg font-medium max-w-2xl mx-auto mb-20 leading-relaxed tracking-wider">현대프리미엄아울렛 대전점 스카이테라스에서 <br />당신의 특별한 선율을 들려주세요.</p>
-           
-           <div className="flex flex-col sm:flex-row gap-6 justify-center w-full max-w-2xl">
-              <Link href="/request" className="flex-1 h-20 bg-white text-hyundai-black flex items-center justify-center text-[15px] font-bold tracking-[0.3em] hover:bg-hyundai-gold transition-all transform hover:-translate-y-1 active:scale-95">
-                신청곡 등록하기
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/request" className="btn-portal-primary h-20 px-16 flex items-center justify-center text-[15px] font-bold">
+                지금 신청하기
               </Link>
-              <Link href="/status" className="flex-1 h-20 border border-white/20 text-white flex items-center justify-center text-[15px] font-bold tracking-[0.3em] hover:bg-white hover:text-hyundai-black transition-all transform hover:-translate-y-1 active:scale-95">
-                신청 현황 확인
+              <Link href="/status" className="h-20 px-16 border border-white/20 text-white flex items-center justify-center text-[15px] font-bold hover:bg-white hover:text-hyundai-black transition-all">
+                조회 및 관리
               </Link>
-           </div>
+            </div>
         </div>
       </section>
     </div>

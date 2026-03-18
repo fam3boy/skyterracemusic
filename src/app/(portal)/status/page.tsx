@@ -35,100 +35,79 @@ export default function StatusSearchPage() {
         </div>
       </div>
 
-      <div className="portal-container pt-24 md:pt-32">
-        {/* 2. Hero Section */}
-        <div className="mb-24 flex flex-col md:flex-row md:items-end justify-between gap-16 border-b-4 border-hyundai-black pb-16">
-          <div className="space-y-6 max-w-3xl">
-              <div className="space-y-4">
-                 <span className="text-hyundai-gold text-[12px] font-black tracking-[0.4em] uppercase block animate-in fade-in slide-in-from-bottom-2 duration-500">실시간 처리 현황</span>
-                 <h1 className="text-5xl md:text-8xl font-black text-hyundai-black tracking-[-0.04em] leading-[0.9] uppercase animate-in fade-in slide-in-from-bottom-4 duration-700">디지털 <br />처리 <br />내역 조회</h1>
-              </div>
-             <p className="text-lg md:text-xl font-medium text-hyundai-gray-500 leading-relaxed animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300">신청 시 발급받은 조회 번호를 통해 실시간 처리 상태를 확인하실 수 있습니다. <br className="hidden md:block" />현대백화점 대전점의 공식 큐레이션 엔진이 귀하의 요청을 분석 중입니다.</p>
-          </div>
-          
-          <div className="bg-hyundai-gray-50 p-8 border border-hyundai-gray-100 hidden md:block">
-             <Database className="w-12 h-12 text-hyundai-gray-200 mb-4" />
-             <p className="text-[10px] font-black text-hyundai-black uppercase tracking-widest">실시간 DB 연결 상태</p>
-             <div className="flex items-center gap-2 mt-2">
-                <div className="w-2 h-2 rounded-full bg-hyundai-emerald"></div>
-                <span className="text-[11px] font-bold text-hyundai-emerald uppercase">정상 작동 중</span>
-             </div>
-          </div>
+      <div className="portal-container pt-32 md:pt-48">
+        {/* 2. Top Header (Hyundai Style) */}
+        <div className="mb-20">
+           <div className="flex justify-between items-end border-b-2 border-hyundai-black pb-6 mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-hyundai-black tracking-tighter">신청 현황 조회</h1>
+           </div>
+           <p className="text-[14px] font-medium text-hyundai-gray-500 px-2 tracking-tight">
+             신청 시 발급받은 조회 번호를 통해 실시간 처리 상태를 확인하실 수 있습니다. <br className="hidden md:block" />
+             분실 시 보안 정책에 따라 조회가 제한될 수 있습니다.
+           </p>
         </div>
 
         {/* 3. Operational Search Input */}
-        <div className="max-w-5xl mx-auto py-20">
-          <form onSubmit={handleSearch} className="space-y-24">
-            <div className="space-y-12">
-               <div className="space-y-4">
-                  <span className="text-3xl font-black text-hyundai-gray-200 uppercase tracking-tighter block italic">01/식별 번호</span>
-                  <h3 className="text-3xl font-black text-hyundai-black uppercase tracking-tight">조회 번호 입력 (UUID)</h3>
+        <div className="bg-white border border-hyundai-gray-100 p-12 md:p-24 space-y-16">
+          <form onSubmit={handleSearch} className="space-y-16">
+            <div className="space-y-8">
+               <div className="flex items-center gap-3">
+                  <span className="w-1 h-1 bg-hyundai-accent rounded-full"></span>
+                  <span className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest">식별 번호 입력 (UUID)</span>
                </div>
                
                <div className="relative group">
                   <input
                     type="text"
                     required
-                    className="w-full bg-transparent border-b-8 border-hyundai-gray-100 px-2 py-12 text-2xl md:text-6xl font-black text-hyundai-black placeholder:text-hyundai-gray-100 outline-none transition-all font-mono tracking-tighter focus:border-hyundai-black caret-hyundai-gold"
-                    placeholder="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+                    autoComplete="off"
+                    className="w-full bg-white border border-hyundai-gray-200 h-24 px-10 text-xl md:text-4xl font-bold text-hyundai-black placeholder:text-hyundai-gray-100 outline-none transition-all font-mono tracking-tighter focus:border-hyundai-black"
+                    placeholder="조회 번호를 입력하세요"
                     value={requestId}
                     onChange={(e) => setRequestId(e.target.value)}
                   />
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 w-20 h-20 bg-hyundai-black text-white flex items-center justify-center group-focus-within:bg-hyundai-gold transition-all duration-500">
-                    <Search className="w-8 h-8" strokeWidth={3} />
+                  <div className="absolute right-0 top-0 bottom-0 px-10 bg-hyundai-black text-white flex items-center justify-center group-focus-within:bg-hyundai-accent transition-all duration-500">
+                    <Search className="w-8 h-8" strokeWidth={2} />
                   </div>
-               </div>
-               
-               <div className="flex gap-3 items-start">
-                  <Info className="w-4 h-4 text-hyundai-gold mt-0.5" />
-                  <p className="text-[11px] text-hyundai-gray-400 font-medium leading-relaxed uppercase tracking-wider italic">
-                    신청 완료 시 시스템에서 자동으로 발급된 36자리 고유 식별 번호를 정확하게 입력해 주십시오. <br />
-                    분실 시 보안 정책에 따라 조회가 불가능할 수 있습니다.
-                  </p>
                </div>
             </div>
 
-            <div className="flex justify-center pt-10">
+            <div className="flex justify-center pt-8">
                <button
                  type="submit"
-                 className="btn-portal-primary w-full max-w-lg h-24 text-xl tracking-[0.4em] font-black group relative transform hover:-translate-y-1 active:scale-95 duration-500"
+                 disabled={!requestId.trim()}
+                 className={cn(
+                    "btn-portal-primary px-32 h-20 text-[16px] font-bold",
+                    !requestId.trim() && "opacity-20 cursor-not-allowed"
+                 )}
                >
-                 <div className="flex items-center justify-center gap-6">
-                    <span>현황 조회 실행</span>
-                    <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-500" />
-                 </div>
+                 현황 조회하기
                </button>
             </div>
           </form>
 
           {/* Infrastructure Guidelines */}
-          <div className="mt-40 grid grid-cols-1 md:grid-cols-2 gap-px bg-hyundai-gray-100 border border-hyundai-gray-100">
-             <div className="p-12 bg-white space-y-8 group hover:bg-hyundai-gray-50 transition-colors duration-500">
-                <div className="flex justify-between items-start">
-                   <span className="text-[10px] font-black text-hyundai-gold uppercase tracking-[0.3em]">운영 정책</span>
-                   <Clock className="w-6 h-6 text-hyundai-gray-200 group-hover:text-hyundai-black transition-colors" />
+          <div className="pt-24 border-t border-hyundai-gray-50 grid grid-cols-1 md:grid-cols-2 gap-16">
+             <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                   <Clock className="w-5 h-5 text-hyundai-accent" />
+                   <h4 className="text-[15px] font-bold text-hyundai-black tracking-tight">심사 주기 안내</h4>
                 </div>
-                <div className="space-y-4">
-                   <h4 className="text-2xl font-black text-hyundai-black uppercase tracking-tight">심사 주기 안내</h4>
-                   <p className="text-[13px] font-medium text-hyundai-gray-500 leading-relaxed uppercase tracking-wider">
-                      신청곡은 시스템 내부 선별 기준에 따라 주기적으로 검토됩니다. <br />
-                      검토 완료 후 상태가 '승인'으로 전환되면 정규 방송 리스트에 포함됩니다.
-                   </p>
-                </div>
+                <p className="text-[13px] font-medium text-hyundai-gray-400 leading-relaxed tracking-tight">
+                   신청곡은 시스템 내부 선별 기준에 따라 정기적으로 검토됩니다. <br />
+                   검토 완료 후 상태가 '승인'으로 전환되면 정규 방송 리스트에 포함됩니다.
+                </p>
              </div>
              
-             <div className="p-12 bg-white space-y-8 group hover:bg-hyundai-gray-50 transition-colors duration-500">
-                <div className="flex justify-between items-start">
-                   <span className="text-[10px] font-black text-hyundai-gold uppercase tracking-[0.3em]">기술 지원</span>
-                   <Music className="w-6 h-6 text-hyundai-gray-200 group-hover:text-hyundai-black transition-colors" />
+             <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                   <Info className="w-5 h-5 text-hyundai-accent" />
+                   <h4 className="text-[15px] font-bold text-hyundai-black tracking-tight">수정 및 취소 정책</h4>
                 </div>
-                <div className="space-y-4">
-                   <h4 className="text-2xl font-black text-hyundai-black uppercase tracking-tight">데이터 수정 및 철회</h4>
-                   <p className="text-[13px] font-medium text-hyundai-gray-500 leading-relaxed uppercase tracking-wider">
-                      한번 제출된 데이터는 무결성 유지를 위해 수정이 제한됩니다. <br />
-                      오류 발견 시 기존 요청을 철회하고 '방식 B'를 통해 재신청해 주시기 바랍니다.
-                   </p>
-                </div>
+                <p className="text-[13px] font-medium text-hyundai-gray-400 leading-relaxed tracking-tight">
+                   이미 제출된 데이터는 시스템 무결성을 위해 직접 수정이 불가능합니다. <br />
+                   중요한 오류가 있는 경우 기존 요청을 무시하고 새로 신청해 주시길 권장합니다.
+                </p>
              </div>
           </div>
         </div>
