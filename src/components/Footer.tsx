@@ -24,8 +24,8 @@ export default function Footer() {
 
           <div className="space-y-4 md:text-right">
              <div className="flex flex-wrap md:justify-end gap-6">
-                <a href="#" className="text-[12px] font-bold text-hyundai-black">개인정보처리방침</a>
-                <a href="#" className="text-[12px] font-medium text-hyundai-gray-500">이용약관</a>
+                <Link href="/privacy" className="text-[12px] font-bold text-hyundai-black">개인정보처리방침</Link>
+                <Link href="/terms" className="text-[12px] font-medium text-hyundai-gray-500">이용약관</Link>
              </div>
              <p className="text-[12px] font-medium text-hyundai-gray-400 leading-relaxed">
                대전광역시 유성구 용산동 테크노중앙로 123 현대프리미엄아울렛 대전점 3F <br />

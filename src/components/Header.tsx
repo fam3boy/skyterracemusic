@@ -55,6 +55,8 @@ export default function Header() {
   const topNavItems: { name: string; href: string }[] = [];
 
   const mainNavItems = [
+    { name: '소개', href: '/#intro' },
+    { name: '플레이리스트', href: '/#playlist' },
     { name: '신청현황', href: '/status' },
   ];
 

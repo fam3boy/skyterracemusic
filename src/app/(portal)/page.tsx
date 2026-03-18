@@ -88,15 +88,52 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 2. Key Information Block */}
+      {/* 2. Brand Introduction Section */}
+      <section id="intro" className="py-32 bg-white">
+        <div className="portal-container">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+            <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000">
+              <span className="text-hyundai-accent text-[14px] font-bold tracking-[0.4em] uppercase block">ABOUT SKY TERRACE</span>
+              <h2 className="text-4xl md:text-5xl font-bold text-hyundai-black leading-[1.2] tracking-tight break-keep">
+                공간에 선율을 더하는 <br />
+                당신만의 특별한 시간
+              </h2>
+              <p className="text-lg text-hyundai-gray-500 leading-relaxed font-medium break-keep">
+                현대프리미엄아울렛 대전점 3F 스카이테라스는 바쁜 일상 속에서 잠시 멈추어 휴식을 취할 수 있는 도심 속 오아시스입니다. <br /><br />
+                우리는 이곳을 찾는 고객들이 직접 선곡한 음악을 통해 공간과 교감하고, 소중한 사람들과 더 깊은 추억을 쌓을 수 있기를 바랍니다. 당신이 고른 한 곡의 음악이 이곳의 무드를 완성합니다.
+              </p>
+              <div className="pt-4 flex items-center gap-6">
+                 <div className="flex flex-col">
+                    <span className="text-2xl font-bold text-hyundai-black">365</span>
+                    <span className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest">Days of Music</span>
+                 </div>
+                 <div className="w-px h-10 bg-hyundai-gray-100"></div>
+                 <div className="flex flex-col">
+                    <span className="text-2xl font-bold text-hyundai-black">3F</span>
+                    <span className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest">Location</span>
+                 </div>
+              </div>
+            </div>
+            <div className="relative aspect-[4/3] bg-hyundai-gray-50 overflow-hidden">
+               <div className="absolute inset-0 flex items-center justify-center">
+                  <Sparkles className="w-24 h-24 text-hyundai-gray-100 animate-pulse" />
+               </div>
+               <img src="https://images.unsplash.com/photo-1514525253361-b83f85dfd75c?q=80&w=1974&auto=format&fit=crop" className="w-full h-full object-cover opacity-80" alt="Space Mood" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Key Information Block */}
       <InfoBlock />
 
-      {/* 3. Current Live Theme Section */}
-      <PortalSection 
-        title={activeTheme ? activeTheme.title : "현재 진행 중인 테마"}
-        subtitle="SEASONAL SELECTIONS"
-        moreHref="/request"
-      >
+      {/* 4. Current Live Theme Section (Playlist) */}
+      <div id="playlist">
+        <PortalSection 
+          title={activeTheme ? activeTheme.title : "현재 진행 중인 테마"}
+          subtitle="SEASONAL SELECTIONS"
+          moreHref="/request"
+        >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {themeTracks.slice(0, 8).map((track, i) => (
             <div key={i} className="group cursor-pointer">
@@ -146,59 +183,56 @@ export default async function Home() {
         </div>
       </PortalSection>
 
-      {/* 5. Popular Requests & Guidelines */}
-      <section className="py-32 bg-white">
-        <div className="portal-container grid grid-cols-1 lg:grid-cols-2 gap-24">
-          
-          <div className="space-y-12 text-left">
-            <div className="space-y-4">
-              <span className="text-hyundai-accent text-[12px] font-bold tracking-[0.4em] uppercase block">HALL OF FAME</span>
-              <h3 className="text-4xl font-bold text-hyundai-black tracking-tight">명예의 전당</h3>
-            </div>
-            <div className="border border-hyundai-gray-100 divide-y divide-hyundai-gray-100">
-              {popularTracks.map((track, i) => (
-                <div key={i} className="flex items-center gap-6 p-6 hover:bg-hyundai-gray-50 transition-colors">
-                   <div className="w-12 h-12 bg-hyundai-black text-white flex items-center justify-center font-bold italic text-sm">
-                     0{i + 1}
-                   </div>
-                   <div className="flex-grow min-w-0">
-                      <h6 className="text-[16px] font-bold text-hyundai-black truncate tracking-tight">{track.title}</h6>
-                      <p className="text-[12px] font-semibold text-hyundai-gray-400 truncate uppercase tracking-wide">{track.artist}</p>
-                   </div>
-                   <div className="text-right">
-                      <span className="text-[10px] font-bold text-hyundai-gray-300 block mb-0.5">COUNT</span>
-                      <p className="text-xl font-bold text-hyundai-black italic">{track.request_count}</p>
-                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-12 text-left">
-            <div className="space-y-4">
-              <span className="text-hyundai-accent text-[12px] font-bold tracking-[0.4em] uppercase block">GUIDELINES</span>
-              <h3 className="text-4xl font-bold text-hyundai-black tracking-tight">운영 안내</h3>
-            </div>
-            <div className="space-y-6">
-              {[
-                { q: "공간에 무드에 맞춘 스마트 선곡", a: "현대백화점 대전점의 공간 무드와 시간대별 분위기를 고려하여 큐레이션 엔진이 작동합니다." },
-                { q: "콘텐츠 안전 가이드라인", a: "쾌적한 쇼핑 환경을 위해 부적절한 가사가 포함된 음원은 시스템에서 필터링될 수 있습니다." },
-                { q: "조회 번호 보안 및 개인화", a: "발급되는 36자리 고유 번호는 본인 확인을 위한 식별값입니다. 외부에 노출되지 않도록 주의 바랍니다." }
-              ].map((item, i) => (
-                <div key={i} className="p-8 bg-hyundai-gray-50 border border-hyundai-gray-100 space-y-4">
-                  <h6 className="text-[16px] font-bold text-hyundai-black tracking-tight">{item.q}</h6>
-                  <p className="text-[13px] text-hyundai-gray-500 font-medium leading-relaxed">
-                    {item.a}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
+      {/* 6. Location & Space Section */}
+      <section id="location" className="py-32 bg-white overflow-hidden">
+        <div className="portal-container">
+           <div className="flex flex-col md:flex-row justify-between items-end gap-12 mb-16">
+              <div className="space-y-4 text-left">
+                <span className="text-hyundai-accent text-[12px] font-bold tracking-[0.4em] uppercase block">SPACE GUIDE</span>
+                <h3 className="text-4xl font-bold text-hyundai-black tracking-tight">공간 안내</h3>
+              </div>
+              <p className="text-hyundai-gray-400 font-medium text-[15px] max-w-md text-left md:text-right">
+                현대프리미엄아울렛 대전점을 방문하시는 모든 고객에게 열려있는 휴식 공간입니다.
+              </p>
+           </div>
+           
+           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 relative h-[400px] bg-hyundai-gray-50 flex items-center justify-center group overflow-hidden border border-hyundai-gray-100">
+                 <div className="absolute inset-0 bg-[#e5e7eb] flex items-center justify-center opacity-50">
+                    <MapPin className="w-12 h-12 text-hyundai-accent opacity-20" />
+                 </div>
+                 <div className="absolute bottom-8 left-8 right-8 bg-white p-6 shadow-xl text-left border border-hyundai-gray-100 z-10">
+                    <h5 className="text-[16px] font-bold text-hyundai-black mb-1">현대프리미엄아울렛 대전점 3F 스카이테라스</h5>
+                    <p className="text-[13px] text-hyundai-gray-500 font-medium">대전광역시 유성구 용산동 테크노중앙로 123</p>
+                 </div>
+              </div>
+              <div className="bg-hyundai-gray-50 p-10 flex flex-col justify-between text-left border border-hyundai-gray-100">
+                 <div className="space-y-8">
+                    <div className="space-y-2">
+                       <span className="text-[11px] font-bold text-hyundai-accent tracking-widest uppercase">How to find</span>
+                       <h6 className="text-[18px] font-bold text-hyundai-black">오시는 길</h6>
+                       <p className="text-[14px] text-hyundai-gray-500 leading-relaxed font-medium">
+                          아울렛 본관 3층 회전목마 인근 에스컬레이터를 이용해 테라스 광장으로 오실 수 있습니다.
+                       </p>
+                    </div>
+                    <div className="space-y-2">
+                       <span className="text-[11px] font-bold text-hyundai-accent tracking-widest uppercase">Operating Hours</span>
+                       <h6 className="text-[18px] font-bold text-hyundai-black">이용 시간</h6>
+                       <p className="text-[14px] text-hyundai-gray-500 leading-relaxed font-medium">
+                          10:30 - 20:30 (금~일 21:00까지) <br />
+                          * 아울렛 운영 시간과 동일하게 운영됩니다.
+                       </p>
+                    </div>
+                 </div>
+                 <Link href="https://map.naver.com/v5/search/%ED%98%84%EB%8C%80%ED%94%84%EB%A6%AC%EB%AF%B8%EC%97%84%EC%95%84%EC%9A%B8%EB%A0%9B%20%EB%8C%80%EC%A0%84%EC%A0%90" target="_blank" className="flex items-center gap-2 text-[13px] font-bold text-hyundai-black group">
+                    네이버 지도로 보기 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                 </Link>
+              </div>
+           </div>
         </div>
       </section>
 
-      {/* 6. Premium CTA Banner */}
+      {/* 7. Premium CTA Banner */}
       <section className="bg-hyundai-black py-40 text-center text-white relative overflow-hidden">
         <div className="portal-container relative z-10 space-y-12">
             <h2 className="text-4xl md:text-6xl font-bold tracking-tight max-w-4xl mx-auto leading-tight">
@@ -210,7 +244,7 @@ export default async function Home() {
                 지금 신청하기
               </Link>
               <Link href="/status" className="h-20 px-16 border border-white/20 text-white flex items-center justify-center text-[15px] font-bold hover:bg-white hover:text-hyundai-black transition-all">
-                조회 및 관리
+                신청 현황 확인
               </Link>
             </div>
         </div>
