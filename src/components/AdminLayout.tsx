@@ -18,7 +18,8 @@ import {
   Bell,
   Search,
   Menu,
-  X
+  X,
+  FileText
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -80,6 +81,7 @@ export default function AdminLayout({
     { name: '신청곡 관리', href: '/admin/requests', icon: Music },
     { name: '플레이리스트', href: '/admin/playlist', icon: ListMusic },
     { name: '월별 테마', href: '/admin/themes', icon: CalendarDays },
+    { name: '주간 리포트', href: '/admin/reports', icon: FileText },
     { name: '활동 로그', href: '/admin/audit-logs', icon: ClipboardList },
     { name: '시스템 설정', href: '/admin/settings', icon: Settings2 },
   ];

@@ -101,6 +101,30 @@ export async function GET(req: NextRequest) {
     const text = `[SKY TERRACE 주간 신청곡 리포트]\n기간: ${start.toLocaleString()} ~ ${end.toLocaleString()}\n총 ${songs.length}건\n\n` + 
                  songs.map((s, i) => `${i+1}. ${s.title} - ${s.artist} (Req: ${s.requester_name})`).join('\n');
 
+    // Calculate Summary Data for Admin View
+    const topSongs = songs.slice(0, 5).map(s => ({ title: s.title, artist: s.artist }));
+    const artistCounts = songs.reduce((acc: any, s) => {
+      acc[s.artist] = (acc[s.artist] || 0) + 1;
+      return acc;
+    }, {});
+    const topArtists = Object.entries(artistCounts)
+      .sort((a: any, b: any) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([name, count]) => ({ name, count }));
+
+    const summaryData = {
+      totalCount: songs.length,
+      topSongs,
+      topArtists,
+      songs: songs.map(s => ({ 
+        title: s.title, 
+        artist: s.artist, 
+        requester: s.requester_name,
+        approved_at: s.approved_at
+      })),
+      generatedAt: now.toISOString()
+    };
+
     let mailStatus = 'success';
     let errorMessage = null;
 
@@ -119,10 +143,17 @@ export async function GET(req: NextRequest) {
       }
     }
 
+    // Ensure column exists (one-time check/migration)
+    try {
+      await sql`ALTER TABLE weekly_mail_logs ADD COLUMN IF NOT EXISTS summary_data JSONB`;
+    } catch (e) {
+      console.warn('Migration check failed (might already exist)', e);
+    }
+
     // Log the event (consolidated log for the batch)
     await sql`
       INSERT INTO weekly_mail_logs (
-        recipient_email, subject, body_text, request_ids, status, error_message, period_start, period_end
+        recipient_email, subject, body_text, request_ids, status, error_message, period_start, period_end, summary_data
       ) VALUES (
         ${toEmails.join(', ')}, 
         ${subject}, 
@@ -131,7 +162,8 @@ export async function GET(req: NextRequest) {
         ${mailStatus},
         ${errorMessage},
         ${start.toISOString()},
-        ${end.toISOString()}
+        ${end.toISOString()},
+        ${JSON.stringify(summaryData)}
       )
     `;
 
@@ -139,7 +171,8 @@ export async function GET(req: NextRequest) {
       success: mailStatus === 'success', 
       count: songs.length,
       period: `${start.toISOString()} ~ ${end.toISOString()}`,
-      logStatus: mailStatus
+      logStatus: mailStatus,
+      summary: summaryData
     });
   } catch (err: any) {
     console.error('Weekly mail process failed:', err);
