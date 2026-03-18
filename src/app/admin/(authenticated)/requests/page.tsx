@@ -177,7 +177,8 @@ export default function RequestsManagementPage() {
         body: JSON.stringify({ 
           id: searchTargetId, 
           title: result.title, 
-          artist: result.artist 
+          artist: result.artist,
+          image: result.image 
         }),
       });
 
@@ -334,8 +335,12 @@ export default function RequestsManagementPage() {
                     </td>
                     <td className="px-8 py-6">
                       <div className="flex items-start gap-5">
-                         <div className="w-10 h-10 bg-hyundai-gray-50 flex items-center justify-center text-hyundai-gray-300 group-hover:bg-white group-hover:text-hyundai-black transition-colors border border-transparent group-hover:border-hyundai-gray-200">
-                            <Music className="w-5 h-5" />
+                         <div className="w-10 h-10 bg-hyundai-gray-50 flex items-center justify-center text-hyundai-gray-300 group-hover:bg-white group-hover:text-hyundai-black transition-colors border border-transparent group-hover:border-hyundai-gray-200 overflow-hidden">
+                            {req.image ? (
+                              <img src={req.image} alt="" className="w-full h-full object-cover" />
+                            ) : (
+                              <Music className="w-5 h-5" />
+                            )}
                          </div>
                          <div className="flex flex-col gap-1 min-w-0">
                             <p className="font-bold text-hyundai-black text-[16px] uppercase tracking-tight truncate max-w-[300px]">{req.title}</p>

@@ -123,7 +123,7 @@ export async function PATCH(req: Request) {
   const adminId = (session.user as any).id;
 
   try {
-    const { id, status, admin_memo } = await req.json();
+    const { id, status, admin_memo, title, artist, image } = await req.json();
 
     // 1. Fetch current state
     const currentRes = await sql`SELECT status, approved_at FROM song_requests WHERE id = ${id}`;
@@ -134,11 +134,6 @@ export async function PATCH(req: Request) {
 
     // 2. Handle Status Change with Rules
     if (status && status !== current.status) {
-      // Logic:
-      // - approved -> hold (Allow: administrator might want to re-eval)
-      // - approved -> deleted (Allow: soft delete)
-      // - pending/hold/deleted -> approved (Allow: standard approval)
-      
       const approved_at = (status === 'approved' && !current.approved_at) 
                           ? new Date().toISOString() 
                           : current.approved_at;
@@ -162,14 +157,20 @@ export async function PATCH(req: Request) {
       );
     }
 
-    // 3. Handle Admin Memo
-    if (admin_memo !== undefined && admin_memo !== current.admin_memo) {
+    // 3. Handle Admin Memo and Music Info
+    if (admin_memo !== undefined || title !== undefined || artist !== undefined || image !== undefined) {
       await sql`
         UPDATE song_requests 
-        SET admin_memo = ${admin_memo}
+        SET 
+          admin_memo = COALESCE(${admin_memo}, admin_memo),
+          title = COALESCE(${title}, title),
+          artist = COALESCE(${artist}, artist),
+          image = COALESCE(${image}, image),
+          updated_at = CURRENT_TIMESTAMP
         WHERE id = ${id}
       `;
-      await logAudit('UPDATE_MEMO', 'song_requests', id, { memo: admin_memo }, adminId);
+      
+      await logAudit('UPDATE_REQUEST_INFO', 'song_requests', id, { title, artist, image, memo: admin_memo }, adminId);
     }
 
     return NextResponse.json({ success: true });

@@ -4,7 +4,7 @@ import { sql } from '@vercel/postgres';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { title, artist, youtube_url, story, requester_name, requester_contact } = body;
+    const { title, artist, youtube_url, story, requester_name, requester_contact, image } = body;
 
     // Rate Limiting (Throttling) - Wrapped in try-catch to prevent failure if table is missing
     const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
@@ -46,9 +46,9 @@ export async function POST(req: Request) {
 
     const result = await sql`
       INSERT INTO song_requests (
-        theme_id, title, artist, youtube_url, story, requester_name, requester_contact, status
+        theme_id, title, artist, youtube_url, story, requester_name, requester_contact, status, image
       ) VALUES (
-        ${themeId}, ${title}, ${artist}, ${youtube_url}, ${story}, ${requester_name}, ${requester_contact}, 'pending'
+        ${themeId}, ${title}, ${artist}, ${youtube_url}, ${story}, ${requester_name}, ${requester_contact}, 'pending', ${image}
       )
       RETURNING id
     `;
