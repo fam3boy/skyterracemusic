@@ -18,13 +18,13 @@ export default function InfoBlock() {
             <div className="space-y-2">
                <h4 className="text-2xl font-bold text-hyundai-black tracking-tight">오늘의 운영 시간</h4>
                <p className="text-[15px] font-medium text-hyundai-gray-500 leading-relaxed">
-                 오전 10:30 - 오후 21:00 <br />
-                 금요일/토요일 일요일 연장 운영
+                 매일 10:30 - 21:00 <br />
+                 연중 무휴 (아울렛 운영 시간 기준)
                </p>
             </div>
             <div className="pt-2 flex items-center gap-2">
                <div className="w-1.5 h-1.5 rounded-full bg-hyundai-emerald animate-pulse"></div>
-               <span className="text-[12px] font-bold text-hyundai-emerald uppercase tracking-widest">실시간 방송 중</span>
+               <span className="text-[12px] font-bold text-hyundai-emerald uppercase tracking-widest">실시간 신청 가능</span>
             </div>
           </div>
 
