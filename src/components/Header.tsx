@@ -16,8 +16,8 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [customLogo, setCustomLogo] = useState<string | null>(null);
-  const [logoMode, setLogoMode] = useState<'text' | 'image' | 'both' | null>(null);
-  const [brandText, setBrandText] = useState('');
+  const [logoMode, setLogoMode] = useState<'text' | 'image' | 'both'>('both');
+  const [brandText, setBrandText] = useState('SKY TERRACE | MUSIC');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -93,10 +93,10 @@ export default function Header() {
               <div className="relative h-10 flex items-center min-w-[40px]">
                 {!isLoading && (
                   <>
-                    {(logoMode === 'image' || logoMode === 'both') && customLogo ? (
+                    {customLogo ? (
                       <img key={customLogo} src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
                     ) : (
-                      <span className="text-2xl md:text-3xl font-bold text-hyundai-black tracking-[-0.05em] leading-none uppercase">{brandTop || (isLoading ? '' : 'THE HYUNDAI')}</span>
+                      <span className="text-2xl md:text-3xl font-bold text-hyundai-black tracking-[-0.05em] leading-none uppercase">{brandTop || (isLoading ? '' : 'SKY TERRACE')}</span>
                     )}
                   </>
                 )}
@@ -147,10 +147,10 @@ export default function Header() {
             <div className="h-8 flex items-center">
                {!isLoading && (
                  <>
-                    {(logoMode === 'image' || logoMode === 'both') && customLogo ? (
+                    {customLogo ? (
                       <img key={customLogo} src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
                     ) : (
-                      <span className="text-xl font-black tracking-tighter uppercase">{brandTop || (isLoading ? '' : 'THE HYUNDAI')}</span>
+                      <span className="text-xl font-black tracking-tighter uppercase">{brandTop || (isLoading ? '' : 'SKY TERRACE')}</span>
                     )}
                  </>
                )}
