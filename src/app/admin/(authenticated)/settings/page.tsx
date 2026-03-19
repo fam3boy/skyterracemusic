@@ -20,10 +20,12 @@ export default function AdminSettingsPage() {
   const [newAdmin, setNewAdmin] = useState({ email: '', nickname: '', password: '', role: 'admin' });
   const [editingAdmin, setEditingAdmin] = useState<any | null>(null);
   
-  const [logoBase64, setLogoBase64] = useState<string | null>(null);
-  const [logoMode, setLogoMode] = useState<'text' | 'image' | 'both'>('text');
-  const [brandText, setBrandText] = useState('THE HYUNDAI | SKY TERRACE');
-  const [uploadingLogo, setUploadingLogo] = useState(false);
+   const [logoBase64, setLogoBase64] = useState<string | null>(null);
+   const [aboutImageBase64, setAboutImageBase64] = useState<string | null>(null);
+   const [logoMode, setLogoMode] = useState<'text' | 'image' | 'both'>('text');
+   const [brandText, setBrandText] = useState('THE HYUNDAI | SKY TERRACE');
+   const [uploadingLogo, setUploadingLogo] = useState(false);
+   const [uploadingAbout, setUploadingAbout] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -57,6 +59,7 @@ export default function AdminSettingsPage() {
     if (res.ok) {
       const settings = await res.json();
       setLogoBase64(settings.logo_base64 || null);
+      setAboutImageBase64(settings.about_image_base64 || null);
       setLogoMode(settings.logo_mode || 'text');
       setBrandText(settings.brand_text || 'THE HYUNDAI | SKY TERRACE');
     }
@@ -93,6 +96,43 @@ export default function AdminSettingsPage() {
           alert('로고가 성공적으로 업데이트되었습니다.');
         }
         setUploadingLogo(false);
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAboutImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingAbout(true);
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const img = new Image();
+      img.onload = async () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 1200; // Larger for about section
+        const scale = Math.min(1, MAX_WIDTH / img.width);
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        const base64 = canvas.toDataURL('image/jpeg', 0.85); // JPEG for better compression
+        
+        const res = await fetch('/api/admin/branding', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: 'about_image_base64', value: base64 })
+        });
+
+        if (res.ok) {
+          setAboutImageBase64(base64);
+          alert('소개 섹션 이미지가 성공적으로 업데이트되었습니다.');
+        }
+        setUploadingAbout(false);
       };
       img.src = event.target?.result as string;
     };
@@ -277,6 +317,49 @@ export default function AdminSettingsPage() {
                    />
                    <p className="mt-4 text-[11px] text-hyundai-gray-400 font-medium leading-relaxed">로고 이미지와 함께 노출하거나 단독으로 노출할 브랜드명을 입력하세요.</p>
                 </div>
+              </div>
+
+              <div className="space-y-8">
+                 <div className="relative group cursor-pointer border-2 border-dashed border-hyundai-gray-100 rounded-[2rem] p-10 bg-hyundai-gray-50/50 hover:bg-white hover:border-hyundai-emerald transition-all duration-500 text-center">
+                    <input type="file" accept="image/*" onChange={handleAboutImageUpload} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
+                    <div className="flex flex-col items-center gap-4">
+                      <p className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest">ABOUT 섹션 메인 이미지</p>
+                      <div className="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center text-hyundai-gray-400 group-hover:text-hyundai-emerald transition-colors">
+                         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                      </div>
+                      <p className="text-sm font-bold text-hyundai-black">사진 교체하기</p>
+                      {aboutImageBase64 && (
+                        <div className="mt-2 w-full aspect-video rounded-xl overflow-hidden border border-hyundai-gray-200">
+                           <img src={aboutImageBase64} className="w-full h-full object-cover" alt="Preview" />
+                        </div>
+                      )}
+                      {uploadingAbout && <p className="text-hyundai-emerald text-xs font-bold animate-pulse">이미지 최적화 중...</p>}
+                    </div>
+                 </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 border-b border-hyundai-gray-100 pb-12 mb-12 items-center">
+              <div className="space-y-6">
+                 <label className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest block mb-1">로고 노출 모드</label>
+                 <div className="flex bg-hyundai-gray-100 p-1.5 rounded-2xl gap-1">
+                    {[
+                      { id: 'text', label: '텍스트만' },
+                      { id: 'image', label: '이미지만' },
+                      { id: 'both', label: '모두 노출' }
+                    ].map(mode => (
+                      <button 
+                        key={mode.id}
+                        onClick={() => updateLogoMode(mode.id)}
+                        className={cn(
+                          "flex-1 py-3 rounded-xl text-[12px] font-bold transition-all",
+                          logoMode === mode.id ? 'bg-white text-hyundai-black shadow-sm' : 'text-hyundai-gray-400'
+                        )}
+                      >
+                        {mode.label}
+                      </button>
+                    ))}
+                 </div>
               </div>
               
               <div className="space-y-6 flex flex-col items-center justify-center p-10 bg-hyundai-black rounded-[2rem] text-center">

@@ -25,7 +25,11 @@ export default async function HomePage() {
     AND (deleted_at IS NULL)
     LIMIT 1
   `;
-  const activeTheme = themeRes.rows[0];
+   const activeTheme = themeRes.rows[0];
+ 
+  // Fetch branding settings
+  const aboutSettingsRes = await sql`SELECT key, value FROM system_settings WHERE key = 'about_image_base64'`;
+  const aboutImage = aboutSettingsRes.rows[0]?.value || '/images/about-terrace.png';
 
   let themeTracks: any[] = [];
   let requestedTracks: any[] = [];
@@ -131,7 +135,7 @@ export default async function HomePage() {
                <div className="absolute inset-0 flex items-center justify-center">
                   <Sparkles className="w-24 h-24 text-hyundai-gray-100 animate-pulse" />
                </div>
-               <img src="https://images.unsplash.com/photo-1514525253361-b83f85dfd75c?q=80&w=1974&auto=format&fit=crop" className="w-full h-full object-cover opacity-80" alt="Space Mood" />
+               <img src={aboutImage} className="w-full h-full object-cover" alt="Space Mood" />
             </div>
           </div>
         </div>
