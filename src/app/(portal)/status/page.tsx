@@ -61,13 +61,13 @@ export default function StatusSearchPage() {
                     type="text"
                     required
                     autoComplete="off"
-                    className="w-full bg-white border border-hyundai-gray-200 h-24 px-10 text-xl md:text-4xl font-bold text-hyundai-black placeholder:text-hyundai-gray-100 outline-none transition-all font-mono tracking-tighter focus:border-hyundai-black"
+                    className="w-full bg-white border border-hyundai-gray-200 h-20 md:h-24 px-6 md:px-10 pr-20 md:pr-32 text-lg md:text-3xl font-bold text-hyundai-black placeholder:text-hyundai-gray-100 outline-none transition-all font-mono tracking-tighter focus:border-hyundai-black"
                     placeholder="조회 번호를 입력하세요"
                     value={requestId}
                     onChange={(e) => setRequestId(e.target.value)}
                   />
-                  <div className="absolute right-0 top-0 bottom-0 px-10 bg-hyundai-black text-white flex items-center justify-center group-focus-within:bg-hyundai-accent transition-all duration-500">
-                    <Search className="w-8 h-8" strokeWidth={2} />
+                  <div className="absolute right-0 top-0 bottom-0 px-6 md:px-10 bg-hyundai-black text-white flex items-center justify-center group-focus-within:bg-hyundai-accent transition-all duration-500">
+                    <Search className="w-6 h-6 md:w-8 md:h-8" strokeWidth={2} />
                   </div>
                </div>
             </div>
@@ -77,7 +77,7 @@ export default function StatusSearchPage() {
                  type="submit"
                  disabled={!requestId.trim()}
                  className={cn(
-                    "btn-portal-primary px-32 h-20 text-[16px] font-bold",
+                    "btn-portal-primary px-8 md:px-32 h-16 md:h-20 text-[15px] md:text-[16px] font-bold w-full md:w-auto",
                     !requestId.trim() && "opacity-20 cursor-not-allowed"
                  )}
                >

@@ -90,7 +90,10 @@ export default async function HomePage() {
            <div className="max-w-4xl space-y-12">
               <div className="space-y-4">
                  <span className="text-hyundai-accent text-[14px] font-bold tracking-[0.4em] uppercase block">THIS MONTH'S CURATION</span>
-                  <h1 className="text-5xl md:text-[80px] font-bold text-hyundai-black tracking-[-0.04em] leading-[1.1] break-keep">
+                  <h1 
+                    className="text-5xl md:text-[80px] font-bold text-hyundai-black tracking-[-0.04em] leading-[1.1]"
+                    style={{ wordBreak: 'keep-all' }}
+                  >
                     {activeTheme ? activeTheme.title : "스카이테라스 선율"}
                   </h1>
                </div>
@@ -151,7 +154,7 @@ export default async function HomePage() {
           subtitle="SEASONAL SELECTIONS"
           moreHref="/playlist"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {themeTracks.slice(0, 8).map((track, i) => (
               <div key={i} className="group cursor-pointer">
                 <div className="relative aspect-square bg-hyundai-gray-50 overflow-hidden border border-hyundai-gray-100/50 group-hover:border-hyundai-gray-200 transition-all duration-700">
@@ -224,7 +227,7 @@ export default async function HomePage() {
             <div className="border border-hyundai-gray-100 divide-y divide-hyundai-gray-100">
               {popularTracks.map((track, i) => (
                 <div key={i} className="flex items-center gap-6 p-6 hover:bg-hyundai-gray-50 transition-colors">
-                   <div className="w-12 h-12 bg-hyundai-black text-white flex items-center justify-center font-bold italic text-sm">
+                   <div className="w-12 h-12 bg-hyundai-black text-white flex items-center justify-center font-bold italic text-sm shrink-0">
                      0{i + 1}
                    </div>
                    <div className="flex-grow min-w-0">
