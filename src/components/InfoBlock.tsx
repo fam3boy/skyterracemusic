@@ -5,12 +5,12 @@ import Link from 'next/link';
 
 export default function InfoBlock() {
   return (
-    <section className="bg-white py-32 border-b border-hyundai-gray-100">
+    <section className="bg-white py-4 md:py-32 border-b border-hyundai-gray-100">
       <div className="portal-container">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 divide-y lg:divide-y-0 lg:divide-x divide-hyundai-gray-100 border border-hyundai-gray-100">
           
           {/* Item 1: Schedule */}
-          <div className="p-12 space-y-6 group hover:bg-hyundai-gray-50 transition-colors duration-500">
+          <div className="p-6 lg:p-12 space-y-6 group hover:bg-hyundai-gray-50 transition-colors duration-500">
             <div className="flex justify-between items-start">
                <span className="text-[12px] font-bold text-hyundai-gold uppercase tracking-[0.3em]">운영 상태</span>
                <Clock className="w-5 h-5 text-hyundai-gray-200 group-hover:text-hyundai-black transition-colors" />
@@ -29,7 +29,7 @@ export default function InfoBlock() {
           </div>
 
           {/* Item 2: Policy */}
-          <div className="p-12 space-y-6 group hover:bg-hyundai-gray-50 transition-colors duration-500">
+          <div className="p-6 lg:p-12 space-y-6 group hover:bg-hyundai-gray-50 transition-colors duration-500">
             <div className="flex justify-between items-start">
                <span className="text-[12px] font-bold text-hyundai-gold uppercase tracking-[0.3em]">신청 가이드라인</span>
                <Headphones className="w-5 h-5 text-hyundai-gray-200 group-hover:text-hyundai-black transition-colors" />
@@ -47,7 +47,7 @@ export default function InfoBlock() {
           </div>
 
           {/* Item 3: Space */}
-          <div className="p-12 space-y-6 group hover:bg-hyundai-gray-50 transition-colors duration-500">
+          <div className="p-6 lg:p-12 space-y-6 group hover:bg-hyundai-gray-50 transition-colors duration-500">
             <div className="flex justify-between items-start">
                <span className="text-[12px] font-bold text-hyundai-gold uppercase tracking-[0.3em]">테라스 공간</span>
                <MapPin className="w-5 h-5 text-hyundai-gray-200 group-hover:text-hyundai-black transition-colors" />
