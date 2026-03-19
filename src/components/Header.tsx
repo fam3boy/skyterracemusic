@@ -16,8 +16,8 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [customLogo, setCustomLogo] = useState<string | null>(null);
-  const [logoMode, setLogoMode] = useState<'text' | 'image' | 'both'>('text');
-  const [brandText, setBrandText] = useState('THE HYUNDAI | SKY TERRACE');
+  const [logoMode, setLogoMode] = useState<'text' | 'image' | 'both' | null>(null);
+  const [brandText, setBrandText] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function Header() {
 
   async function fetchBranding() {
     try {
-      const res = await fetch('/api/admin/branding', { cache: 'no-store' });
+      const res = await fetch(`/api/admin/branding?t=${Date.now()}`, { cache: 'no-store' });
       if (res.ok) {
         const settings = await res.json();
         if (settings.logo_base64) setCustomLogo(settings.logo_base64);
@@ -94,9 +94,9 @@ export default function Header() {
                 {!isLoading && (
                   <>
                     {(logoMode === 'image' || logoMode === 'both') && customLogo ? (
-                      <img src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
+                      <img key={customLogo} src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
                     ) : (
-                      <span className="text-2xl md:text-3xl font-bold text-hyundai-black tracking-[-0.05em] leading-none uppercase">{brandTop || 'THE HYUNDAI'}</span>
+                      <span className="text-2xl md:text-3xl font-bold text-hyundai-black tracking-[-0.05em] leading-none uppercase">{brandTop || (isLoading ? '' : 'THE HYUNDAI')}</span>
                     )}
                   </>
                 )}
@@ -148,9 +148,9 @@ export default function Header() {
                {!isLoading && (
                  <>
                     {(logoMode === 'image' || logoMode === 'both') && customLogo ? (
-                      <img src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
+                      <img key={customLogo} src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
                     ) : (
-                      <span className="text-xl font-black tracking-tighter uppercase">{brandTop || 'THE HYUNDAI'}</span>
+                      <span className="text-xl font-black tracking-tighter uppercase">{brandTop || (isLoading ? '' : 'THE HYUNDAI')}</span>
                     )}
                  </>
                )}
