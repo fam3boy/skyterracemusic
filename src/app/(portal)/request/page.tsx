@@ -194,7 +194,7 @@ export default function RequestPage() {
         </div>
       </div>
 
-      <div className="portal-container pt-32 md:pt-48">
+      <div className="portal-container pt-24 md:pt-48">
         {/* 2. Top Portal Header (Hyundai Style) */}
         <div className="mb-20">
            <div className="flex justify-between items-end border-b-2 border-hyundai-black pb-6 mb-4">
@@ -211,7 +211,7 @@ export default function RequestPage() {
 
         {/* 3. Operational Form */}
         <div className="bg-white">
-           <form onSubmit={handleSubmit} className="space-y-12">
+           <form onSubmit={handleSubmit} className="space-y-6 md:space-y-12">
               {error && (
                 <div className="p-8 bg-red-50 border border-red-100 flex items-center gap-6 text-red-600 mb-10">
                   <AlertCircle className="w-6 h-6 shrink-0" />
@@ -232,7 +232,7 @@ export default function RequestPage() {
                             type="text" 
                             autoComplete="off"
                             placeholder="아티스트 또는 곡명을 입력해 주세요" 
-                            className="input-hyundai pr-32"
+                            className="input-hyundai pr-36 md:pr-40"
                             value={searchKeyword}
                             onChange={(e) => setSearchKeyword(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleMusicSearch(e)}
@@ -401,8 +401,8 @@ export default function RequestPage() {
               </div>
 
               {/* Submit Area */}
-              <div className="pt-20 pb-40 flex flex-col items-center gap-8">
-                 <div className="p-8 bg-[#f8f8f8] border border-hyundai-gray-100 text-center w-full">
+              <div className="pt-10 md:pt-20 pb-20 md:pb-40 flex flex-col items-center gap-8">
+                 <div className="p-6 md:p-8 bg-[#f8f8f8] border border-hyundai-gray-100 text-center w-full">
                     <p className="text-[14px] font-medium text-hyundai-gray-500 leading-relaxed">
                        입력하신 정보는 신청곡 관리 목적으로만 사용되며, <br className="hidden md:block" /> 
                        개인정보처리방침에 따라 안전하게 보호됩니다.

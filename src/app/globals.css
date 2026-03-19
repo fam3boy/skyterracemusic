@@ -76,7 +76,7 @@
   }
 
   .form-row {
-    @apply flex flex-col md:flex-row border-b border-hyundai-gray-100 py-8 first:border-t;
+    @apply flex flex-col md:flex-row border-b border-hyundai-gray-100 py-4 md:py-8 first:border-t;
   }
 
   .form-label {
