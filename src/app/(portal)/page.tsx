@@ -271,16 +271,22 @@ export default async function HomePage() {
                 <span className="text-hyundai-accent text-[12px] font-bold tracking-[0.4em] uppercase block">SPACE GUIDE</span>
                 <h3 className="text-4xl font-bold text-hyundai-black tracking-tight">공간 안내</h3>
               </div>
-              <p className="text-hyundai-gray-400 font-medium text-[15px] max-w-md text-left md:text-right">
-                현대프리미엄아울렛 대전점을 방문하시는 모든 고객에게 열려있는 휴식 공간입니다.
+              <p className="text-hyundai-gray-400 font-medium text-[15px] max-w-md text-left md:text-right break-keep">
+                현대프리미엄아울렛 대전점을 방문하시는 모든 고객에게 <br /> 열려있는 휴식 공간입니다.
               </p>
            </div>
-           
+
            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2 relative h-[400px] bg-hyundai-gray-50 flex items-center justify-center group overflow-hidden border border-hyundai-gray-100">
-                 <div className="absolute inset-0 bg-[#e5e7eb] flex items-center justify-center opacity-50">
-                    <MapPin className="w-12 h-12 text-hyundai-accent opacity-20" />
-                 </div>
+               <div className="absolute inset-0 bg-[#e5e7eb]">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3211.2345!2d127.3897!3d36.4239!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x35654992525fb507%3A0x6bba3a682b1d7d0a!2sHyundai%20Premium%20Outlets%20Daejeon!5e0!3m2!1skr!2skr!4v1710840000000!5m2!1skr!2skr"
+                    className="w-full h-full border-0 grayscale-[20%]"
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+               </div>
                  <div className="absolute bottom-8 left-8 right-8 bg-white p-6 shadow-xl text-left border border-hyundai-gray-100 z-10">
                     <h5 className="text-[16px] font-bold text-hyundai-black mb-1">현대프리미엄아울렛 대전점 3F 스카이테라스</h5>
                     <p className="text-[13px] text-hyundai-gray-500 font-medium">대전광역시 유성구 용산동 테크노중앙로 123</p>
@@ -304,7 +310,7 @@ export default async function HomePage() {
                        </p>
                     </div>
                  </div>
-                 <Link href="https://map.naver.com/v5/search/%ED%98%84%EB%8C%80%ED%94%84%EB%A6%AC%EB%AF%B8%EC%97%84%EC%95%84%EC%9A%B8%EB%A0%9B%20%EB%8C%80%EC%A0%84%EC%A0%90" target="_blank" className="flex items-center gap-2 text-[13px] font-bold text-hyundai-black group">
+                  <Link href="https://naver.me/Ge7wxidI" target="_blank" className="flex items-center gap-2 text-[13px] font-bold text-hyundai-black group">
                     네이버 지도로 보기 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                  </Link>
               </div>
