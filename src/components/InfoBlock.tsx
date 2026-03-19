@@ -19,7 +19,7 @@ export default function InfoBlock() {
                <h4 className="text-2xl font-bold text-hyundai-black tracking-tight">오늘의 운영 시간</h4>
                <p className="text-[15px] font-medium text-hyundai-gray-500 leading-relaxed">
                  매일 10:30 - 21:00 <br />
-                 연중 무휴 (아울렛 운영 시간 기준)
+                 아울렛 운영 시간 기준
                </p>
             </div>
             <div className="pt-2 flex items-center gap-2">

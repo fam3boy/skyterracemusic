@@ -305,7 +305,7 @@ export default async function HomePage() {
                        <span className="text-[11px] font-bold text-hyundai-accent tracking-widest uppercase">Operating Hours</span>
                        <h6 className="text-[18px] font-bold text-hyundai-black">이용 시간</h6>
                        <p className="text-[14px] text-hyundai-gray-500 leading-relaxed font-medium">
-                          10:30 - 21:00 (연중 무휴) <br />
+                          10:30 - 21:00 <br />
                           * 아울렛 운영 시간과 동일하게 운영됩니다.
                        </p>
                     </div>

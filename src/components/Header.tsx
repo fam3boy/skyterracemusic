@@ -18,6 +18,7 @@ export default function Header() {
   const [customLogo, setCustomLogo] = useState<string | null>(null);
   const [logoMode, setLogoMode] = useState<'text' | 'image' | 'both'>('text');
   const [brandText, setBrandText] = useState('THE HYUNDAI | SKY TERRACE');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,6 +48,8 @@ export default function Header() {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -87,12 +90,15 @@ export default function Header() {
           {/* Brand Logo & Branch Info */}
           <div className="flex items-center gap-10">
             <Link href="/" className="flex items-center group">
-              <div className="relative h-10 flex items-center">
-                {/* Image Logo */}
-                {(logoMode === 'image' || logoMode === 'both') && customLogo ? (
-                  <img src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
-                ) : (
-                  <span className="text-2xl md:text-3xl font-bold text-hyundai-black tracking-[-0.05em] leading-none uppercase">{brandTop || 'THE HYUNDAI'}</span>
+              <div className="relative h-10 flex items-center min-w-[40px]">
+                {!isLoading && (
+                  <>
+                    {(logoMode === 'image' || logoMode === 'both') && customLogo ? (
+                      <img src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
+                    ) : (
+                      <span className="text-2xl md:text-3xl font-bold text-hyundai-black tracking-[-0.05em] leading-none uppercase">{brandTop || 'THE HYUNDAI'}</span>
+                    )}
+                  </>
                 )}
               </div>
             </Link>
