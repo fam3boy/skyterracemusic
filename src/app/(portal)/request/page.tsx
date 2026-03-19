@@ -232,7 +232,7 @@ export default function RequestPage() {
                             type="text" 
                             autoComplete="off"
                             placeholder="아티스트 또는 곡명을 입력해 주세요" 
-                            className="input-hyundai pr-36 md:pr-40"
+                            className="input-hyundai pr-24 md:pr-40 placeholder:text-[13px] md:placeholder:text-[16px]"
                             value={searchKeyword}
                             onChange={(e) => setSearchKeyword(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleMusicSearch(e)}
@@ -241,7 +241,7 @@ export default function RequestPage() {
                             type="button"
                             onClick={handleMusicSearch}
                             disabled={searching || !searchKeyword}
-                            className="absolute right-0 top-0 bottom-0 px-6 md:px-10 bg-hyundai-black text-white text-[13px] md:text-[14px] font-bold hover:bg-hyundai-accent transition-all disabled:opacity-20"
+                            className="absolute right-0 top-0 bottom-0 px-3 md:px-10 bg-hyundai-black text-white text-[13px] md:text-[14px] font-bold hover:bg-hyundai-accent transition-all disabled:opacity-20"
                           >
                              {searching ? '...' : '검색'}
                           </button>
