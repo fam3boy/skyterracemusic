@@ -144,7 +144,13 @@ export default function Header() {
         mobileMenuOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
       )}>
         <div className="p-8 flex justify-between items-center">
-           <span className="text-xl font-black tracking-tighter">THE HYUNDAI</span>
+           <div className="h-8 flex items-center">
+             {(logoMode === 'image' || logoMode === 'both') && customLogo ? (
+               <img src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
+             ) : (
+               <span className="text-xl font-black tracking-tighter uppercase">{brandTop || 'THE HYUNDAI'}</span>
+             )}
+           </div>
            <button onClick={() => setMobileMenuOpen(false)} className="w-12 h-12 flex items-center justify-center">
              <X className="w-8 h-8" />
            </button>
