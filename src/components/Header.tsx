@@ -39,7 +39,7 @@ export default function Header() {
 
   async function fetchBranding() {
     try {
-      const res = await fetch('/api/admin/branding');
+      const res = await fetch('/api/admin/branding', { cache: 'no-store' });
       if (res.ok) {
         const settings = await res.json();
         if (settings.logo_base64) setCustomLogo(settings.logo_base64);
@@ -143,15 +143,19 @@ export default function Header() {
         "fixed inset-0 bg-white z-[200] transition-all duration-700 ease-[cubic-bezier(0.85,0,0.15,1)] lg:hidden flex flex-col",
         mobileMenuOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
       )}>
-        <div className="p-8 flex justify-between items-center">
-           <div className="h-8 flex items-center">
-             {(logoMode === 'image' || logoMode === 'both') && customLogo ? (
-               <img src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
-             ) : (
-               <span className="text-xl font-black tracking-tighter uppercase">{brandTop || 'THE HYUNDAI'}</span>
-             )}
-           </div>
-           <button onClick={() => setMobileMenuOpen(false)} className="w-12 h-12 flex items-center justify-center">
+         <div className="p-8 flex justify-between items-center">
+            <div className="h-8 flex items-center">
+               {!isLoading && (
+                 <>
+                    {(logoMode === 'image' || logoMode === 'both') && customLogo ? (
+                      <img src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
+                    ) : (
+                      <span className="text-xl font-black tracking-tighter uppercase">{brandTop || 'THE HYUNDAI'}</span>
+                    )}
+                 </>
+               )}
+            </div>
+            <button onClick={() => setMobileMenuOpen(false)} className="w-12 h-12 flex items-center justify-center">
              <X className="w-8 h-8" />
            </button>
         </div>

@@ -24,7 +24,7 @@ export default function StatusDetailPage() {
   useEffect(() => {
     async function fetchRequest() {
       try {
-        const res = await fetch(`/api/requests/${id}`);
+        const res = await fetch(`/api/requests/${id}`, { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           setRequest(data);
