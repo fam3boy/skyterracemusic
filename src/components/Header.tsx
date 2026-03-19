@@ -86,7 +86,7 @@ export default function Header() {
 
       {/* Main Bar */}
       <div className="border-b border-hyundai-gray-200">
-        <div className="portal-container h-24 flex justify-between items-center">
+        <div className="portal-container h-20 lg:h-24 flex justify-between items-center">
           {/* Brand Logo & Branch Info */}
           <div className="flex items-center gap-10">
             <Link href="/" className="flex items-center group">

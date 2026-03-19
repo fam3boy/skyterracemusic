@@ -92,21 +92,21 @@ export default async function PlaylistPage() {
               </div>
            </div>
 
-           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-12">
-              {themeTracks.map((track, i) => (
-                <div key={track.id} className="group flex items-center gap-6 p-4 hover:bg-hyundai-gray-50 transition-all duration-300">
-                   <div className="relative w-20 h-20 bg-hyundai-gray-100 flex items-center justify-center overflow-hidden border border-hyundai-gray-100 group-hover:border-hyundai-gray-200 transition-all">
+           <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 md:gap-x-12 gap-y-8 md:gap-y-12">
+               {themeTracks.map((track, i) => (
+                <div key={track.id} className="group flex items-center gap-3 md:gap-6 p-2 md:p-4 hover:bg-hyundai-gray-50 transition-all duration-300">
+                   <div className="relative w-14 h-14 md:w-20 md:h-20 bg-hyundai-gray-100 flex items-center justify-center overflow-hidden border border-hyundai-gray-100 group-hover:border-hyundai-gray-200 transition-all shrink-0">
                       {track.image ? (
                         <img src={track.image} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt={track.title} />
                       ) : (
-                        <Music className="w-8 h-8 text-hyundai-gray-300 group-hover:scale-110 transition-transform duration-500" />
+                        <Music className="w-6 h-6 md:w-8 md:h-8 text-hyundai-gray-300 group-hover:scale-110 transition-transform duration-500" />
                       )}
                       <div className="absolute inset-0 bg-hyundai-black/0 group-hover:bg-hyundai-black/5 transition-all"></div>
-                      <span className="absolute bottom-1 right-2 text-[10px] font-bold text-hyundai-gray-300">{(i+1).toString().padStart(2, '0')}</span>
+                      <span className="absolute bottom-1 right-1 text-[8px] md:text-[10px] font-bold text-hyundai-gray-300">{(i+1).toString().padStart(2, '0')}</span>
                    </div>
                    <div className="flex-1 min-w-0">
-                      <h4 className="text-[16px] font-bold text-hyundai-black truncate tracking-tight uppercase">{track.title}</h4>
-                      <p className="text-[12px] font-semibold text-hyundai-gray-400 uppercase tracking-wide mt-1">{track.artist}</p>
+                      <h4 className="text-[13px] md:text-[16px] font-bold text-hyundai-black truncate tracking-tight uppercase">{track.title}</h4>
+                      <p className="text-[10px] md:text-[12px] font-semibold text-hyundai-gray-400 uppercase tracking-wide mt-0.5 md:mt-1">{track.artist}</p>
                    </div>
                 </div>
               ))}
@@ -135,37 +135,26 @@ export default async function PlaylistPage() {
               </Link>
            </div>
 
-           <div className="bg-white border border-hyundai-gray-100 divide-y divide-hyundai-gray-50 shadow-sm">
+           <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 md:gap-x-12 gap-y-8 md:gap-y-12">
               {guestRequests.length > 0 ? guestRequests.map((track, i) => (
-                <div key={track.id} className="flex items-center justify-between p-8 hover:bg-hyundai-gray-50/50 transition-all">
-                   <div className="flex items-center gap-10 flex-1 min-w-0">
-                      <div className="relative w-16 h-16 bg-hyundai-gray-50 shrink-0 border border-hyundai-gray-100 overflow-hidden">
-                         {track.image ? (
-                           <img src={track.image} className="w-full h-full object-cover" alt="" />
-                         ) : (
-                           <div className="w-full h-full flex items-center justify-center">
-                              <Music className="w-6 h-6 text-hyundai-gray-200" />
-                           </div>
-                         )}
-                      </div>
-                      <div className="min-w-0 space-y-1">
-                         <h5 className="text-[17px] font-bold text-hyundai-black tracking-tight truncate uppercase">{track.title}</h5>
-                         <p className="text-[12px] font-semibold text-hyundai-gray-400 tracking-wider uppercase truncate">{track.artist}</p>
-                      </div>
+                <div key={track.id} className="group flex items-center gap-3 md:gap-6 p-2 md:p-4 bg-white border border-hyundai-gray-100 hover:bg-hyundai-gray-50 transition-all">
+                   <div className="relative w-14 h-14 md:w-20 md:h-20 bg-hyundai-gray-50 shrink-0 border border-hyundai-gray-100 overflow-hidden">
+                      {track.image ? (
+                        <img src={track.image} className="w-full h-full object-cover" alt="" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                           <Music className="w-6 h-6 text-hyundai-gray-200" />
+                        </div>
+                      )}
                    </div>
-                   <div className="flex items-center gap-12">
-                      <div className="hidden lg:flex flex-col items-end gap-1">
-                         <span className="text-[10px] font-bold text-hyundai-accent uppercase tracking-widest">Requester</span>
-                         <span className="text-[13px] font-semibold text-hyundai-black">{track.requester_name || "익명 고객님"}</span>
-                      </div>
-                       <div className="flex flex-col items-end gap-1">
-                          <span className="text-[10px] font-bold text-hyundai-gray-300 uppercase tracking-widest">Approved</span>
-                          <span className="text-[13px] font-semibold text-hyundai-black">{track.approved_at ? new Date(track.approved_at).toLocaleDateString() : '-'}</span>
-                       </div>
+                   <div className="min-w-0 space-y-0.5 md:space-y-1">
+                      <h5 className="text-[13px] md:text-[17px] font-bold text-hyundai-black tracking-tight truncate uppercase">{track.title}</h5>
+                      <p className="text-[10px] md:text-[12px] font-semibold text-hyundai-gray-400 tracking-wider uppercase truncate">{track.artist}</p>
+                      <p className="text-[8px] md:text-[10px] font-bold text-hyundai-accent uppercase tracking-widest truncate">{track.requester_name || "GUEST"} </p>
                    </div>
                 </div>
               )) : (
-                 <div className="py-32 text-center">
+                 <div className="col-span-full py-32 text-center bg-white border border-dashed border-hyundai-gray-100">
                     <p className="text-hyundai-gray-300 font-bold uppercase tracking-widest text-sm">현재 승인된 신청곡이 없습니다.</p>
                  </div>
               )}

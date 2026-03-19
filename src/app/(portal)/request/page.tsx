@@ -241,9 +241,9 @@ export default function RequestPage() {
                             type="button"
                             onClick={handleMusicSearch}
                             disabled={searching || !searchKeyword}
-                            className="absolute right-0 top-0 bottom-0 px-10 bg-hyundai-black text-white text-[14px] font-bold hover:bg-hyundai-accent transition-all disabled:opacity-20"
+                            className="absolute right-0 top-0 bottom-0 px-6 md:px-10 bg-hyundai-black text-white text-[13px] md:text-[14px] font-bold hover:bg-hyundai-accent transition-all disabled:opacity-20"
                           >
-                             {searching ? '조회 중' : '검색'}
+                             {searching ? '...' : '검색'}
                           </button>
                         </div>
                         

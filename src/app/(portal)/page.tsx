@@ -73,7 +73,7 @@ export default async function HomePage() {
   return (
     <div className="bg-white">
       {/* 1. Sophisticated Theme Hero */}
-      <section className="relative pt-32 md:pt-48 pb-32 overflow-hidden border-b border-hyundai-gray-100 min-h-[600px] flex items-center bg-white">
+      <section className="relative pt-24 md:pt-48 pb-16 md:pb-32 overflow-hidden border-b border-hyundai-gray-100 min-h-[500px] md:min-h-[600px] flex items-center bg-white">
         {/* Blurred Background Image */}
         {activeTheme?.background_base64 && (
           <div className="absolute inset-0 z-0">
@@ -109,7 +109,7 @@ export default async function HomePage() {
       </section>
 
       {/* 2. Brand Introduction Section */}
-      <section id="intro" className="py-8 md:py-32 bg-white">
+      <section id="intro" className="py-16 md:py-32 bg-white">
         <div className="portal-container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
             <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000">
@@ -216,7 +216,7 @@ export default async function HomePage() {
       </PortalSection>
 
       {/* 6. Popular Requests & Guidelines */}
-      <section className="py-8 md:py-32 bg-white">
+      <section className="py-16 md:py-32 bg-white">
         <div className="portal-container grid grid-cols-1 lg:grid-cols-2 gap-24">
           
           <div className="space-y-12 text-left">
@@ -267,7 +267,7 @@ export default async function HomePage() {
       </section>
 
       {/* 7. Location & Space Section */}
-      <section id="location" className="py-8 md:py-32 bg-white overflow-hidden">
+      <section id="location" className="py-16 md:py-32 bg-white overflow-hidden">
         <div className="portal-container">
            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 mb-16">
               <div className="space-y-4 text-left">
@@ -322,7 +322,7 @@ export default async function HomePage() {
       </section>
 
       {/* 8. Premium CTA Banner */}
-      <section className="bg-hyundai-black py-24 md:py-40 text-center text-white relative overflow-hidden">
+      <section className="bg-hyundai-black py-20 md:py-40 text-center text-white relative overflow-hidden">
         <div className="portal-container relative z-10 space-y-12">
             <h2 className="text-4xl md:text-6xl font-bold tracking-tight max-w-4xl mx-auto leading-tight">
               당신의 감성으로 완성하는 <br />
