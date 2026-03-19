@@ -199,7 +199,7 @@ export default async function HomePage() {
                 <div className="flex items-center gap-8">
                   <div className="hidden md:flex flex-col items-end gap-1 text-right">
                      <span className="text-[10px] font-bold text-hyundai-accent uppercase tracking-widest">방송 예정</span>
-                     <span className="text-[13px] font-semibold text-hyundai-black">{ new Date(track.approved_at).toLocaleDateString() }</span>
+                     <span className="text-[13px] font-semibold text-hyundai-black">{ track.approved_at ? new Date(track.approved_at).toLocaleDateString() : '-' }</span>
                   </div>
                   <ChevronRight className="w-5 h-5 text-hyundai-gray-200 group-hover:text-hyundai-black transition-colors" />
                </div>

@@ -62,6 +62,7 @@ export default function PlaylistPage() {
       title: result.title,
       artist: result.artist,
       youtube_url: result.video_id ? `https://www.youtube.com/watch?v=${result.video_id}` : '',
+      image: result.image || '',
       isNew: true
     };
     setTracks([...tracks, newTrack]);
@@ -114,8 +115,8 @@ export default function PlaylistPage() {
         const isNew = typeof track.id === 'string' && track.id.startsWith('temp-');
         const method = isNew ? 'POST' : 'PATCH';
         const body = isNew 
-          ? { title: track.title, artist: track.artist, youtube_url: track.youtube_url }
-          : { id: track.id, title: track.title, artist: track.artist, youtube_url: track.youtube_url, order_index: i };
+          ? { title: track.title, artist: track.artist, youtube_url: track.youtube_url, image: track.image }
+          : { id: track.id, title: track.title, artist: track.artist, youtube_url: track.youtube_url, image: track.image, order_index: i };
 
         await fetch('/api/admin/playlist', {
           method,
@@ -253,7 +254,18 @@ export default function PlaylistPage() {
             {tracks.map((track, i) => (
               <div key={track.id} className="card-premium p-6 group/track hover:border-hyundai-emerald/30 transition-all flex items-center justify-between">
                 <div className="flex items-center gap-6 flex-grow">
-                   <span className="text-2xl font-bold text-hyundai-gray-200 w-8 group-hover/track:text-hyundai-emerald transition-colors">{(i + 1).toString().padStart(2, '0')}</span>
+                   <div className="relative flex items-center gap-6 shrink-0">
+                      <span className="text-2xl font-bold text-hyundai-gray-200 w-8 group-hover/track:text-hyundai-emerald transition-colors">{(i + 1).toString().padStart(2, '0')}</span>
+                      <div className="w-14 h-14 bg-hyundai-gray-50 border border-hyundai-gray-100 overflow-hidden shrink-0">
+                         {track.image ? (
+                           <img src={track.image} className="w-full h-full object-cover" alt="" />
+                         ) : (
+                           <div className="w-full h-full flex items-center justify-center">
+                              <Music className="w-5 h-5 text-hyundai-gray-200" />
+                           </div>
+                         )}
+                      </div>
+                   </div>
                    
                    <div className="flex flex-col md:flex-row gap-4 flex-grow max-w-2xl">
                       <input 

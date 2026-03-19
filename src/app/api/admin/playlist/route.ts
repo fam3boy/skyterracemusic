@@ -43,7 +43,7 @@ export async function POST(req: Request) {
   const adminId = (session.user as any).id;
 
   try {
-    const { title, artist, youtube_url } = await req.json();
+    const { title, artist, youtube_url, image } = await req.json();
 
     // Get active theme
     const themeRes = await sql`
@@ -65,12 +65,12 @@ export async function POST(req: Request) {
     const nextOrder = (maxOrderRes.rows[0].max_order ?? -1) + 1;
 
     const result = await sql`
-      INSERT INTO theme_tracks (theme_id, title, artist, youtube_url, order_index)
-      VALUES (${themeId}, ${title}, ${artist}, ${youtube_url}, ${nextOrder})
+      INSERT INTO theme_tracks (theme_id, title, artist, youtube_url, image, order_index)
+      VALUES (${themeId}, ${title}, ${artist}, ${youtube_url}, ${image}, ${nextOrder})
       RETURNING id
     `;
 
-    await logAudit('ADD_PLAYLIST_TRACK', 'theme_tracks', result.rows[0].id, { title, artist, themeId }, adminId);
+    await logAudit('ADD_PLAYLIST_TRACK', 'theme_tracks', result.rows[0].id, { title, artist, image, themeId }, adminId);
 
     return NextResponse.json({ success: true, id: result.rows[0].id });
   } catch (error: any) {
@@ -85,7 +85,7 @@ export async function PATCH(req: Request) {
   const adminId = (session.user as any).id;
 
   try {
-    const { id, title, artist, youtube_url, order_index } = await req.json();
+    const { id, title, artist, youtube_url, image, order_index } = await req.json();
 
     if (order_index !== undefined) {
       await sql`UPDATE theme_tracks SET order_index = ${order_index} WHERE id = ${id}`;
@@ -95,12 +95,13 @@ export async function PATCH(req: Request) {
         SET title = COALESCE(${title}, title),
             artist = COALESCE(${artist}, artist),
             youtube_url = COALESCE(${youtube_url}, youtube_url),
+            image = COALESCE(${image}, image),
             updated_at = CURRENT_TIMESTAMP
         WHERE id = ${id}
       `;
     }
 
-    await logAudit('UPDATE_PLAYLIST_TRACK', 'theme_tracks', id, { title, order_index }, adminId);
+    await logAudit('UPDATE_PLAYLIST_TRACK', 'theme_tracks', id, { title, order_index, image }, adminId);
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

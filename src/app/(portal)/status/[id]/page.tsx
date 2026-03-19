@@ -217,7 +217,7 @@ export default function StatusDetailPage() {
                  <div className="space-y-2 divide-y divide-hyundai-gray-100">
                     {[
                       { label: '심사 식별자', val: request.id, mono: true, copy: true },
-                      { label: '신청 일시', val: new Date(request.created_at).toLocaleString() },
+                      { label: '신청 일시', val: request.created_at ? new Date(request.created_at).toLocaleString() : '-' },
                       { label: '신청자', val: request.requester_name || '시스템 익명' },
                       { label: '음원 소스', val: request.youtube_url ? 'YOUTUBE_VERIFIED' : 'DB_MATCH' }
                     ].map((item, i) => (

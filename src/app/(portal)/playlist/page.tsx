@@ -158,10 +158,10 @@ export default async function PlaylistPage() {
                          <span className="text-[10px] font-bold text-hyundai-accent uppercase tracking-widest">Requester</span>
                          <span className="text-[13px] font-semibold text-hyundai-black">{track.requester_name || "익명 고객님"}</span>
                       </div>
-                      <div className="flex flex-col items-end gap-1">
-                         <span className="text-[10px] font-bold text-hyundai-gray-300 uppercase tracking-widest">Approved</span>
-                         <span className="text-[13px] font-semibold text-hyundai-black">{new Date(track.approved_at).toLocaleDateString()}</span>
-                      </div>
+                       <div className="flex flex-col items-end gap-1">
+                          <span className="text-[10px] font-bold text-hyundai-gray-300 uppercase tracking-widest">Approved</span>
+                          <span className="text-[13px] font-semibold text-hyundai-black">{track.approved_at ? new Date(track.approved_at).toLocaleDateString() : '-'}</span>
+                       </div>
                    </div>
                 </div>
               )) : (
