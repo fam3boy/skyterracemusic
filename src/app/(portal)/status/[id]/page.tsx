@@ -210,16 +210,15 @@ export default function StatusDetailPage() {
               {/* Right Column: Metadata Specs */}
               <div className="space-y-12">
                   <div className="flex justify-between items-end border-b-2 border-hyundai-black pb-6">
-                     <h3 className="text-2xl font-bold text-hyundai-black tracking-tight">트랜잭션 정보</h3>
-                     <span className="text-[13px] font-bold text-hyundai-gray-300 italic">02/메타데이터</span>
+                     <h3 className="text-2xl font-bold text-hyundai-black tracking-tight">신청 정보</h3>
+                     <span className="text-[13px] font-bold text-hyundai-gray-300 italic">02/상세 내역</span>
                   </div>
 
                  <div className="space-y-2 divide-y divide-hyundai-gray-100">
                     {[
-                      { label: '심사 식별자', val: request.id, mono: true, copy: true },
+                      { label: '신청 번호', val: request.id.slice(0, 8).toUpperCase(), mono: true, copy: true },
                       { label: '신청 일시', val: request.created_at ? new Date(request.created_at).toLocaleString() : '-' },
-                      { label: '신청자', val: request.requester_name || '시스템 익명' },
-                      { label: '음원 소스', val: request.youtube_url ? 'YOUTUBE_VERIFIED' : 'DB_MATCH' }
+                      { label: '신청자', val: request.requester_name || '시스템 익명' }
                     ].map((item, i) => (
                       <div key={i} className="flex justify-between items-center py-6">
                          <span className="text-[13px] font-bold text-hyundai-gray-400 uppercase tracking-widest">{item.label}</span>

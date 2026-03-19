@@ -40,6 +40,7 @@ export default function RequestPage() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [duplicateFound, setDuplicateFound] = useState(false);
   const [activeTheme, setActiveTheme] = useState<any>(null);
+  const [branding, setBranding] = useState<any>(null);
 
   // Search states
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -57,13 +58,22 @@ export default function RequestPage() {
   useEffect(() => {
     async function init() {
       try {
-        const res = await fetch('/api/themes');
-        if (res.ok) {
-          const active = await res.json();
+        const [themeRes, brandingRes] = await Promise.all([
+          fetch('/api/themes'),
+          fetch('/api/branding')
+        ]);
+        
+        if (themeRes.ok) {
+          const active = await themeRes.json();
           if (active) setActiveTheme(active);
         }
+        
+        if (brandingRes.ok) {
+          const bData = await brandingRes.json();
+          setBranding(bData);
+        }
       } catch (e) {
-        console.error('Failed to init themes', e);
+        console.error('Failed to init data', e);
       }
     }
     init();
@@ -185,6 +195,14 @@ export default function RequestPage() {
     <div className="bg-white min-h-screen pb-40">
 
       <div className="portal-container pt-24 md:pt-48">
+        {/* Theme Display */}
+        {branding?.current_theme && (
+           <div className="mb-6 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 bg-hyundai-accent rounded-full animate-pulse"></span>
+              <span className="text-[12px] font-bold text-hyundai-accent uppercase tracking-widest">이달의 테마: {branding.current_theme}</span>
+           </div>
+        )}
+
         {/* 2. Top Portal Header (Hyundai Style) */}
         <div className="mb-20">
            <div className="flex justify-between items-end border-b-2 border-hyundai-black pb-6 mb-4">
@@ -195,7 +213,7 @@ export default function RequestPage() {
               </span>
            </div>
            <p className="text-[14px] font-medium text-hyundai-gray-500 px-2 tracking-tight">
-             현대프리미엄아울렛 대전점 스카이테라스의 소중한 의견을 들려주세요. 불건전하거나 광고성 게시물은 통보 없이 삭제될 수 있습니다.
+             현대프리미엄아울렛 대전점 스카이테라스 테마와 맞는 곡을 추천해주세요. 불건전하거나 광고성 게시물은 통보 없이 삭제될 수 있습니다.
            </p>
         </div>
 

@@ -24,6 +24,7 @@ export default function AdminSettingsPage() {
    const [aboutImageBase64, setAboutImageBase64] = useState<string | null>(null);
    const [logoMode, setLogoMode] = useState<'text' | 'image' | 'both'>('text');
    const [brandText, setBrandText] = useState('THE HYUNDAI | SKY TERRACE');
+   const [currentTheme, setCurrentTheme] = useState('');
    const [uploadingLogo, setUploadingLogo] = useState(false);
    const [uploadingAbout, setUploadingAbout] = useState(false);
 
@@ -62,6 +63,7 @@ export default function AdminSettingsPage() {
       setAboutImageBase64(settings.about_image_base64 || null);
       setLogoMode(settings.logo_mode || 'text');
       setBrandText(settings.brand_text || 'THE HYUNDAI | SKY TERRACE');
+      setCurrentTheme(settings.current_theme || '');
     }
   }
 
@@ -154,6 +156,15 @@ export default function AdminSettingsPage() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ key: 'brand_text', value: text })
+    });
+  };
+
+  const updateCurrentTheme = async (text: string) => {
+    setCurrentTheme(text);
+    await fetch('/api/admin/branding', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: 'current_theme', value: text })
     });
   };
 
@@ -316,6 +327,18 @@ export default function AdminSettingsPage() {
                     className="w-full px-6 py-4 bg-hyundai-gray-50 border-none rounded-2xl text-lg font-black text-hyundai-black outline-none focus:ring-4 focus:ring-hyundai-gold/10 transition-all"
                    />
                    <p className="mt-4 text-[11px] text-hyundai-gray-400 font-medium leading-relaxed">로고 이미지와 함께 노출하거나 단독으로 노출할 브랜드명을 입력하세요.</p>
+                </div>
+
+                <div className="pt-8 border-t border-hyundai-gray-50 mt-8">
+                   <label className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest block mb-4">이달의 신청 테마 설정</label>
+                   <input 
+                    type="text" 
+                    value={currentTheme}
+                    onChange={(e) => updateCurrentTheme(e.target.value)}
+                    placeholder="예: 11월 - 스카이테라스의 늦가을 감성"
+                    className="w-full px-6 py-4 bg-hyundai-gray-50 border-none rounded-2xl text-lg font-black text-hyundai-black outline-none focus:ring-4 focus:ring-hyundai-gold/10 transition-all font-happiness"
+                   />
+                   <p className="mt-4 text-[11px] text-hyundai-gray-400 font-medium leading-relaxed">신청 페이지 상단에 노출할 이달의 주제를 입력하세요.</p>
                 </div>
               </div>
 
