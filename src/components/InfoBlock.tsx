@@ -1,6 +1,7 @@
 'use client';
 
 import { Clock, MapPin, Headphones, Info, ChevronRight, Share2, Calendar } from 'lucide-react';
+import Link from 'next/link';
 
 export default function InfoBlock() {
   return (
@@ -40,9 +41,9 @@ export default function InfoBlock() {
                  공간 테마 및 음질 규격 준수를 원칙으로 합니다.
                </p>
             </div>
-            <a href="/#guide" className="inline-flex items-center gap-2 text-[12px] font-bold text-hyundai-black uppercase tracking-widest border-b-2 border-hyundai-black pb-1 hover:text-hyundai-gold hover:border-hyundai-gold transition-all">
+            <Link href="/guidelines" className="inline-flex items-center gap-2 text-[12px] font-bold text-hyundai-black uppercase tracking-widest border-b-2 border-hyundai-black pb-1 hover:text-hyundai-gold hover:border-hyundai-gold transition-all">
                전체 가이드라인 보기 <ChevronRight className="w-4 h-4" />
-            </a>
+            </Link>
           </div>
 
           {/* Item 3: Space */}
@@ -58,7 +59,23 @@ export default function InfoBlock() {
                  하늘정원 스카이테라스 메인홀
                </p>
             </div>
-            <button className="flex items-center gap-2 text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest hover:text-hyundai-black transition-colors">
+            <button 
+              onClick={() => {
+                const shareData = {
+                  title: '현대프리미엄아울렛 대전점 3F 스카이테라스',
+                  text: '현대프리미엄아울렛 대전점 스카이테라스 위치 안내',
+                  url: 'https://naver.me/Ge7wxidI'
+                };
+                if (navigator.share) {
+                  navigator.share(shareData).catch(console.error);
+                } else {
+                  navigator.clipboard.writeText(shareData.url).then(() => {
+                    alert('위치 링크가 복사되었습니다.');
+                  });
+                }
+              }}
+              className="flex items-center gap-2 text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest hover:text-hyundai-black transition-colors"
+            >
                <Share2 className="w-4 h-4" /> 공간 위치 공유하기
             </button>
           </div>
