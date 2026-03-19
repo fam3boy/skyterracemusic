@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS theme_tracks (
     artist TEXT NOT NULL,
     youtube_url TEXT,
     order_index INTEGER DEFAULT 0,
+    image TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
@@ -51,6 +52,7 @@ CREATE TABLE IF NOT EXISTS song_requests (
     admin_memo TEXT,
     auto_recommendation TEXT,
     auto_reason TEXT,
+    image TEXT,
     approved_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP WITH TIME ZONE

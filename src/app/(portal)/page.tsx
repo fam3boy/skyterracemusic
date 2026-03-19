@@ -9,7 +9,15 @@ import PortalSection from '@/components/PortalSection';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Home() {
+export default async function HomePage() {
+  // One-time self-healing migration for album covers
+  try {
+    await sql`ALTER TABLE theme_tracks ADD COLUMN IF NOT EXISTS image TEXT;`;
+    await sql`ALTER TABLE song_requests ADD COLUMN IF NOT EXISTS image TEXT;`;
+  } catch (e) {
+    console.error("Migration check failed:", e);
+  }
+
   // Fetch active theme
   const themeRes = await sql`
     SELECT * FROM monthly_themes 
