@@ -20,7 +20,7 @@ interface PortalSectionProps {
 export default function PortalSection({ title, subtitle, moreHref, children, bgGray }: PortalSectionProps) {
   return (
     <section className={cn(
-      "py-28 md:py-40 border-b border-hyundai-gray-100",
+      "py-16 md:py-40 border-b border-hyundai-gray-100",
       bgGray ? "bg-hyundai-gray-50" : "bg-white"
     )}>
       <div className="portal-container">
