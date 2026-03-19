@@ -79,11 +79,11 @@ export default function StatusDetailPage() {
       subLabel: '검토 진행 중'
     },
     approved: { 
-      label: '송출 준비 완료', 
+      label: '승인 완료', 
       icon: Verified, 
       color: 'bg-hyundai-emerald', 
-      text: '디지털 선곡 검증이 완료되었습니다. 이번 주 목요일 19:00 이후 정규 플레이리스트에 정식 편성됩니다.',
-      subLabel: '최종 승인 완료'
+      text: '신청곡이 승인되었습니다. 이번 주 금요일 이후 정규 플레이리스트에 정식 편성됩니다.',
+      subLabel: ''
     },
     hold: { 
       label: '심사 보류', 
@@ -143,10 +143,10 @@ export default function StatusDetailPage() {
            <div className="flex flex-col md:flex-row border border-hyundai-gray-100">
               <div className={cn("md:w-[320px] p-12 text-white flex flex-col justify-between gap-12", status.color)}>
                 <div className="space-y-4">
-                   <span className="text-[11px] font-bold uppercase tracking-[0.4em] opacity-60">서비스 운영 상태</span>
+                   <span className="text-[11px] font-bold uppercase tracking-[0.4em] opacity-60">곡 신청 상태</span>
                    <div className="space-y-1">
-                      <h2 className="text-3xl font-bold leading-none tracking-tight">{status.label}</h2>
-                      <p className="text-[11px] font-bold uppercase tracking-widest opacity-80">{status.subLabel}</p>
+                      <h2 className="text-3xl font-bold leading-none tracking-tight whitespace-nowrap">{status.label}</h2>
+                      {status.subLabel && <p className="text-[11px] font-bold uppercase tracking-widest opacity-80">{status.subLabel}</p>}
                    </div>
                 </div>
                  <status.icon className="w-12 h-12 opacity-30 self-end" strokeWidth={1.5} />
@@ -155,7 +155,7 @@ export default function StatusDetailPage() {
               <div className="flex-grow p-12 flex flex-col justify-center space-y-8 bg-white">
                   <div className="space-y-6">
                      <span className="text-[11px] font-bold text-hyundai-accent uppercase tracking-[0.4em]">공식 검토 결과</span>
-                     <p className="text-2xl font-bold text-hyundai-black leading-tight tracking-tight">
+                     <p className="text-2xl font-bold text-hyundai-black leading-tight tracking-tight break-keep">
                         {status.text}
                      </p>
                   </div>

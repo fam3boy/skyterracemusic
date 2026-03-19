@@ -183,16 +183,6 @@ export default function RequestPage() {
 
   return (
     <div className="bg-white min-h-screen pb-40">
-      {/* 1. Header */}
-      <div className="border-b border-hyundai-gray-100 bg-white text-hyundai-black">
-        <div className="portal-container">
-            <div className="h-14 flex items-center gap-4 text-[11px] font-bold tracking-widest uppercase">
-               <Link href="/" className="hover:text-hyundai-gold transition-colors">디지털 포털</Link>
-               <span className="w-1.5 h-px bg-hyundai-gray-200"></span>
-               <span className="">음악 신청 센터</span>
-            </div>
-        </div>
-      </div>
 
       <div className="portal-container pt-24 md:pt-48">
         {/* 2. Top Portal Header (Hyundai Style) */}
@@ -232,7 +222,7 @@ export default function RequestPage() {
                             type="text" 
                             autoComplete="off"
                             placeholder="아티스트 또는 곡명을 입력해 주세요" 
-                            className="input-hyundai pr-24 md:pr-40 placeholder:text-[13px] md:placeholder:text-[16px]"
+                            className="input-hyundai pr-36 md:pr-40 placeholder:text-[13px] md:placeholder:text-[16px]"
                             value={searchKeyword}
                             onChange={(e) => setSearchKeyword(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleMusicSearch(e)}
@@ -241,7 +231,7 @@ export default function RequestPage() {
                             type="button"
                             onClick={handleMusicSearch}
                             disabled={searching || !searchKeyword}
-                            className="absolute right-0 top-0 bottom-0 px-3 md:px-10 bg-hyundai-black text-white text-[13px] md:text-[14px] font-bold hover:bg-hyundai-accent transition-all disabled:opacity-20"
+                            className="absolute right-0 top-0 bottom-0 px-6 md:px-10 bg-hyundai-black text-white text-[13px] md:text-[14px] font-bold hover:bg-hyundai-accent transition-all disabled:opacity-20"
                           >
                              {searching ? '...' : '검색'}
                           </button>
