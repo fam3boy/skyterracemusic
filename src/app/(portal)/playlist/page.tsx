@@ -61,7 +61,7 @@ export default async function PlaylistPage() {
   return (
     <div className="bg-white min-h-screen">
       {/* 1. Page Header */}
-      <section className="relative pt-32 pb-20 border-b border-hyundai-gray-100 bg-hyundai-gray-50/30 overflow-hidden">
+      <section className="relative pt-6 md:pt-10 pb-20 border-b border-hyundai-gray-100 bg-hyundai-gray-50/30 overflow-hidden">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-hyundai-gold/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
         <div className="portal-container relative z-10">
           <div className="max-w-3xl space-y-6">

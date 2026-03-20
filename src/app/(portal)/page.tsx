@@ -109,7 +109,7 @@ export default async function HomePage() {
       </section>
 
       {/* 2. Brand Introduction Section */}
-      <section id="intro" className="py-16 md:py-32 bg-white">
+      <section id="intro" className="py-16 md:py-32 bg-white scroll-mt-32">
         <div className="portal-container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
             <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000">
