@@ -24,18 +24,8 @@ export default function StatusSearchPage() {
 
   return (
     <div className="bg-white min-h-screen pb-40">
-      {/* 1. Header Infrastructure */}
-      <div className="border-b border-hyundai-gray-100 bg-white">
-        <div className="portal-container">
-            <div className="h-14 flex items-center gap-4 text-[10px] font-black text-hyundai-gray-400 uppercase tracking-widest">
-               <Link href="/" className="hover:text-hyundai-black transition-colors">디지털 포털</Link>
-               <span className="w-1.5 h-px bg-hyundai-gray-200"></span>
-               <span className="text-hyundai-black">신청 현황 조회 센터</span>
-            </div>
-        </div>
-      </div>
 
-      <div className="portal-container pt-32 md:pt-48">
+      <div className="portal-container pt-6 md:pt-10">
         {/* 2. Top Header (Hyundai Style) */}
         <div className="mb-20">
            <div className="flex justify-between items-end border-b-2 border-hyundai-black pb-6 mb-4">
