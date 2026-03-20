@@ -196,12 +196,14 @@ export default function RequestPage() {
 
       <div className="portal-container pt-24 md:pt-48">
         {/* Theme Display */}
-        {branding?.current_theme && (
-           <div className="mb-6 flex items-center gap-2">
+        <div className="mb-8 flex items-center">
+           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-hyundai-gray-50 border border-hyundai-gray-100 rounded-full shadow-sm">
               <span className="w-1.5 h-1.5 bg-hyundai-accent rounded-full animate-pulse"></span>
-              <span className="text-[12px] font-bold text-hyundai-accent uppercase tracking-widest">이달의 테마: {branding.current_theme}</span>
+              <span className="text-[11px] font-bold text-hyundai-black uppercase tracking-widest">
+                 이달의 테마: <span className="text-hyundai-accent">{branding?.current_theme || '스카이테라스의 감성'}</span>
+              </span>
            </div>
-        )}
+        </div>
 
         {/* 2. Top Portal Header (Hyundai Style) */}
         <div className="mb-20">
