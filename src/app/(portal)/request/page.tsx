@@ -194,7 +194,7 @@ export default function RequestPage() {
   return (
     <div className="bg-white min-h-screen pb-40">
 
-      <div className="portal-container pt-12 md:pt-20">
+      <div className="portal-container pt-6 md:pt-10">
         {/* Theme Display */}
         <div className="mb-8 flex items-center">
            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-hyundai-gray-50 border border-hyundai-gray-100 rounded-full shadow-sm">
