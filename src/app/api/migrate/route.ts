@@ -6,10 +6,10 @@ export async function GET() {
     // 1. Add image column to theme_tracks
     await sql`ALTER TABLE theme_tracks ADD COLUMN IF NOT EXISTS image TEXT;`;
     
-    // 2. Add image column to song_requests
-    await sql`ALTER TABLE song_requests ADD COLUMN IF NOT EXISTS image TEXT;`;
+    // 3. Alter ID type to TEXT to support short alphanumeric IDs
+    await sql`ALTER TABLE song_requests ALTER COLUMN id TYPE TEXT;`;
     
-    return NextResponse.json({ message: "Successfully added image column to theme_tracks and song_requests." });
+    return NextResponse.json({ message: "Successfully migrated schema for short IDs and image columns." });
   } catch (error: any) {
     console.error('Migration failed:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });

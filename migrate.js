@@ -1,4 +1,25 @@
 const { createPool } = require('@vercel/postgres');
+const fs = require('fs');
+const path = require('path');
+
+// Manually load .env.local for local execution if POSTGRES_URL is missing
+if (!process.env.POSTGRES_URL) {
+  const envPath = path.join(__dirname, '.env.local');
+  if (fs.existsSync(envPath)) {
+    const envContent = fs.readFileSync(envPath, 'utf8');
+    envContent.split('\n').forEach(line => {
+      const match = line.match(/^([^=]+)=(.*)$/);
+      if (match) {
+        const key = match[1].trim();
+        let value = match[2].trim();
+        if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
+        if (value.startsWith("'") && value.endsWith("'")) value = value.slice(1, -1);
+        process.env[key] = value;
+      }
+    });
+    console.log('Loaded credentials from .env.local');
+  }
+}
 
 async function migrate() {
   const pool = createPool({

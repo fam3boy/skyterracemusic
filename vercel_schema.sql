@@ -37,7 +37,7 @@ CREATE TABLE theme_tracks (
 
 -- 4. Song Requests
 CREATE TABLE song_requests (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id TEXT PRIMARY KEY,
     theme_id UUID REFERENCES monthly_themes(id),
     title TEXT NOT NULL,
     artist TEXT NOT NULL,
