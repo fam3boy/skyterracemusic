@@ -10,7 +10,8 @@ import {
   AlertCircle,
   Download,
   Search,
-  ArrowUpDown
+  ArrowUpDown,
+  RefreshCw
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -22,6 +23,7 @@ function cn(...inputs: ClassValue[]) {
 export default function ReportsListPage() {
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
 
   useEffect(() => {
     fetchReports();
@@ -37,6 +39,27 @@ export default function ReportsListPage() {
       console.error('Failed to fetch reports', err);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleGenerateNow() {
+    if (!confirm('현재 시점까지 승인된 신청곡들을 집계하여 새로운 리포트를 생성하시겠습니까?')) return;
+    
+    setGenerating(true);
+    try {
+      const res = await fetch('/api/cron/weekly-mail?forceCurrent=true');
+      if (res.ok) {
+        alert('리포트 생성이 완료되었습니다.');
+        fetchReports();
+      } else {
+        const error = await res.text();
+        alert('생성 실패: ' + error);
+      }
+    } catch (err) {
+      console.error('Failed to generate report', err);
+      alert('오류가 발생했습니다.');
+    } finally {
+      setGenerating(false);
     }
   }
 
@@ -57,8 +80,19 @@ export default function ReportsListPage() {
              주간 자동 리포트 아카이브
              <span className="w-2.5 h-2.5 rounded-full bg-hyundai-gold"></span>
           </h2>
-          <p className="text-sm font-bold text-hyundai-gray-400 mt-1 uppercase tracking-normal">매주 목요일 18:00에 자동 생성된 리포트 기록입니다.</p>
+          <p className="text-sm font-bold text-hyundai-gray-400 mt-1 uppercase tracking-normal">매주 목요일 19:00에 자동 생성된 리포트 기록입니다.</p>
         </div>
+        <button 
+          onClick={handleGenerateNow}
+          disabled={generating}
+          className={cn(
+            "btn-portal-primary h-14 px-8 flex items-center gap-3 text-[13px]",
+            generating && "opacity-50 cursor-not-allowed"
+          )}
+        >
+          <RefreshCw className={cn("w-4 h-4", generating && "animate-spin")} />
+          {generating ? '생성 중...' : '리포트 즉시 생성'}
+        </button>
       </div>
 
       {/* 2. Utility Bar */}

@@ -1,0 +1,19 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/weekly-mail",
+      "schedule": "0 19 * * 4"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    }
+  ]
+}

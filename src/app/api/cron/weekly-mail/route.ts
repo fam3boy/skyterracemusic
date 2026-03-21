@@ -32,9 +32,6 @@ export async function GET(req: NextRequest) {
     `;
 
     const songs = result.rows;
-    if (songs.length === 0 && !forceCurrent) {
-      return NextResponse.json({ success: true, count: 0, message: 'No songs to report' });
-    }
 
     // Fetch Recipients from DB
     let recipientQuery = `SELECT * FROM mail_recipients WHERE is_active = true`;
@@ -55,7 +52,9 @@ export async function GET(req: NextRequest) {
     const ccEmails = recipientsList.filter(r => r.role === 'CC').map(r => r.email);
     const bccEmails = recipientsList.filter(r => r.role === 'BCC').map(r => r.email);
 
-    const subject = `[SKY TERRACE 주간 신청곡 리포트] ${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
+    const subject = songs.length > 0 
+      ? `[SKY TERRACE 주간 신청곡 리포트] ${start.toLocaleDateString()} - ${end.toLocaleDateString()}`
+      : `[SKY TERRACE 주간 리포트: 신청곡 없음] ${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
 
     // ... (HTML Table Generation remains same)
     const tableRows = songs.map(s => `
@@ -128,6 +127,7 @@ export async function GET(req: NextRequest) {
     let mailStatus = 'success';
     let errorMessage = null;
 
+    // Only attempt sending if there are songs AND recipients
     if (songs.length > 0 && toEmails.length > 0) {
       const mailResult = await sendWeeklyReport({ 
         to: toEmails.join(','), 
