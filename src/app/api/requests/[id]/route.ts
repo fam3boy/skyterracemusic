@@ -9,9 +9,11 @@ export async function GET(
   try {
     const { id } = params;
     
-    // UUID validation
+    // Support both Legacy UUID and New 8-char Alphanumeric ID
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(id)) {
+    const shortIdRegex = /^[A-Z2-9]{8}$/; // Alphanumeric uppercase 8 chars
+    
+    if (!uuidRegex.test(id) && !shortIdRegex.test(id)) {
       return NextResponse.json({ error: '잘못된 신청 번호 형식입니다.' }, { status: 400 });
     }
 
