@@ -269,13 +269,13 @@ export default async function HomePage() {
       {/* 7. Location & Space Section */}
       <section id="location" className="py-16 md:py-32 bg-white overflow-hidden">
         <div className="portal-container">
-           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 mb-16">
-              <div className="space-y-4 text-left">
+           <div className="space-y-6 mb-16 max-w-2xl text-left">
+              <div className="space-y-4">
                 <span className="text-hyundai-accent text-[12px] font-bold tracking-[0.4em] uppercase block">SPACE GUIDE</span>
                 <h3 className="text-4xl font-bold text-hyundai-black tracking-tight">공간 안내</h3>
               </div>
-              <p className="text-hyundai-gray-400 font-medium text-[15px] max-w-md text-left break-keep">
-                현대프리미엄아울렛 대전점을 방문하시는 모든 고객에게 <br /> 열려있는 휴식 공간입니다.
+              <p className="text-hyundai-gray-400 font-medium text-[16px] leading-relaxed break-keep">
+                현대프리미엄아울렛 대전점을 방문하시는 모든 고객에게 <br className="hidden md:block" /> 열려있는 휴식 공간입니다.
               </p>
            </div>
 
@@ -292,7 +292,7 @@ export default async function HomePage() {
                </div>
                  <div className="absolute bottom-8 left-8 right-8 bg-white p-6 shadow-xl text-left border border-hyundai-gray-100 z-10">
                     <h5 className="text-[16px] font-bold text-hyundai-black mb-1">현대프리미엄아울렛 대전점 3F 스카이테라스</h5>
-                    <p className="text-[13px] text-hyundai-gray-500 font-medium">대전광역시 유성구 용산동 테크노중앙로 123</p>
+                    <p className="text-[13px] text-hyundai-gray-500 font-medium">대전광역시 유성구 테크노중앙로 123</p>
                  </div>
               </div>
               <div className="bg-hyundai-gray-50 p-10 flex flex-col justify-between text-left border border-hyundai-gray-100">

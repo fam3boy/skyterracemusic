@@ -28,8 +28,8 @@ export default function Footer() {
                 <Link href="/terms" className="text-[12px] font-medium text-hyundai-gray-500">이용약관</Link>
              </div>
              <p className="text-[12px] font-medium text-hyundai-gray-400 leading-relaxed">
-               대전광역시 유성구 용산동 테크노중앙로 123 현대프리미엄아울렛 대전점 3F <br />
-               대표전화 : 1588-3650
+                대전광역시 유성구 테크노중앙로 123 현대프리미엄아울렛 대전점 3F <br />
+                대표전화 : 042-332-2222
              </p>
           </div>
         </div>
