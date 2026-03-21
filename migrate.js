@@ -14,6 +14,10 @@ async function migrate() {
     // 2. Add image column to song_requests
     await pool.query('ALTER TABLE song_requests ADD COLUMN IF NOT EXISTS image TEXT;');
     console.log('Added image to song_requests');
+
+    // 3. Alter ID type to TEXT to support short alphanumeric IDs
+    await pool.query('ALTER TABLE song_requests ALTER COLUMN id TYPE TEXT;');
+    console.log('Altered song_requests ID type to TEXT');
     
     console.log('Migration successful!');
   } catch (error) {

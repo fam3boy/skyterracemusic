@@ -105,20 +105,8 @@ export default function StatusDetailPage() {
 
   return (
     <div className="bg-white min-h-screen pb-40">
-      {/* 1. Infrastructure Header */}
-      <div className="border-b border-hyundai-gray-100 bg-white">
-        <div className="portal-container">
-            <div className="h-14 flex items-center gap-4 text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest">
-               <Link href="/" className="hover:text-hyundai-black transition-colors">디지털 포털</Link>
-               <span className="w-1.5 h-px bg-hyundai-gray-200"></span>
-               <Link href="/status" className="hover:text-hyundai-black transition-colors">조회 센터</Link>
-               <span className="w-1.5 h-px bg-hyundai-gray-200"></span>
-               <span className="text-hyundai-black">상세 레포트</span>
-            </div>
-        </div>
-      </div>
 
-      <div className="portal-container pt-32 md:pt-48">
+      <div className="portal-container pt-6 md:pt-10">
         {/* Success Alert for New Requests */}
         {isNew && (
            <div className="mb-20 bg-hyundai-accent p-10 text-white flex flex-col md:flex-row items-center gap-10 animate-in fade-in slide-in-from-top-8 duration-1000">
@@ -216,7 +204,7 @@ export default function StatusDetailPage() {
 
                  <div className="space-y-2 divide-y divide-hyundai-gray-100">
                     {[
-                      { label: '신청 번호', val: request.id.slice(0, 8).toUpperCase(), mono: true, copy: true },
+                      { label: '신청 번호', val: request.id.toUpperCase(), mono: true, copy: true },
                       { label: '신청 일시', val: request.created_at ? new Date(request.created_at).toLocaleString() : '-' },
                       { label: '신청자', val: request.requester_name || '시스템 익명' }
                     ].map((item, i) => (

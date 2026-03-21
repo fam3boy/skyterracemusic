@@ -128,10 +128,10 @@ export default async function PlaylistPage() {
                     <Users className="w-4 h-4 text-hyundai-gold" />
                     <span className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest">GUEST SELECTIONS</span>
                  </div>
-                 <h2 className="text-3xl font-bold text-hyundai-black">방문객 신청곡 (최근 승인)</h2>
+                 <h2 className="text-3xl font-bold text-hyundai-black">고객 신청곡</h2>
               </div>
               <Link href="/request" className="hidden md:flex items-center gap-2 text-[14px] font-bold text-hyundai-black hover:text-hyundai-accent transition-colors">
-                 나도 신청하기 <ChevronRight className="w-4 h-4" />
+                 새로운 곡 신청하기 <ChevronRight className="w-4 h-4" />
               </Link>
            </div>
 

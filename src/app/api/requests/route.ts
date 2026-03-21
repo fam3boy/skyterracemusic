@@ -1,6 +1,15 @@
 import { NextResponse } from 'next/server';
 import { sql } from '@vercel/postgres';
 
+function generateShortId() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Readable chars (no I, O, 0, 1)
+  let result = '';
+  for (let i = 0; i < 8; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -44,11 +53,13 @@ export async function POST(req: Request) {
     `;
     const themeId = themeRes.rows[0]?.id;
 
+    const requestId = generateShortId();
+
     const result = await sql`
       INSERT INTO song_requests (
-        theme_id, title, artist, youtube_url, story, requester_name, requester_contact, status, image
+        id, theme_id, title, artist, youtube_url, story, requester_name, requester_contact, status, image
       ) VALUES (
-        ${themeId}, ${title}, ${artist}, ${youtube_url}, ${story}, ${requester_name}, ${requester_contact}, 'pending', ${image}
+        ${requestId}, ${themeId}, ${title}, ${artist}, ${youtube_url}, ${story}, ${requester_name}, ${requester_contact}, 'pending', ${image}
       )
       RETURNING id
     `;

@@ -33,6 +33,7 @@ export default function RequestClient({ initialTheme, initialBranding }: { initi
     story: '',
     requester_name: '',
     requester_contact: '',
+    isAnonymous: false,
     image: '', 
   });
 
@@ -167,10 +168,15 @@ export default function RequestClient({ initialTheme, initialBranding }: { initi
     }
 
     try {
+      const payload = {
+        ...formData,
+        requester_name: formData.isAnonymous ? '익명' : formData.requester_name
+      };
+      
       const res = await fetch('/api/requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) throw new Error('Submission failed');
@@ -370,15 +376,28 @@ export default function RequestClient({ initialTheme, initialBranding }: { initi
                  <div className="form-label">
                     성함 / 닉네임
                  </div>
-                 <div className="form-field">
-                    <input 
-                      type="text" 
-                      autoComplete="off"
-                      placeholder="실명 또는 닉네임을 입력해 주세요"
-                      className="input-hyundai md:max-w-sm"
-                      value={formData.requester_name}
-                      onChange={(e) => setFormData({...formData, requester_name: e.target.value})}
-                    />
+                 <div className="form-field space-y-4">
+                    <div className="flex items-center gap-6">
+                       <input 
+                         type="text" 
+                         autoComplete="off"
+                         placeholder="실명 또는 닉네임을 입력해 주세요"
+                         className="input-hyundai md:max-w-sm disabled:opacity-30"
+                         value={formData.isAnonymous ? '익명' : formData.requester_name}
+                         disabled={formData.isAnonymous}
+                         onChange={(e) => setFormData({...formData, requester_name: e.target.value})}
+                       />
+                       <label className="flex items-center gap-2 cursor-pointer group">
+                          <input 
+                            type="checkbox" 
+                            className="w-5 h-5 border-2 border-hyundai-gray-200 accent-hyundai-black"
+                            checked={formData.isAnonymous}
+                            onChange={(e) => setFormData({...formData, isAnonymous: e.target.checked})}
+                          />
+                          <span className="text-[14px] font-bold text-hyundai-gray-500 group-hover:text-hyundai-black transition-colors">익명</span>
+                       </label>
+                    </div>
+                    <p className="text-[13px] font-medium text-hyundai-gray-400">신청곡이 승인될 경우 기재한 이름이 표시됩니다.</p>
                  </div>
               </div>
 
@@ -395,7 +414,6 @@ export default function RequestClient({ initialTheme, initialBranding }: { initi
                       value={formData.requester_contact}
                       onChange={(e) => setFormData({...formData, requester_contact: e.target.value})}
                     />
-                    <p className="mt-3 text-[13px] font-medium text-hyundai-gray-400">송출 확정 시 안내 문자가 발송될 수 있습니다.</p>
                  </div>
               </div>
 

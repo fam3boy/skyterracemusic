@@ -43,7 +43,7 @@ export default function StatusSearchPage() {
             <div className="space-y-8">
                <div className="flex items-center gap-3">
                   <span className="w-1 h-1 bg-hyundai-accent rounded-full"></span>
-                  <span className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest">식별 번호 입력 (UUID)</span>
+                  <span className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest">식별 번호 입력 (8자리)</span>
                </div>
                
                <div className="relative group">
