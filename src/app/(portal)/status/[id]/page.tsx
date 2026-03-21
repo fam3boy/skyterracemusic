@@ -75,7 +75,7 @@ export default function StatusDetailPage() {
       label: '심사 대기 중', 
       icon: Clock, 
       color: 'bg-hyundai-gold', 
-      text: '보내주신 소중한 신청곡을 선곡팀에서 엄격한 기준에 따라 검토 중입니다. 결과 보고를 기다려 주십시오.',
+      text: '보내주신 소중한 신청곡을 선곡팀에서 검토 중입니다. 고유 번호를 복사하여 반영 결과를 확인할 수 있습니다.',
       subLabel: '검토 진행 중'
     },
     approved: { 
@@ -114,8 +114,8 @@ export default function StatusDetailPage() {
                  <Verified className="w-8 h-8" />
               </div>
                <div className="space-y-1 flex-grow text-center md:text-left">
-                  <h2 className="text-2xl font-bold tracking-tight">시스템 등록 성공</h2>
-                  <p className="text-[14px] font-medium opacity-90">귀하의 신청 데이터가 안전하게 서버에 동기화되었습니다. 고유 ID를 보관하십시오.</p>
+                  <h2 className="text-2xl font-bold tracking-tight">신청곡 등록 성공</h2>
+                  <p className="text-[14px] font-medium opacity-90">신청곡 등록이 완료되었습니다. 신청해주신 곡은 내부 검토를 거쳐 반영 여부가 결정되며 고유 번호를 복사하여 반영 여부를 확인할 수 있습니다.</p>
                </div>
                <button 
                  onClick={copyId}
@@ -142,7 +142,7 @@ export default function StatusDetailPage() {
               
               <div className="flex-grow p-12 flex flex-col justify-center space-y-8 bg-white">
                   <div className="space-y-6">
-                     <span className="text-[11px] font-bold text-hyundai-accent uppercase tracking-[0.4em]">공식 검토 결과</span>
+                     <span className="text-[11px] font-bold text-hyundai-accent uppercase tracking-[0.4em]">신청곡 검토중</span>
                      <p className="text-2xl font-bold text-hyundai-black leading-tight tracking-tight break-keep">
                         {status.text}
                      </p>
