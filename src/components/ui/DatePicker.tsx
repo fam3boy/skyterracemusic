@@ -91,21 +91,21 @@ export default function DatePicker({ value, onChange, placeholder }: DatePickerP
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 p-5 bg-white border border-hyundai-gray-100 rounded-2xl shadow-xl z-50 animate-in fade-in zoom-in-95 duration-200">
+        <div className="absolute top-full left-0 mt-2 p-5 bg-white border border-hyundai-gray-100 rounded-2xl shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-200 w-[320px]">
           <div className="flex justify-between items-center mb-6 px-1">
-            <h4 className="text-[13px] font-black text-hyundai-black uppercase">
+            <h4 className="text-[14px] font-black text-hyundai-black uppercase whitespace-nowrap">
               {currentMonth.getFullYear()}년 {currentMonth.getMonth() + 1}월
             </h4>
-            <div className="flex gap-1">
+            <div className="flex gap-2">
               <button 
                 onClick={() => changeMonth(-1)}
-                className="p-1.5 hover:bg-hyundai-gray-50 rounded-lg text-hyundai-gray-400"
+                className="p-2 hover:bg-hyundai-gray-50 rounded-xl text-hyundai-gray-400 transition-colors"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button 
                 onClick={() => changeMonth(1)}
-                className="p-1.5 hover:bg-hyundai-gray-50 rounded-lg text-hyundai-gray-400"
+                className="p-2 hover:bg-hyundai-gray-50 rounded-xl text-hyundai-gray-400 transition-colors"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -114,7 +114,7 @@ export default function DatePicker({ value, onChange, placeholder }: DatePickerP
 
           <div className="grid grid-cols-7 gap-1 mb-2">
             {['일', '월', '화', '수', '목', '금', '토'].map((day) => (
-              <div key={day} className="h-8 w-10 flex items-center justify-center text-[10px] font-bold text-hyundai-gray-300 uppercase">
+              <div key={day} className="h-10 w-full flex items-center justify-center text-[11px] font-bold text-hyundai-gray-300 uppercase">
                 {day}
               </div>
             ))}
