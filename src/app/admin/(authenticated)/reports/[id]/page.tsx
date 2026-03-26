@@ -3,17 +3,14 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
-  FileText, 
   ChevronLeft, 
   Download, 
   Printer, 
   Calendar, 
-  Music, 
   Users, 
   Trophy,
   History,
-  CheckCircle,
-  Clock
+  CheckCircle
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -57,7 +54,7 @@ export default function ReportDetailPage({ params }: { params: { id: string } })
     );
   }
 
-  if (!report) return <div>Report not found.</div>;
+  if (!report) return <div>리포트를 찾을 수 없습니다.</div>;
 
   const { summary_data: summary } = report;
 
@@ -103,40 +100,33 @@ export default function ReportDetailPage({ params }: { params: { id: string } })
            <div className="flex justify-between items-start">
               <div className="space-y-4">
                  <div className="flex items-center gap-3">
-                    <span className="bg-hyundai-black text-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest">OFFICIAL REPORT</span>
-                    <span className="text-hyundai-gray-300 font-bold text-[10px] uppercase tracking-widest">NO. {report.id.slice(0, 8)}</span>
+                    <span className="bg-hyundai-black text-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest">공식 리포트</span>
+                    <span className="text-hyundai-gray-300 font-bold text-[10px] uppercase tracking-widest">번호. {report.id.slice(0, 8)}</span>
                  </div>
                  <h1 className="text-4xl lg:text-5xl font-bold text-hyundai-black tracking-tighter leading-tight uppercase underline decoration-hyundai-gold decoration-4 underline-offset-8">
-                   SKY TERRACE <br />
-                   WEEKLY MUSIC REPORT
+                    SKY TERRACE <br />
+                    주간 신청곡 리포트
                  </h1>
               </div>
               <div className="text-right">
-                 <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest mb-1">Generated Date</p>
+                 <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest mb-1">리포트 생성 일시</p>
                  <p className="text-lg font-black text-hyundai-black">{new Date(report.created_at).toLocaleDateString()}</p>
               </div>
            </div>
 
            <div className="flex flex-wrap gap-12 pt-8 border-t border-hyundai-gray-100">
               <div className="space-y-2">
-                 <p className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-widest">Target Period</p>
+                 <p className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-widest">집계 기간</p>
                  <div className="flex items-center gap-3 text-[15px] font-bold text-hyundai-black">
                     <Calendar className="w-4 h-4 text-hyundai-gold" />
                     {new Date(report.period_start).toLocaleDateString()} - {new Date(report.period_end).toLocaleDateString()}
                  </div>
               </div>
               <div className="space-y-2">
-                 <p className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-widest">Total Approved</p>
+                 <p className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-widest">총 승인 건수</p>
                  <div className="flex items-center gap-3 text-[15px] font-bold text-hyundai-black">
                     <CheckCircle className="w-4 h-4 text-hyundai-gold" />
-                    {summary?.totalCount || 0} SELECTIONS
-                 </div>
-              </div>
-              <div className="space-y-2">
-                 <p className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-widest">Delivery Status</p>
-                 <div className="flex items-center gap-3 text-[15px] font-bold text-hyundai-black uppercase">
-                    <Clock className="w-4 h-4 text-hyundai-gold" />
-                    {report.status}
+                    {summary?.totalCount || 0} 건 승인됨
                  </div>
               </div>
            </div>
@@ -148,7 +138,7 @@ export default function ReportDetailPage({ params }: { params: { id: string } })
         {/* Top Songs */}
         <div className="bg-white p-12">
             <h3 className="text-lg font-bold text-hyundai-black uppercase tracking-tight mb-8 flex items-center gap-3">
-               <Trophy className="w-5 h-5 text-hyundai-gold" /> TOP 5 SONGS
+               <Trophy className="w-5 h-5 text-hyundai-gold" /> 인기 신청곡 TOP 5
             </h3>
             <div className="space-y-4">
                {summary?.topSongs?.length > 0 ? summary.topSongs.map((s: any, i: number) => (
@@ -159,14 +149,14 @@ export default function ReportDetailPage({ params }: { params: { id: string } })
                        <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-normal leading-none mt-1">{s.artist}</p>
                     </div>
                  </div>
-               )) : <p className="text-sm font-bold text-hyundai-gray-300 uppercase">NO DATA AVAILABLE</p>}
+               )) : <p className="text-sm font-bold text-hyundai-gray-300 uppercase">기록된 데이터가 없습니다.</p>}
             </div>
         </div>
 
         {/* Top Artists */}
         <div className="bg-white p-12">
             <h3 className="text-lg font-bold text-hyundai-black uppercase tracking-tight mb-8 flex items-center gap-3">
-               <Users className="w-5 h-5 text-hyundai-gold" /> TOP ARTISTS
+               <Users className="w-5 h-5 text-hyundai-gold" /> 인기 아티스트
             </h3>
             <div className="space-y-6">
                {summary?.topArtists?.length > 0 ? summary.topArtists.map((a: any, i: number) => (
@@ -180,9 +170,9 @@ export default function ReportDetailPage({ params }: { params: { id: string } })
                           ></div>
                        </div>
                     </div>
-                    <span className="text-xl font-black text-hyundai-black italic">{a.count} <span className="text-[10px] text-hyundai-gray-300 uppercase not-italic">REQS</span></span>
+                    <span className="text-xl font-black text-hyundai-black italic">{a.count} <span className="text-[10px] text-hyundai-gray-300 uppercase not-italic">회 신청</span></span>
                  </div>
-               )) : <p className="text-sm font-bold text-hyundai-gray-300 uppercase">NO DATA AVAILABLE</p>}
+               )) : <p className="text-sm font-bold text-hyundai-gray-300 uppercase">기록된 데이터가 없습니다.</p>}
             </div>
         </div>
       </div>
@@ -191,19 +181,19 @@ export default function ReportDetailPage({ params }: { params: { id: string } })
       <div className="bg-white border border-hyundai-gray-200 overflow-hidden">
         <div className="p-10 border-b border-hyundai-gray-200 flex justify-between items-center">
            <h3 className="text-lg font-bold text-hyundai-black uppercase tracking-tight flex items-center gap-3">
-              <History className="w-5 h-5 text-hyundai-gold" /> DETAILED SELECTION LIST
+              <History className="w-5 h-5 text-hyundai-gold" /> 상세 신청곡 내역
            </h3>
-           <span className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest">{summary?.songs?.length || 0} TOTAL RECORDS</span>
+           <span className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest">전체 {summary?.songs?.length || 0}건</span>
         </div>
         <div className="overflow-x-auto">
            <table className="w-full text-left">
               <thead>
                  <tr className="bg-hyundai-gray-50 text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest border-b border-hyundai-gray-100">
-                    <th className="px-10 py-6">No.</th>
-                    <th className="px-10 py-6">Song Title</th>
-                    <th className="px-10 py-6">Artist</th>
-                    <th className="px-10 py-6">Requester</th>
-                    <th className="px-10 py-6">Approved Date</th>
+                    <th className="px-10 py-6">번호</th>
+                    <th className="px-10 py-6">곡 제목</th>
+                    <th className="px-10 py-6">아티스트</th>
+                    <th className="px-10 py-6">신청자</th>
+                    <th className="px-10 py-6">승인 일시</th>
                  </tr>
               </thead>
               <tbody className="divide-y divide-hyundai-gray-50">
@@ -212,12 +202,12 @@ export default function ReportDetailPage({ params }: { params: { id: string } })
                        <td className="px-10 py-6 text-[14px] font-bold text-hyundai-gray-300">{(i+1).toString().padStart(3, '0')}</td>
                        <td className="px-10 py-6 text-[14px] font-bold text-hyundai-black uppercase tracking-tight">{s.title}</td>
                        <td className="px-10 py-6 text-[13px] font-bold text-hyundai-gray-500 uppercase">{s.artist}</td>
-                       <td className="px-10 py-6 text-[13px] font-bold text-hyundai-gray-500">{s.requester || 'Anonymous'}</td>
-                       <td className="px-10 py-6 text-[12px] font-bold text-hyundai-gray-400 uppercase">{new Date(s.approved_at).toLocaleDateString()}</td>
+                       <td className="px-10 py-6 text-[13px] font-bold text-hyundai-gray-500">{s.requester || '익명'}</td>
+                       <td className="px-10 py-6 text-[12px] font-bold text-hyundai-gray-400 uppercase">{new Date(s.approved_at).toLocaleString('ko-KR')}</td>
                     </tr>
                  )) : (
                     <tr>
-                       <td colSpan={5} className="px-10 py-24 text-center text-sm font-bold text-hyundai-gray-300 uppercase tracking-widest">No detailed record data available.</td>
+                       <td colSpan={5} className="px-10 py-24 text-center text-sm font-bold text-hyundai-gray-300 uppercase tracking-widest">상세 리포트 데이터가 없습니다.</td>
                     </tr>
                  )}
               </tbody>

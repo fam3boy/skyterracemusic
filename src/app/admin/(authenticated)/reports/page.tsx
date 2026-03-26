@@ -16,6 +16,7 @@ import {
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { exportSongsToExcel } from '@/lib/excel';
+import DatePicker from '@/components/ui/DatePicker';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -95,10 +96,10 @@ export default function ReportsListPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h2 className="text-3xl font-bold text-hyundai-black tracking-tighter uppercase flex items-center gap-3">
-             주간 자동 리포트 아카이브
+             주간 리포트 보관함
              <span className="w-2.5 h-2.5 rounded-full bg-hyundai-gold"></span>
           </h2>
-          <p className="text-sm font-bold text-hyundai-gray-400 mt-1 uppercase tracking-normal">리포트 로그를 관리하고 수동으로 생성할 수 있습니다.</p>
+          <p className="text-sm font-bold text-hyundai-gray-400 mt-1 uppercase tracking-normal">생성된 리포트 내역을 확인하고 엑셀로 저장할 수 있습니다.</p>
         </div>
         
         <div className="flex flex-col md:flex-row items-end md:items-center gap-4 bg-white p-4 border border-hyundai-gray-100 rounded-3xl shadow-sm">
@@ -116,18 +117,16 @@ export default function ReportsListPage() {
 
           {manualMode && (
             <div className="flex items-center gap-2 animate-in slide-in-from-right-2 fade-in duration-300">
-              <input 
-                type="date" 
+              <DatePicker 
                 value={startDate} 
-                onChange={(e) => setStartDate(e.target.value)}
-                className="bg-hyundai-gray-50 border-none rounded-xl px-4 py-2 text-xs font-bold outline-none focus:ring-1 focus:ring-hyundai-gold"
+                onChange={(val) => setStartDate(val)}
+                placeholder="시작일"
               />
               <span className="text-hyundai-gray-300 font-bold">~</span>
-              <input 
-                type="date" 
+              <DatePicker 
                 value={endDate} 
-                onChange={(e) => setEndDate(e.target.value)}
-                className="bg-hyundai-gray-50 border-none rounded-xl px-4 py-2 text-xs font-bold outline-none focus:ring-1 focus:ring-hyundai-gold"
+                onChange={(val) => setEndDate(val)}
+                placeholder="종료일"
               />
             </div>
           )}
@@ -141,7 +140,7 @@ export default function ReportsListPage() {
             )}
           >
             <RefreshCw className={cn("w-4 h-4", generating && "animate-spin")} />
-            {generating ? '생성 중...' : manualMode ? '선택 기간 생성' : '즉시 생성 (최근 7일)'}
+            {generating ? '생성 중...' : manualMode ? '선택 기간 생성' : '최근 7일 리포트 생성'}
           </button>
         </div>
       </div>
@@ -151,7 +150,7 @@ export default function ReportsListPage() {
         <div className="flex items-center gap-8">
            <div className="flex items-center gap-3 py-2 border-b border-hyundai-black">
               <FileText className="w-4 h-4 text-hyundai-black" />
-              <span className="text-[13px] font-bold uppercase tracking-tight">전체 리포트 ({reports.length})</span>
+              <span className="text-[13px] font-bold uppercase tracking-tight">전체 리포트 내역 ({reports.length}개)</span>
            </div>
         </div>
       </div>
@@ -160,9 +159,8 @@ export default function ReportsListPage() {
       <div className="bg-white border border-hyundai-gray-200 divide-y divide-hyundai-gray-100">
         <div className="grid grid-cols-12 gap-4 p-6 bg-hyundai-gray-50 border-b border-hyundai-gray-200 text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-widest">
            <div className="col-span-1">No</div>
-           <div className="col-span-4">리포트 제목 (집계 기간)</div>
+           <div className="col-span-6">리포트 제목 (집계 기간)</div>
            <div className="col-span-2 text-center">승인 건수</div>
-           <div className="col-span-2 text-center">상태</div>
            <div className="col-span-2 text-center">생성 일시</div>
            <div className="col-span-1"></div>
         </div>
@@ -184,9 +182,9 @@ export default function ReportsListPage() {
               <div className="col-span-1 text-[13px] font-bold text-hyundai-gray-300">
                 {(reports.length - i).toString().padStart(2, '0')}
               </div>
-              <div className="col-span-4 space-y-1">
+              <div className="col-span-6 space-y-1">
                 <p className="text-[15px] font-bold text-hyundai-black group-hover:text-hyundai-gold transition-colors truncate">
-                  {report.subject || 'Weekly Music Report'}
+                  {report.subject || '주간 신청곡 리포트'}
                 </p>
                 <div className="flex items-center gap-2 text-[11px] font-bold text-hyundai-gray-400 uppercase">
                   <Calendar className="w-3 h-3" />
@@ -197,16 +195,7 @@ export default function ReportsListPage() {
                 <span className="text-lg font-black text-hyundai-black tracking-tighter">
                   {report.summary_data?.totalCount ?? '-'}
                 </span>
-                <span className="text-[10px] ml-1 text-hyundai-gray-300 font-bold uppercase">곡</span>
-              </div>
-              <div className="col-span-2 flex justify-center">
-                <span className={cn(
-                  "px-3 py-1 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2",
-                  report.status === 'success' ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"
-                )}>
-                  {report.status === 'success' ? <CheckCircle className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
-                  {report.status}
-                </span>
+                <span className="text-[10px] ml-1 text-hyundai-gray-300 font-bold uppercase">건</span>
               </div>
               <div className="col-span-2 text-center text-[12px] font-bold text-hyundai-gray-500 uppercase">
                 {new Date(report.created_at).toLocaleDateString()}
