@@ -179,12 +179,23 @@ export default function AdminSettingsPage() {
 
   const handleCreateAdmin = async () => {
     if (!newAdmin.email || !newAdmin.password) return;
-    const res = await fetch('/api/admin/accounts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newAdmin)
-    });
-    if (res.ok) { setNewAdmin({ email: '', nickname: '', password: '', role: 'admin' }); fetchAccounts(); }
+    try {
+      const res = await fetch('/api/admin/accounts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newAdmin)
+      });
+      if (res.ok) { 
+        setNewAdmin({ email: '', nickname: '', password: '', role: 'admin' }); 
+        fetchAccounts(); 
+        alert('신규 관리자 계정이 생성되었습니다.');
+      } else {
+        const err = await res.json();
+        alert('계정 생성 실패: ' + (err.error || '알 수 없는 오류'));
+      }
+    } catch (err) {
+      alert('오류가 발생했습니다.');
+    }
   };
 
   const handleUpdateAdmin = async () => {

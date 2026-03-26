@@ -127,8 +127,10 @@ export async function GET(req: NextRequest) {
     let mailStatus = 'success';
     let errorMessage = null;
 
-    // Only attempt sending if there are songs AND recipients
-    if (songs.length > 0 && toEmails.length > 0) {
+    if (toEmails.length === 0) {
+      mailStatus = 'skipped';
+      errorMessage = 'No recipients configured';
+    } else if (songs.length > 0) {
       const mailResult = await sendWeeklyReport({ 
         to: toEmails.join(','), 
         cc: ccEmails.length > 0 ? ccEmails.join(',') : undefined,
@@ -141,6 +143,9 @@ export async function GET(req: NextRequest) {
         mailStatus = 'fail';
         errorMessage = JSON.stringify(mailResult.error);
       }
+    } else {
+      mailStatus = 'skipped';
+      errorMessage = 'No songs to report';
     }
 
     // Ensure column exists (one-time check/migration)

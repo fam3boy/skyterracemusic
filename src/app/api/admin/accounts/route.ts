@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10);
     
     const result = await sql`
-      INSERT INTO admins (email, password, nickname, role)
+      INSERT INTO admins (email, password_hash, nickname, role)
       VALUES (${email}, ${hashedPassword}, ${nickname}, ${role || 'admin'})
       RETURNING id, email, nickname, role
     `;
