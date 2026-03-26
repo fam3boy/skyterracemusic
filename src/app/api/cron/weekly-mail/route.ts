@@ -12,13 +12,27 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const forceCurrent = searchParams.get('forceCurrent') === 'true';
+  const paramStart = searchParams.get('startDate');
+  const paramEnd = searchParams.get('endDate');
 
   try {
     const now = new Date();
     const dayOfWeek = now.getDay();
-    const end = new Date(now);
-    const start = new Date(now);
-    start.setDate(start.getDate() - 7);
+    
+    let start: Date;
+    let end: Date;
+
+    if (paramStart && paramEnd) {
+      start = new Date(paramStart);
+      end = new Date(paramEnd);
+      // Ensure time is set to start/end of day for manual range
+      start.setHours(0, 0, 0, 0);
+      end.setHours(23, 59, 59, 999);
+    } else {
+      end = new Date(now);
+      start = new Date(now);
+      start.setDate(start.getDate() - 7);
+    }
 
     // Fetch approved requests with theme info
     const result = await sql`

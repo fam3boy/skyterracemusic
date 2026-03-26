@@ -9,9 +9,9 @@ export async function GET() {
 
   try {
     const result = await sql`
-      SELECT id, subject, status, period_start, period_end, summary_data, created_at 
+      SELECT id, subject, status, period_start, period_end, summary_data, sent_at as created_at 
       FROM weekly_mail_logs 
-      ORDER BY created_at DESC
+      ORDER BY sent_at DESC
     `;
     return NextResponse.json(result.rows);
   } catch (error: any) {

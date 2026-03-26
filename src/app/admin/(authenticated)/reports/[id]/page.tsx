@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { exportSongsToExcel } from '@/lib/excel';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -72,6 +73,18 @@ export default function ReportDetailPage({ params }: { params: { id: string } })
           목록으로 돌아가기
         </button>
         <div className="flex gap-4">
+          <button 
+            onClick={() => {
+              if (summary?.songs) {
+                const dateStr = new Date(report.created_at).toLocaleDateString().split('.').join('_').trim();
+                exportSongsToExcel(summary.songs, `Music_Report_${dateStr}.xlsx`);
+              }
+            }}
+            className="flex items-center gap-3 px-6 py-4 bg-hyundai-emerald text-white text-[14px] font-bold uppercase tracking-tight hover:bg-hyundai-black transition-all"
+          >
+            <Download className="w-4 h-4" />
+            Excel 다운로드
+          </button>
           <button 
             onClick={handlePrint}
             className="flex items-center gap-3 px-6 py-4 bg-hyundai-black text-white text-[14px] font-bold uppercase tracking-tight hover:bg-hyundai-gold hover:text-hyundai-black transition-all"

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { exportSongsToExcel } from '@/lib/excel';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -24,6 +25,11 @@ export default function ReportsListPage() {
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  
+  // Date range for manual generation
+  const [manualMode, setManualMode] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
     fetchReports();
@@ -43,11 +49,23 @@ export default function ReportsListPage() {
   }
 
   async function handleGenerateNow() {
-    if (!confirm('현재 시점까지 승인된 신청곡들을 집계하여 새로운 리포트를 생성하시겠습니까?')) return;
+    let confirmMsg = '현재 시점까지 승인된 신청곡들을 집계하여 새로운 리포트를 생성하시겠습니까?';
+    let url = '/api/cron/weekly-mail?forceCurrent=true';
+
+    if (manualMode) {
+      if (!startDate || !endDate) {
+        alert('시작일과 종료일을 모두 선택해주세요.');
+        return;
+      }
+      confirmMsg = `${startDate} ~ ${endDate} 기간의 신청곡을 집계하여 리포트를 생성하시겠습니까?`;
+      url += `&startDate=${startDate}&endDate=${endDate}`;
+    }
+
+    if (!confirm(confirmMsg)) return;
     
     setGenerating(true);
     try {
-      const res = await fetch('/api/cron/weekly-mail?forceCurrent=true');
+      const res = await fetch(url);
       if (res.ok) {
         alert('리포트 생성이 완료되었습니다.');
         fetchReports();
@@ -74,25 +92,58 @@ export default function ReportsListPage() {
   return (
     <div className="space-y-10 animate-in fade-in duration-700">
       {/* 1. Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h2 className="text-3xl font-bold text-hyundai-black tracking-tighter uppercase flex items-center gap-3">
              주간 자동 리포트 아카이브
              <span className="w-2.5 h-2.5 rounded-full bg-hyundai-gold"></span>
           </h2>
-          <p className="text-sm font-bold text-hyundai-gray-400 mt-1 uppercase tracking-normal">매주 목요일 19:00에 자동 생성된 리포트 기록입니다.</p>
+          <p className="text-sm font-bold text-hyundai-gray-400 mt-1 uppercase tracking-normal">리포트 로그를 관리하고 수동으로 생성할 수 있습니다.</p>
         </div>
-        <button 
-          onClick={handleGenerateNow}
-          disabled={generating}
-          className={cn(
-            "btn-portal-primary h-14 px-8 flex items-center gap-3 text-[13px]",
-            generating && "opacity-50 cursor-not-allowed"
+        
+        <div className="flex flex-col md:flex-row items-end md:items-center gap-4 bg-white p-4 border border-hyundai-gray-100 rounded-3xl shadow-sm">
+          <div className="flex items-center gap-2 pr-4 border-r border-hyundai-gray-100 mr-2">
+            <button 
+              onClick={() => setManualMode(!manualMode)}
+              className={cn(
+                "px-4 py-2 rounded-xl text-[11px] font-bold transition-all uppercase tracking-tight",
+                manualMode ? "bg-hyundai-black text-white" : "bg-hyundai-gray-50 text-hyundai-gray-400"
+              )}
+            >
+              기간 수동 설정
+            </button>
+          </div>
+
+          {manualMode && (
+            <div className="flex items-center gap-2 animate-in slide-in-from-right-2 fade-in duration-300">
+              <input 
+                type="date" 
+                value={startDate} 
+                onChange={(e) => setStartDate(e.target.value)}
+                className="bg-hyundai-gray-50 border-none rounded-xl px-4 py-2 text-xs font-bold outline-none focus:ring-1 focus:ring-hyundai-gold"
+              />
+              <span className="text-hyundai-gray-300 font-bold">~</span>
+              <input 
+                type="date" 
+                value={endDate} 
+                onChange={(e) => setEndDate(e.target.value)}
+                className="bg-hyundai-gray-50 border-none rounded-xl px-4 py-2 text-xs font-bold outline-none focus:ring-1 focus:ring-hyundai-gold"
+              />
+            </div>
           )}
-        >
-          <RefreshCw className={cn("w-4 h-4", generating && "animate-spin")} />
-          {generating ? '생성 중...' : '리포트 즉시 생성'}
-        </button>
+
+          <button 
+            onClick={handleGenerateNow}
+            disabled={generating}
+            className={cn(
+              "btn-portal-primary h-12 px-8 flex items-center gap-3 text-[12px] font-black",
+              generating && "opacity-50 cursor-not-allowed"
+            )}
+          >
+            <RefreshCw className={cn("w-4 h-4", generating && "animate-spin")} />
+            {generating ? '생성 중...' : manualMode ? '선택 기간 생성' : '즉시 생성 (최근 7일)'}
+          </button>
+        </div>
       </div>
 
       {/* 2. Utility Bar */}
@@ -160,7 +211,23 @@ export default function ReportsListPage() {
               <div className="col-span-2 text-center text-[12px] font-bold text-hyundai-gray-500 uppercase">
                 {new Date(report.created_at).toLocaleDateString()}
               </div>
-              <div className="col-span-1 flex justify-end">
+              <div className="col-span-1 flex justify-end gap-2">
+                <button 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (report.summary_data?.songs) {
+                      const dateStr = new Date(report.created_at).toLocaleDateString().split('.').join('_').trim();
+                      exportSongsToExcel(report.summary_data.songs, `Music_Report_${dateStr}.xlsx`);
+                    } else {
+                      alert('데이터가 없습니다.');
+                    }
+                  }}
+                  className="w-10 h-10 border border-hyundai-gray-100 flex items-center justify-center text-hyundai-gray-200 hover:text-hyundai-emerald hover:border-hyundai-emerald transition-all"
+                  title="Excel 다운로드"
+                >
+                   <Download className="w-5 h-5" />
+                </button>
                 <div className="w-10 h-10 border border-hyundai-gray-100 flex items-center justify-center text-hyundai-gray-200 group-hover:text-hyundai-black group-hover:border-hyundai-black transition-all">
                    <ChevronRight className="w-5 h-5" />
                 </div>

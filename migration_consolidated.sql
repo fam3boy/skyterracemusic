@@ -80,6 +80,7 @@ CREATE TABLE IF NOT EXISTS weekly_mail_logs (
     request_ids JSONB,
     status TEXT DEFAULT 'success',
     error_message TEXT,
+    summary_data JSONB,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP -- Alias for sent_at in some queries
 );
 

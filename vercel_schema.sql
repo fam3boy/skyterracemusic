@@ -63,7 +63,8 @@ CREATE TABLE weekly_mail_logs (
     body_text TEXT,
     request_ids JSONB,
     status TEXT DEFAULT 'success',
-    error_message TEXT
+    error_message TEXT,
+    summary_data JSONB
 );
 
 -- 6. Audit Logs
