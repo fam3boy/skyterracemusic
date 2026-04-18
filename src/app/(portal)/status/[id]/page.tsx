@@ -92,12 +92,19 @@ export default function StatusDetailPage() {
       text: '일부 메타데이터 오류 혹은 내부 정책 사유로 인해 보류되었습니다. 공지사항의 가이드라인을 확인해 주십시오.',
       subLabel: '재검토 대상'
     },
-    deleted: { 
+    rejected: { 
       label: '요청 반려', 
+      icon: AlertCircle, 
+      color: 'bg-orange-600', 
+      text: '신청해주신 곡이 검토 결과 반려되었습니다. 아래 상세 사유를 확인해 주시기 바랍니다.',
+      subLabel: '반려된 요청'
+    },
+    deleted: { 
+      label: '데이터 폐기됨', 
       icon: AlertCircle, 
       color: 'bg-hyundai-black', 
       text: '방송 규범 및 저작권 정책에 부합하지 않아 폐기된 요청입니다. 사유를 확인하시려면 고객센터로 문의 바랍니다.',
-      subLabel: '반려된 요청'
+      subLabel: '폐기된 요청'
     },
   };
 

@@ -620,11 +620,11 @@ export default function RequestsManagementPage() {
               </div>
               
               <div className="p-10 space-y-8">
-                {templates.filter(t => t.type === 'REJECT').length > 0 && (
+                {templates.filter(t => t.type === 'REJECT' || t.type === 'HOLD').length > 0 && (
                   <div className="space-y-4">
                      <p className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-widest">반려 템플릿 선택</p>
                      <div className="flex flex-wrap gap-3">
-                        {templates.filter(t => t.type === 'REJECT').map(t => (
+                        {templates.filter(t => t.type === 'REJECT' || t.type === 'HOLD').map(t => (
                           <button 
                             key={t.id} 
                             onClick={() => setRejectText(t.content)}
