@@ -155,9 +155,13 @@ export default function RequestsManagementPage() {
       if (res.ok) {
         fetchRequests();
         setSelectedIds([]);
+      } else {
+        const errorData = await res.json().catch(() => ({}));
+        alert(`일괄 처리 중 오류가 발생했습니다: ${errorData.error || '알 수 없는 서버 오류'}`);
       }
     } catch (err) {
       console.error('Failed to bulk update', err);
+      alert('네트워크 오류가 발생했습니다.');
     }
   };
 
@@ -181,9 +185,13 @@ export default function RequestsManagementPage() {
         fetchRequests();
         setRejectOpen(null);
         setSelectedIds(prev => prev.filter(id => id !== target));
+      } else {
+        const errorData = await res.json().catch(() => ({}));
+        alert(`반려 처리 중 오류가 발생했습니다: ${errorData.error || '알 수 없는 서버 오류'}`);
       }
     } catch (err) {
       console.error('Failed to reject', err);
+      alert('네트워크 오류가 발생했습니다.');
     }
   };
 

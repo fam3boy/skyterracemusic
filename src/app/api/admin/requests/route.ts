@@ -149,8 +149,8 @@ export async function PATCH(req: Request) {
       await sql`
         UPDATE song_requests 
         SET status = ${status}, 
-            approved_at = ${approved_at},
-            deleted_at = ${deleted_at}
+            approved_at = ${approved_at ?? null},
+            deleted_at = ${deleted_at ?? null}
         WHERE id = ${id}
       `;
       
@@ -168,10 +168,10 @@ export async function PATCH(req: Request) {
       await sql`
         UPDATE song_requests 
         SET 
-          admin_memo = COALESCE(${admin_memo}, admin_memo),
-          title = COALESCE(${title}, title),
-          artist = COALESCE(${artist}, artist),
-          image = COALESCE(${image}, image),
+          admin_memo = COALESCE(${admin_memo ?? null}, admin_memo),
+          title = COALESCE(${title ?? null}, title),
+          artist = COALESCE(${artist ?? null}, artist),
+          image = COALESCE(${image ?? null}, image),
           updated_at = CURRENT_TIMESTAMP
         WHERE id = ${id}
       `;
