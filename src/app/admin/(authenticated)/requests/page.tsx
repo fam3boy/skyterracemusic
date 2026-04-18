@@ -150,7 +150,7 @@ export default function RequestsManagementPage() {
       const res = await fetch('/api/admin/bulk-status', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: selectedIds, status, admin_memo: memo }),
+        body: JSON.stringify({ ids: selectedIds, status, rejection_reason: memo }),
       });
       if (res.ok) {
         fetchRequests();
@@ -178,7 +178,7 @@ export default function RequestsManagementPage() {
       const res = await fetch('/api/admin/requests', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: target, status: 'rejected', admin_memo: rejectText }),
+        body: JSON.stringify({ id: target, status: 'rejected', rejection_reason: rejectText }),
       });
 
       if (res.ok) {
@@ -484,7 +484,7 @@ export default function RequestsManagementPage() {
                           
                           {req.status !== 'rejected' && req.status !== 'deleted' && (
                             <button 
-                              onClick={() => { setRejectOpen(req.id); setRejectText(req.admin_memo || ''); }} 
+                              onClick={() => { setRejectOpen(req.id); setRejectText(req.rejection_reason || ''); }} 
                               className="h-8 px-3 flex items-center gap-1 bg-orange-600 text-white hover:bg-orange-700 transition-all text-[10px] font-bold uppercase"
                             >
                                <XCircle className="w-3 h-3" /> 반려

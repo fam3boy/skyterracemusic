@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   const adminId = (session.user as any).id;
 
   try {
-    const { ids, status, admin_memo } = await req.json();
+    const { ids, status, rejection_reason } = await req.json();
 
     if (!Array.isArray(ids) || ids.length === 0) {
       return NextResponse.json({ error: 'IDs array required' }, { status: 400 });
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
           SET status = ${status}, 
               approved_at = ${finalApprovedAt},
               deleted_at = ${status === 'deleted' ? deleted_at : null},
-              admin_memo = COALESCE(${admin_memo !== undefined ? admin_memo : null}, admin_memo)
+              rejection_reason = COALESCE(${rejection_reason ?? null}, rejection_reason)
           WHERE id = ${id}
         `;
         

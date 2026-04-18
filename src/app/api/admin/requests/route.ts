@@ -123,7 +123,7 @@ export async function PATCH(req: Request) {
   const adminId = (session.user as any).id;
 
   try {
-    const { id, status, admin_memo, title, artist, image, clear_contact } = await req.json();
+    const { id, status, admin_memo, rejection_reason, title, artist, image, clear_contact } = await req.json();
 
     if (clear_contact) {
       await sql`UPDATE song_requests SET requester_contact = NULL WHERE id = ${id}`;
@@ -163,12 +163,13 @@ export async function PATCH(req: Request) {
       );
     }
 
-    // 3. Handle Admin Memo and Music Info
-    if (admin_memo !== undefined || title !== undefined || artist !== undefined || image !== undefined) {
+    // 3. Handle Admin Memo, Rejection Reason, and Music Info
+    if (admin_memo !== undefined || rejection_reason !== undefined || title !== undefined || artist !== undefined || image !== undefined) {
       await sql`
         UPDATE song_requests 
         SET 
           admin_memo = COALESCE(${admin_memo ?? null}, admin_memo),
+          rejection_reason = COALESCE(${rejection_reason ?? null}, rejection_reason),
           title = COALESCE(${title ?? null}, title),
           artist = COALESCE(${artist ?? null}, artist),
           image = COALESCE(${image ?? null}, image),
