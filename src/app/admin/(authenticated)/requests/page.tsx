@@ -88,21 +88,15 @@ export default function RequestsManagementPage() {
 
   const handleBulkStatus = async (status: string) => {
     if (selectedIds.length === 0) return;
-    if (!confirm(`${selectedIds.length}건을 일괄 ${status} 처리하시겠습니까?`)) return;
-
-    try {
-      const res = await fetch('/api/admin/bulk-status', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: selectedIds, status }),
-      });
-      if (res.ok) {
-        setSelectedIds([]);
-        fetchRequests();
-      }
-    } catch (err) {
-      console.error('Bulk update failed', err);
+    
+    if (status === 'rejected') {
+      setRejectOpen('BULK');
+      setRejectText('');
+      return;
     }
+
+    if (!confirm(`선택한 ${selectedIds.length}개의 항목을 ${status} 처리하시겠습니까?`)) return;
+    executeBulkStatus(status);
   };
 
   const updateStatus = async (id: string, status: string) => {
@@ -151,17 +145,42 @@ export default function RequestsManagementPage() {
     }
   };
 
-  const handleProcessReject = async (id: string) => {
+  const executeBulkStatus = async (status: string, memo?: string) => {
+    try {
+      const res = await fetch('/api/admin/bulk-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: selectedIds, status, admin_memo: memo }),
+      });
+      if (res.ok) {
+        fetchRequests();
+        setSelectedIds([]);
+      }
+    } catch (err) {
+      console.error('Failed to bulk update', err);
+    }
+  };
+
+  const handleProcessReject = async (target: string | null) => {
+    if (!target) return;
+    
+    if (target === 'BULK') {
+      await executeBulkStatus('rejected', rejectText);
+      setRejectOpen(null);
+      return;
+    }
+
     try {
       const res = await fetch('/api/admin/requests', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, status: 'rejected', admin_memo: rejectText }),
+        body: JSON.stringify({ id: target, status: 'rejected', admin_memo: rejectText }),
       });
 
       if (res.ok) {
         fetchRequests();
         setRejectOpen(null);
+        setSelectedIds(prev => prev.filter(id => id !== target));
       }
     } catch (err) {
       console.error('Failed to reject', err);
