@@ -431,7 +431,7 @@ export default function RequestsManagementPage() {
                               <p className="text-[12px] font-bold text-hyundai-gray-500 tracking-tight">
                                 {req.requester_contact}
                                 <span className="ml-2 text-[10px] text-red-400 font-medium tracking-normal">
-                                  ({getDaysLeft(req.created_at) > 0 ? `${getDaysLeft(req.created_at)}일 뒤 자동 삭제` : '삭제 대기 중'})
+                                  ({getDaysLeft(req.created_at) > 0 ? `${getDaysLeft(req.created_at)}일 뒤 자동 삭제` : '오늘 자정 삭제 예정'})
                                 </span>
                               </p>
                               <button 
