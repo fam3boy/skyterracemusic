@@ -115,6 +115,21 @@ export default function RequestsManagementPage() {
     }
   };
 
+  const handleClearContact = async (id: string) => {
+    if (!confirm('이 신청자의 연락처 정보를 즉시 삭제하시겠습니까? (복구 불가)')) return;
+    try {
+      const res = await fetch('/api/admin/requests', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, clear_contact: true }),
+      });
+
+      if (res.ok) fetchRequests();
+    } catch (err) {
+      console.error('Failed to clear contact', err);
+    }
+  };
+
   const handleSaveMemo = async (id: string) => {
     try {
       const res = await fetch('/api/admin/requests', {
@@ -365,6 +380,18 @@ export default function RequestsManagementPage() {
                             <User className="w-3.5 h-3.5 text-hyundai-gray-300" />
                             <p className="text-sm font-bold text-hyundai-black uppercase">{req.requester_name}</p>
                          </div>
+                         {req.requester_contact && (
+                           <div className="flex items-center gap-2 mb-1.5 pl-5 group/contact">
+                              <p className="text-[12px] font-bold text-hyundai-gray-500 tracking-tight">{req.requester_contact}</p>
+                              <button 
+                                 onClick={() => handleClearContact(req.id)}
+                                 className="p-1 opacity-0 group-hover/contact:opacity-100 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white rounded transition-all"
+                                 title="연락처 즉시 삭제"
+                              >
+                                 <Trash2 className="w-3 h-3" />
+                              </button>
+                           </div>
+                         )}
                          <p className="text-hyundai-gray-400 font-bold uppercase tracking-tight text-[11px] pl-5">
                             {new Date(req.created_at).toLocaleDateString()} • {new Date(req.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                          </p>

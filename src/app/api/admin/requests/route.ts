@@ -123,7 +123,13 @@ export async function PATCH(req: Request) {
   const adminId = (session.user as any).id;
 
   try {
-    const { id, status, admin_memo, title, artist, image } = await req.json();
+    const { id, status, admin_memo, title, artist, image, clear_contact } = await req.json();
+
+    if (clear_contact) {
+      await sql`UPDATE song_requests SET requester_contact = NULL WHERE id = ${id}`;
+      await logAudit('CLEAR_CONTACT', 'song_requests', id, {}, adminId);
+      return NextResponse.json({ success: true, message: 'Contact cleared' });
+    }
 
     // 1. Fetch current state
     const currentRes = await sql`SELECT status, approved_at FROM song_requests WHERE id = ${id}`;
