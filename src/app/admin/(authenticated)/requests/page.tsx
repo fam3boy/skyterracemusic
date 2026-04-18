@@ -39,6 +39,10 @@ export default function RequestsManagementPage() {
   const [memoOpen, setMemoOpen] = useState<string | null>(null);
   const [memoText, setMemoText] = useState('');
   
+  // Reject Modal State
+  const [rejectOpen, setRejectOpen] = useState<string | null>(null);
+  const [rejectText, setRejectText] = useState('');
+  
   // New States
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isGrouped, setIsGrouped] = useState(false);
@@ -147,6 +151,23 @@ export default function RequestsManagementPage() {
     }
   };
 
+  const handleProcessReject = async (id: string) => {
+    try {
+      const res = await fetch('/api/admin/requests', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: 'rejected', admin_memo: rejectText }),
+      });
+
+      if (res.ok) {
+        fetchRequests();
+        setRejectOpen(null);
+      }
+    } catch (err) {
+      console.error('Failed to reject', err);
+    }
+  };
+
   const recommendationBadges = {
     APPROVE: 'bg-hyundai-emerald/10 text-hyundai-emerald border-hyundai-emerald/20',
     REVIEW: 'bg-blue-50 text-blue-600 border-blue-100',
@@ -162,6 +183,12 @@ export default function RequestsManagementPage() {
       case 'REJECT': return '제외 추천';
       default: return status;
     }
+  };
+
+  const getDaysLeft = (createdAt: string) => {
+    const targetDate = new Date(new Date(createdAt).getTime() + 30 * 24 * 60 * 60 * 1000);
+    const leftTime = targetDate.getTime() - new Date().getTime();
+    return Math.ceil(leftTime / (1000 * 60 * 60 * 24));
   };
 
   const handleMusicSearch = async (e: React.FormEvent) => {
@@ -234,7 +261,7 @@ export default function RequestsManagementPage() {
                 { id: 'all', label: '전체' },
                 { id: 'pending', label: '대기' },
                 { id: 'approved', label: '승인' },
-                { id: 'hold', label: '보류' },
+                { id: 'rejected', label: '반려' },
                 { id: 'deleted', label: '삭제' }
               ].map(f => (
                 <button
@@ -263,7 +290,7 @@ export default function RequestsManagementPage() {
                 <div className="h-6 w-px bg-white/20"></div>
                 <div className="flex gap-3">
                    <button onClick={() => handleBulkStatus('approved')} className="h-10 px-6 bg-hyundai-emerald hover:bg-hyundai-emerald/80 text-[12px] font-bold uppercase tracking-tight transition-colors">일괄 승인</button>
-                   <button onClick={() => handleBulkStatus('hold')} className="h-10 px-6 bg-blue-600 hover:bg-blue-600/80 text-[12px] font-bold uppercase tracking-tight transition-colors">일괄 보류</button>
+                   <button onClick={() => handleBulkStatus('rejected')} className="h-10 px-6 bg-orange-600 hover:bg-orange-600/80 text-[12px] font-bold uppercase tracking-tight transition-colors">일괄 반려</button>
                    <button onClick={() => handleBulkStatus('deleted')} className="h-10 px-6 bg-red-600 hover:bg-red-600/80 text-[12px] font-bold uppercase tracking-tight transition-colors">일괄 삭제 / 폐기</button>
                 </div>
              </div>
@@ -382,7 +409,12 @@ export default function RequestsManagementPage() {
                          </div>
                          {req.requester_contact && (
                            <div className="flex items-center gap-2 mb-1.5 pl-5 group/contact">
-                              <p className="text-[12px] font-bold text-hyundai-gray-500 tracking-tight">{req.requester_contact}</p>
+                              <p className="text-[12px] font-bold text-hyundai-gray-500 tracking-tight">
+                                {req.requester_contact}
+                                <span className="ml-2 text-[10px] text-red-400 font-medium tracking-normal">
+                                  ({getDaysLeft(req.created_at) > 0 ? `${getDaysLeft(req.created_at)}일 뒤 자동 삭제` : '삭제 대기 중'})
+                                </span>
+                              </p>
                               <button 
                                  onClick={() => handleClearContact(req.id)}
                                  className="p-1 opacity-0 group-hover/contact:opacity-100 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white rounded transition-all"
@@ -402,7 +434,7 @@ export default function RequestsManagementPage() {
                         <div className="flex items-center gap-2">
                           {req.status === 'pending' && <span className="text-[10px] font-bold bg-hyundai-gray-100 text-hyundai-gray-500 px-2 py-1 uppercase tracking-tight">대기 중</span>}
                           {req.status === 'approved' && <span className="text-[10px] font-bold bg-hyundai-emerald text-white px-2 py-1 uppercase tracking-tight">승인 완료</span>}
-                          {req.status === 'hold' && <span className="text-[10px] font-bold bg-blue-600 text-white px-2 py-1 uppercase tracking-tight">보류 중</span>}
+                          {req.status === 'rejected' && <span className="text-[10px] font-bold bg-orange-600 text-white px-2 py-1 uppercase tracking-tight">반려됨</span>}
                           {req.status === 'deleted' && <span className="text-[10px] font-bold bg-red-600 text-white px-2 py-1 uppercase tracking-tight">삭제됨</span>}
                         </div>
                         
@@ -423,12 +455,12 @@ export default function RequestsManagementPage() {
                             </button>
                           )}
                           
-                          {req.status !== 'hold' && req.status !== 'deleted' && (
+                          {req.status !== 'rejected' && req.status !== 'deleted' && (
                             <button 
-                              onClick={() => updateStatus(req.id, 'hold')} 
-                              className="h-8 px-3 flex items-center gap-1 bg-blue-600 text-white hover:bg-blue-700 transition-all text-[10px] font-bold uppercase"
+                              onClick={() => { setRejectOpen(req.id); setRejectText(req.admin_memo || ''); }} 
+                              className="h-8 px-3 flex items-center gap-1 bg-orange-600 text-white hover:bg-orange-700 transition-all text-[10px] font-bold uppercase"
                             >
-                               <Clock className="w-3 h-3" /> 보류
+                               <XCircle className="w-3 h-3" /> 반려
                             </button>
                           )}
                           
@@ -568,6 +600,67 @@ export default function RequestsManagementPage() {
                       </button>
                     ))}
                  </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Reject Overlay */}
+        {rejectOpen && (
+          <div className="fixed inset-0 bg-hyundai-black/60 backdrop-blur-sm flex items-center justify-center p-6 z-[100] animate-in fade-in duration-300">
+            <div className="bg-white border border-hyundai-gray-200 w-full max-w-xl shadow-3xl overflow-hidden animate-in zoom-in-95 duration-300">
+              <div className="px-10 py-8 border-b border-hyundai-gray-100 flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg font-bold uppercase tracking-tight text-red-600">신청 반려 처리</h3>
+                  <p className="text-[11px] font-bold text-hyundai-gray-400 uppercase tracking-tight mt-1">반려 사유를 선택하거나 직접 입력하세요</p>
+                </div>
+                <button onClick={() => setRejectOpen(null)} className="h-10 w-10 flex items-center justify-center hover:bg-hyundai-gray-50 transition-colors">
+                  <XCircle className="w-6 h-6 text-hyundai-gray-300" />
+                </button>
+              </div>
+              
+              <div className="p-10 space-y-8">
+                {templates.filter(t => t.type === 'REJECT').length > 0 && (
+                  <div className="space-y-4">
+                     <p className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-widest">반려 템플릿 선택</p>
+                     <div className="flex flex-wrap gap-3">
+                        {templates.filter(t => t.type === 'REJECT').map(t => (
+                          <button 
+                            key={t.id} 
+                            onClick={() => setRejectText(t.content)}
+                            className="px-5 py-3 border border-orange-200 hover:border-orange-500 hover:bg-orange-50 text-[12px] font-bold text-orange-700 uppercase tracking-tight transition-all"
+                          >
+                            {t.title}
+                          </button>
+                        ))}
+                     </div>
+                  </div>
+                )}
+                
+                <div className="space-y-4">
+                   <p className="text-[11px] font-bold text-hyundai-gray-300 uppercase tracking-widest">상세 반려 사유 입력</p>
+                   <textarea
+                     className="w-full px-8 py-6 bg-hyundai-gray-50 border-none outline-none min-h-[180px] text-xs font-bold leading-relaxed focus:bg-white focus:ring-1 focus:ring-hyundai-black transition-all"
+                     placeholder="반려 사유를 입력하십시오. 선택하신 템플릿 내용이 여기에 반영되며 수정 가능합니다."
+                     value={rejectText}
+                     onChange={(e) => setRejectText(e.target.value)}
+                   />
+                </div>
+              </div>
+
+              <div className="px-10 py-8 bg-hyundai-gray-50 border-t border-hyundai-gray-100 flex justify-end gap-3">
+                <button 
+                   onClick={() => setRejectOpen(null)}
+                   className="px-8 py-4 text-[12px] font-bold uppercase tracking-widest text-hyundai-gray-400 hover:text-hyundai-black transition-colors"
+                >
+                   취소
+                </button>
+                <button 
+                  onClick={() => handleProcessReject(rejectOpen)}
+                  className="px-10 py-4 bg-orange-600 text-white text-[14px] font-bold uppercase tracking-tight hover:bg-orange-700 transition-all"
+                >
+                  최종 반려 처리
+                </button>
               </div>
             </div>
           </div>

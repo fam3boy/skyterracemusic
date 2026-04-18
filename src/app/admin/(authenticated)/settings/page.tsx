@@ -174,7 +174,7 @@ export default function AdminSettingsPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...newTemplate, templateType: newTemplate.type })
     });
-    if (res.ok) { setNewTemplate({ title: '', content: '', type: 'HOLD' }); fetchData(); }
+    if (res.ok) { setNewTemplate({ title: '', content: '', type: 'REJECT' }); fetchData(); }
   };
 
   const handleCreateAdmin = async () => {
@@ -272,7 +272,7 @@ export default function AdminSettingsPage() {
             <div className="space-y-4 mb-8">
               <div className="flex gap-4">
                 <input type="text" placeholder="템플릿 제목..." className="flex-grow bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-0 outline-none" value={newTemplate.title} onChange={(e) => setNewTemplate({ ...newTemplate, title: e.target.value })} />
-                <select value={newTemplate.type} onChange={(e) => setNewTemplate({ ...newTemplate, type: e.target.value })} className="bg-hyundai-gray-50 border-none rounded-xl text-sm font-bold px-4 focus:ring-0 outline-none"><option value="HOLD">보류용</option><option value="DELETED">삭제용</option></select>
+                <select value={newTemplate.type} onChange={(e) => setNewTemplate({ ...newTemplate, type: e.target.value })} className="bg-hyundai-gray-50 border-none rounded-xl text-sm font-bold px-4 focus:ring-0 outline-none"><option value="REJECT">반려용</option><option value="DELETED">삭제용</option></select>
               </div>
               <textarea placeholder="내용..." className="w-full bg-hyundai-gray-50 border-none rounded-xl px-4 py-3 text-sm min-h-[100px] focus:ring-0 outline-none" value={newTemplate.content} onChange={(e) => setNewTemplate({ ...newTemplate, content: e.target.value })} />
               <button onClick={handleAddTemplate} className="w-full py-4 bg-hyundai-black text-white text-[14px] font-bold rounded-xl uppercase tracking-tight">템플릿 생성</button>
@@ -283,7 +283,7 @@ export default function AdminSettingsPage() {
                   <div className="flex justify-between mb-2">
                     <span className={cn(
                       "text-[12px] font-bold px-2 py-0.5 rounded-full tracking-tight",
-                      t.type === 'HOLD' ? 'bg-blue-100 text-blue-600' : 'bg-red-100 text-red-600'
+                      t.type === 'REJECT' ? 'bg-orange-100 text-orange-600' : 'bg-red-100 text-red-600'
                     )}>{t.type}</span>
                     <button onClick={() => handleDelete(t.id, 'admin_templates')} className="opacity-0 group-hover:opacity-100 text-hyundai-gray-300 hover:text-red-500"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
                   </div>
