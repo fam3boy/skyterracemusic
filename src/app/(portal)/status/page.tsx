@@ -56,9 +56,13 @@ export default function StatusSearchPage() {
                     value={requestId}
                     onChange={(e) => setRequestId(e.target.value)}
                   />
-                  <div className="absolute right-0 top-0 bottom-0 px-6 md:px-10 bg-hyundai-black text-white flex items-center justify-center group-focus-within:bg-hyundai-accent transition-all duration-500">
+                  <button 
+                    type="submit"
+                    disabled={!requestId.trim()}
+                    className="absolute right-0 top-0 bottom-0 px-6 md:px-10 bg-hyundai-black text-white flex items-center justify-center group-focus-within:bg-hyundai-accent hover:bg-hyundai-accent transition-all duration-500 disabled:opacity-20"
+                  >
                     <Search className="w-6 h-6 md:w-8 md:h-8" strokeWidth={2} />
-                  </div>
+                  </button>
                </div>
             </div>
 

@@ -21,6 +21,14 @@ function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
+function formatPhoneNumber(value: string): string {
+  const cleaned = value.replace(/\D/g, '');
+  if (cleaned.length === 0) return '';
+  if (cleaned.length <= 3) return cleaned;
+  if (cleaned.length <= 7) return `${cleaned.slice(0, 3)}-${cleaned.slice(3)}`;
+  return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 7)}-${cleaned.slice(7, 11)}`;
+}
+
 export default function RequestClient({ initialTheme, initialBranding }: { initialTheme: any, initialBranding: any }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -412,7 +420,8 @@ export default function RequestClient({ initialTheme, initialBranding }: { initi
                       placeholder="010-0000-0000"
                       className="input-hyundai md:max-w-sm"
                       value={formData.requester_contact}
-                      onChange={(e) => setFormData({...formData, requester_contact: e.target.value})}
+                      maxLength={13}
+                      onChange={(e) => setFormData({...formData, requester_contact: formatPhoneNumber(e.target.value)})}
                     />
                  </div>
               </div>
