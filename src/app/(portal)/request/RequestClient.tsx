@@ -59,6 +59,8 @@ export default function RequestClient({ initialTheme, initialBranding }: { initi
   const [hasSearched, setHasSearched] = useState(false);
 
   const [showManualFields, setShowManualFields] = useState(false);
+  
+  const collectCustomerInfo = branding?.collect_customer_info !== 'false';
 
   const debouncedTitle = useDebounce(formData.title, 500);
   const debouncedArtist = useDebounce(formData.artist, 500);
@@ -178,7 +180,8 @@ export default function RequestClient({ initialTheme, initialBranding }: { initi
     try {
       const payload = {
         ...formData,
-        requester_name: formData.isAnonymous ? '익명' : formData.requester_name
+        requester_name: collectCustomerInfo ? (formData.isAnonymous ? '익명' : formData.requester_name) : '익명',
+        requester_contact: collectCustomerInfo ? formData.requester_contact : ''
       };
       
       const res = await fetch('/api/requests', {
@@ -380,51 +383,55 @@ export default function RequestClient({ initialTheme, initialBranding }: { initi
                  </div>
               </div>
 
-              <div className="form-row">
-                 <div className="form-label">
-                    성함 / 닉네임
-                 </div>
-                 <div className="form-field space-y-4">
-                    <div className="flex items-center gap-6">
-                       <input 
-                         type="text" 
-                         autoComplete="off"
-                         placeholder="실명 또는 닉네임을 입력해 주세요"
-                         className="input-hyundai md:max-w-sm disabled:opacity-30"
-                         value={formData.isAnonymous ? '익명' : formData.requester_name}
-                         disabled={formData.isAnonymous}
-                         onChange={(e) => setFormData({...formData, requester_name: e.target.value})}
-                       />
-                       <label className="flex items-center gap-2 cursor-pointer group">
-                          <input 
-                            type="checkbox" 
-                            className="w-5 h-5 border-2 border-hyundai-gray-200 accent-hyundai-black"
-                            checked={formData.isAnonymous}
-                            onChange={(e) => setFormData({...formData, isAnonymous: e.target.checked})}
-                          />
-                          <span className="text-[14px] font-bold text-hyundai-gray-500 group-hover:text-hyundai-black transition-colors">익명</span>
-                       </label>
-                    </div>
-                    <p className="text-[13px] font-medium text-hyundai-gray-400">신청곡이 승인될 경우 기재한 이름이 표시됩니다.</p>
-                 </div>
-              </div>
+              {collectCustomerInfo && (
+                <>
+                  <div className="form-row">
+                     <div className="form-label">
+                        성함 / 닉네임
+                     </div>
+                     <div className="form-field space-y-4">
+                        <div className="flex items-center gap-6">
+                           <input 
+                             type="text" 
+                             autoComplete="off"
+                             placeholder="실명 또는 닉네임을 입력해 주세요"
+                             className="input-hyundai md:max-w-sm disabled:opacity-30"
+                             value={formData.isAnonymous ? '익명' : formData.requester_name}
+                             disabled={formData.isAnonymous}
+                             onChange={(e) => setFormData({...formData, requester_name: e.target.value})}
+                           />
+                           <label className="flex items-center gap-2 cursor-pointer group">
+                              <input 
+                                type="checkbox" 
+                                className="w-5 h-5 border-2 border-hyundai-gray-200 accent-hyundai-black"
+                                checked={formData.isAnonymous}
+                                onChange={(e) => setFormData({...formData, isAnonymous: e.target.checked})}
+                              />
+                              <span className="text-[14px] font-bold text-hyundai-gray-500 group-hover:text-hyundai-black transition-colors">익명</span>
+                           </label>
+                        </div>
+                        <p className="text-[13px] font-medium text-hyundai-gray-400">신청곡이 승인될 경우 기재한 이름이 표시됩니다.</p>
+                     </div>
+                  </div>
 
-              <div className="form-row">
-                 <div className="form-label">
-                    연락처
-                 </div>
-                 <div className="form-field">
-                    <input 
-                      type="text" 
-                      autoComplete="off"
-                      placeholder="010-0000-0000"
-                      className="input-hyundai md:max-w-sm"
-                      value={formData.requester_contact}
-                      maxLength={13}
-                      onChange={(e) => setFormData({...formData, requester_contact: formatPhoneNumber(e.target.value)})}
-                    />
-                 </div>
-              </div>
+                  <div className="form-row">
+                     <div className="form-label">
+                        연락처
+                     </div>
+                     <div className="form-field">
+                        <input 
+                          type="text" 
+                          autoComplete="off"
+                          placeholder="010-0000-0000"
+                          className="input-hyundai md:max-w-sm"
+                          value={formData.requester_contact}
+                          maxLength={13}
+                          onChange={(e) => setFormData({...formData, requester_contact: formatPhoneNumber(e.target.value)})}
+                        />
+                     </div>
+                  </div>
+                </>
+              )}
 
               <div className="pt-10 md:pt-20 pb-20 md:pb-40 flex flex-col items-center gap-8">
                  <div className="p-6 md:p-8 bg-[#f8f8f8] border border-hyundai-gray-100 text-center w-full">

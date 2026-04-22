@@ -154,10 +154,10 @@ export default function StatusDetailPage() {
                         {status.text}
                      </p>
                   </div>
-                 {(request.rejection_reason || request.admin_memo) && (
+                 {request.rejection_reason && (
                     <div className="p-8 bg-hyundai-gray-50 border-l-4 border-hyundai-black">
                        <p className="text-[15px] font-medium text-hyundai-gray-600 leading-relaxed italic">
-                          "{request.rejection_reason || request.admin_memo}"
+                          "{request.rejection_reason}"
                        </p>
                     </div>
                  )}

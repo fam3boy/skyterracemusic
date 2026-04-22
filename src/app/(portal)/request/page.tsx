@@ -15,7 +15,7 @@ export default async function RequestPage() {
   const initialTheme = themeRes.rows[0] || null;
 
   // Fetch Branding
-  const brandingRes = await sql`SELECT key, value FROM system_settings WHERE key IN ('logo_mode', 'logo_base64', 'brand_text')`;
+  const brandingRes = await sql`SELECT key, value FROM system_settings WHERE key IN ('logo_mode', 'logo_base64', 'brand_text', 'collect_customer_info')`;
   const initialBranding = brandingRes.rows.reduce((acc: any, row) => {
     acc[row.key] = row.value;
     return acc;

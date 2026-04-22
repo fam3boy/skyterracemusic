@@ -24,6 +24,7 @@ export default function AdminSettingsPage() {
    const [aboutImageBase64, setAboutImageBase64] = useState<string | null>(null);
    const [logoMode, setLogoMode] = useState<'text' | 'image' | 'both'>('text');
    const [brandText, setBrandText] = useState('THE HYUNDAI | SKY TERRACE');
+   const [collectCustomerInfo, setCollectCustomerInfo] = useState(true);
    const [uploadingLogo, setUploadingLogo] = useState(false);
    const [uploadingAbout, setUploadingAbout] = useState(false);
 
@@ -62,6 +63,7 @@ export default function AdminSettingsPage() {
       setAboutImageBase64(settings.about_image_base64 || null);
       setLogoMode(settings.logo_mode || 'text');
       setBrandText(settings.brand_text || 'THE HYUNDAI | SKY TERRACE');
+      setCollectCustomerInfo(settings.collect_customer_info !== 'false');
     }
   }
 
@@ -154,6 +156,15 @@ export default function AdminSettingsPage() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ key: 'brand_text', value: text })
+    });
+  };
+
+  const updateCollectCustomerInfo = async (checked: boolean) => {
+    setCollectCustomerInfo(checked);
+    await fetch('/api/admin/branding', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: 'collect_customer_info', value: String(checked) })
     });
   };
 
@@ -392,6 +403,23 @@ export default function AdminSettingsPage() {
 
             <div className="space-y-6 pt-10 border-t border-hyundai-gray-100">
                <label className="text-[12px] font-bold text-hyundai-gray-400 uppercase tracking-widest block font-bold">데이터 운영 관리</label>
+               
+               <div className="bg-hyundai-gray-50 p-8 rounded-3xl border border-hyundai-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
+                  <div className="text-left">
+                     <p className="text-sm font-bold text-hyundai-black mb-1">고객 정보 (이름, 연락처) 수집</p>
+                     <p className="text-[11px] text-hyundai-gray-500 font-medium">신청곡 접수 시 고객의 이름과 연락처 입력란을 노출할지 설정합니다.</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      className="sr-only peer" 
+                      checked={collectCustomerInfo} 
+                      onChange={(e) => updateCollectCustomerInfo(e.target.checked)} 
+                    />
+                    <div className="w-14 h-7 bg-hyundai-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-hyundai-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-hyundai-black"></div>
+                  </label>
+               </div>
+
                <div className="bg-red-50 p-8 rounded-3xl border border-red-100 flex flex-col md:flex-row justify-between items-center gap-6">
                   <div className="text-left">
                      <p className="text-sm font-bold text-red-900 mb-1">명예의 전당 데이터 초기화</p>
