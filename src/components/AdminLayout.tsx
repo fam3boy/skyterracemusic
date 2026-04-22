@@ -98,7 +98,9 @@ export default function AdminLayout({
              <div className="relative h-10 flex items-center gap-3">
                {/* Image Logo */}
                {(logoMode === 'image' || logoMode === 'both') && customLogo && (
-                 <img src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
+                 <div className="bg-white rounded px-2 py-1 h-8 flex items-center justify-center shadow-sm">
+                   <img src={customLogo} alt="Logo" className="h-full w-auto object-contain" />
+                 </div>
                )}
 
                {/* Text Branding */}
