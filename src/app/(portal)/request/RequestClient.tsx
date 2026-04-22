@@ -437,9 +437,9 @@ export default function RequestClient({ initialTheme, initialBranding }: { initi
                 </>
               )}
 
-              <div className="form-row border-none pb-0">
-                 <div className="flex flex-col items-center justify-center w-full my-8">
-                    <p className="text-[12px] font-bold text-hyundai-gray-400 mb-4 tracking-normal uppercase">스팸 등록 방지</p>
+              <div className="form-row border-none pb-0 pt-0">
+                 <div className="flex flex-col items-center justify-center w-full mt-4 mb-2">
+                    <p className="text-[12px] font-bold text-hyundai-gray-400 mb-3 tracking-normal uppercase">스팸 등록 방지</p>
                     <Turnstile 
                       siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'} 
                       onSuccess={(token) => setCaptchaToken(token)}
@@ -449,7 +449,7 @@ export default function RequestClient({ initialTheme, initialBranding }: { initi
                  </div>
               </div>
 
-              <div className="pt-10 md:pt-20 pb-20 md:pb-40 flex flex-col items-center gap-8">
+              <div className="pt-4 md:pt-8 pb-20 md:pb-40 flex flex-col items-center gap-8">
                  <div className="p-6 md:p-8 bg-[#f8f8f8] border border-hyundai-gray-100 text-center w-full">
                     <p className="text-[14px] font-medium text-hyundai-gray-500 leading-relaxed">
                        입력하신 정보는 신청곡 관리 목적으로만 사용되며, <br className="hidden md:block" /> 
