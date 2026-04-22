@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const result = await sql`SELECT key, value FROM system_settings WHERE key IN ('logo_mode', 'logo_base64', 'brand_text')`;
+    const result = await sql`SELECT key, value FROM system_settings WHERE key IN ('logo_mode', 'logo_base64', 'brand_text', 'collect_customer_info')`;
     
     const settings = result.rows.reduce((acc: any, row) => {
       acc[row.key] = row.value;
