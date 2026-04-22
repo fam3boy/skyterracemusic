@@ -13,7 +13,24 @@ function generateShortId() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { title, artist, youtube_url, story, requester_name, requester_contact, image } = body;
+    const { title, artist, youtube_url, story, requester_name, requester_contact, image, captchaToken } = body;
+
+    // Verify Turnstile CAPTCHA
+    const turnstileSecret = process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA';
+    try {
+      const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `secret=${encodeURIComponent(turnstileSecret)}&response=${encodeURIComponent(captchaToken || '')}`
+      });
+      const verifyData = await verifyRes.json();
+      if (!verifyData.success) {
+        return NextResponse.json({ error: '스팸 방지 인증에 실패했습니다. 다시 시도해 주세요.' }, { status: 400 });
+      }
+    } catch (e) {
+      console.error('Turnstile verification error:', e);
+      return NextResponse.json({ error: '캡챠 인증 통신에 실패했습니다.' }, { status: 500 });
+    }
 
     // Rate Limiting (Throttling) - Wrapped in try-catch to prevent failure if table is missing
     const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';

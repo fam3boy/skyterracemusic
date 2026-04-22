@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Search, Music, AlertCircle, ChevronRight, Disc } from 'lucide-react';
+import { Turnstile } from '@marsidev/react-turnstile';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -59,6 +60,8 @@ export default function RequestClient({ initialTheme, initialBranding }: { initi
   const [hasSearched, setHasSearched] = useState(false);
 
   const [showManualFields, setShowManualFields] = useState(false);
+  
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   
   const collectCustomerInfo = branding?.collect_customer_info !== 'false';
 
@@ -181,7 +184,8 @@ export default function RequestClient({ initialTheme, initialBranding }: { initi
       const payload = {
         ...formData,
         requester_name: collectCustomerInfo ? (formData.isAnonymous ? '익명' : formData.requester_name) : '익명',
-        requester_contact: collectCustomerInfo ? formData.requester_contact : ''
+        requester_contact: collectCustomerInfo ? formData.requester_contact : '',
+        captchaToken: captchaToken
       };
       
       const res = await fetch('/api/requests', {
@@ -433,6 +437,18 @@ export default function RequestClient({ initialTheme, initialBranding }: { initi
                 </>
               )}
 
+              <div className="form-row border-none pb-0">
+                 <div className="flex flex-col items-center justify-center w-full my-8">
+                    <p className="text-[12px] font-bold text-hyundai-gray-400 mb-4 tracking-normal uppercase">스팸 등록 방지</p>
+                    <Turnstile 
+                      siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'} 
+                      onSuccess={(token) => setCaptchaToken(token)}
+                      onError={() => setCaptchaToken(null)}
+                      onExpire={() => setCaptchaToken(null)}
+                    />
+                 </div>
+              </div>
+
               <div className="pt-10 md:pt-20 pb-20 md:pb-40 flex flex-col items-center gap-8">
                  <div className="p-6 md:p-8 bg-[#f8f8f8] border border-hyundai-gray-100 text-center w-full">
                     <p className="text-[14px] font-medium text-hyundai-gray-500 leading-relaxed">
@@ -444,10 +460,10 @@ export default function RequestClient({ initialTheme, initialBranding }: { initi
                     <Link href="/" className="btn-portal-outline px-20">취소</Link>
                     <button 
                       type="submit" 
-                      disabled={loading || !formData.title}
+                      disabled={loading || !formData.title || !captchaToken}
                       className={cn(
                         "btn-portal-primary px-32",
-                        (loading || !formData.title) && "opacity-20 cursor-not-allowed"
+                        (loading || !formData.title || !captchaToken) && "opacity-20 cursor-not-allowed"
                       )}
                     >
                        {loading ? "전송 중..." : "신청서 등록"}
