@@ -10,10 +10,33 @@ function generateShortId() {
   return result;
 }
 
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { title, artist, youtube_url, story, requester_name, requester_contact, image, captchaToken } = body;
+
+    // 1. Fetch banned words from DB and check for profanity
+    const bannedRes = await sql`SELECT pattern FROM banned_patterns WHERE type = 'WORD'`;
+    let bannedWords = bannedRes.rows.map(r => r.pattern.toLowerCase());
+    
+    // Auto-seed initial dictionary if DB is empty (Self-healing migration)
+    if (bannedWords.length === 0) {
+      const INITIAL_DB = ['ㅅㅂ', '시발', '씨발', '개새끼', '존나', '병신', '미친', '지랄', '염병', '새끼', 'fuck', 'shit', 'bitch', 'asshole', 'cunt', 'dick', 'pussy', '한남', '김치녀', '된장녀', '맘충', '틀딱', '일베', '메갈', '이기야', '노무노무', '조센징', '짱깨', '쪽발이', '좌파', '우파', '빨갱이', '친일파', '문재인', '윤석열', '이재명', '김대중', '노무현', '박정희', '전두환', '신천지', '개독', '예수쟁이', '알라'];
+      for (const word of INITIAL_DB) {
+        try {
+          await sql`INSERT INTO banned_patterns (type, pattern) VALUES ('WORD', ${word})`;
+        } catch(e) { } // Ignore duplicates if constrained
+      }
+      bannedWords = INITIAL_DB;
+    }
+
+    const textToCheck = `${title} ${artist} ${story || ''} ${requester_name || ''}`.toLowerCase();
+    const hasProfanity = bannedWords.some(word => textToCheck.includes(word));
+
+    if (hasProfanity) {
+      return NextResponse.json({ error: '신청 내용에 가이드라인 위반 단어(금칙어)가 포함되어 있어 접수할 수 없습니다.' }, { status: 400 });
+    }
 
     // Verify Turnstile CAPTCHA
     const turnstileSecret = process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA';
