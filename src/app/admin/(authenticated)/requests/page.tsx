@@ -266,8 +266,12 @@ export default function RequestsManagementPage() {
         {/* Top Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div>
-            <h2 className="text-3xl font-bold text-hyundai-black tracking-tighter uppercase font-sans">
+            <h2 className="text-3xl font-bold text-hyundai-black tracking-tighter uppercase font-sans flex items-center gap-4">
                신청 곡 처리 센터
+               <a href="/live" target="_blank" className="bg-black text-white px-4 py-2 text-[12px] font-bold tracking-widest rounded-full hover:bg-hyundai-gold hover:text-black transition-all flex items-center gap-2">
+                 <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+                 라이브 스크린 보기
+               </a>
             </h2>
             <p className="text-[12px] font-bold text-hyundai-gray-400 mt-1 uppercase tracking-normal">데이터 검증 및 처리 작업 대기열</p>
           </div>
@@ -356,8 +360,8 @@ export default function RequestsManagementPage() {
         </div>
 
         {/* Main Table Container */}
-        <div className="bg-white border border-hyundai-gray-200 overflow-hidden shadow-sm">
-          <table className="w-full text-left border-collapse">
+        <div className="bg-white border border-hyundai-gray-200 overflow-x-auto shadow-sm">
+          <table className="w-full text-left border-collapse min-w-[1200px]">
             <thead>
               <tr className="bg-hyundai-gray-50 border-b border-hyundai-gray-200">
                 <th className="px-6 py-4 w-12">
@@ -373,9 +377,10 @@ export default function RequestsManagementPage() {
                      />
                   </div>
                 </th>
-                <th className="px-8 py-6 text-[12px] uppercase font-bold tracking-tight text-hyundai-gray-400">곡 상세 정보</th>
-                <th className="px-8 py-6 text-[12px] uppercase font-bold tracking-tight text-hyundai-gray-400">신청자 프로필</th>
-                <th className="px-8 py-6 text-[12px] uppercase font-bold tracking-tight text-hyundai-gray-400 text-right">처리 및 상태 제어</th>
+                <th className="px-8 py-6 text-[12px] uppercase font-bold tracking-tight text-hyundai-gray-400 w-[350px]">곡 상세 정보</th>
+                <th className="px-8 py-6 text-[12px] uppercase font-bold tracking-tight text-hyundai-gray-400 w-[200px]">신청자 프로필</th>
+                <th className="px-8 py-6 text-[12px] uppercase font-bold tracking-tight text-hyundai-gray-400 w-[350px]">신청 사연</th>
+                <th className="px-8 py-6 text-[12px] uppercase font-bold tracking-tight text-hyundai-gray-400 text-right w-[250px]">처리 및 상태 제어</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-hyundai-gray-100">
@@ -454,15 +459,22 @@ export default function RequestsManagementPage() {
                          <p className="text-hyundai-gray-400 font-bold uppercase tracking-tight text-[11px] pl-5">
                             {new Date(req.created_at).toLocaleDateString()} • {new Date(req.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                          </p>
-                         {req.story && (
-                           <div className="mt-4 pl-5 max-w-[350px]">
-                             <div className="p-4 bg-hyundai-gray-50 border-l-2 border-hyundai-black text-[12px] font-medium text-hyundai-gray-600 leading-relaxed whitespace-pre-wrap max-h-32 overflow-y-auto custom-scrollbar">
-                               "{req.story}"
-                             </div>
-                           </div>
-                         )}
                       </div>
                     </td>
+                    
+                    {/* Story Column */}
+                    <td className="px-8 py-6 align-top">
+                      {req.story ? (
+                        <div className="p-4 bg-hyundai-gray-50 border-l-2 border-hyundai-black text-[12px] font-medium text-hyundai-gray-500 leading-relaxed whitespace-pre-wrap max-h-[140px] overflow-y-auto custom-scrollbar">
+                           "{req.story}"
+                        </div>
+                      ) : (
+                        <div className="flex items-center h-full">
+                           <span className="text-[11px] text-hyundai-gray-300 font-bold uppercase tracking-widest italic">사연 없음</span>
+                        </div>
+                      )}
+                    </td>
+
                     <td className="px-8 py-6 text-right">
                       <div className="flex flex-col items-end gap-3">
                         <div className="flex items-center gap-2">
