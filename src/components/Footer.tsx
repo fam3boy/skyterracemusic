@@ -18,7 +18,6 @@ export default function Footer() {
             <div className="flex flex-wrap gap-x-8 gap-y-4 text-[13px] font-bold text-hyundai-gray-600">
                <Link href="/request" className="hover:text-hyundai-accent transition-colors">음악 신청</Link>
                <Link href="/status" className="hover:text-hyundai-accent transition-colors">신청 현황</Link>
-               <Link href="/admin" className="hover:text-hyundai-accent transition-colors">관리자</Link>
             </div>
           </div>
 
@@ -39,7 +38,7 @@ export default function Footer() {
              © {currentYear} HYUNDAI DEPARTMENT STORE INC. ALL RIGHTS RESERVED.
            </p>
            <div className="flex gap-4">
-              <div className="px-3 py-1 border border-hyundai-gray-200 text-[10px] font-bold text-hyundai-gray-400">WA인증</div>
+              <Link href="/admin" className="text-[10px] text-hyundai-gray-300 hover:text-hyundai-gray-500 transition-colors">관리자 접속</Link>
            </div>
         </div>
       </div>

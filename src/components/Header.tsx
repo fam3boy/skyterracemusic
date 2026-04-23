@@ -55,7 +55,7 @@ export default function Header() {
 
   const [brandTop, brandBottom] = brandText.split('|').map(t => t.trim());
 
-  const topNavItems: { name: string; href: string }[] = [];
+
 
   const mainNavItems = [
     { name: '소개', href: '/#intro' },
@@ -68,21 +68,6 @@ export default function Header() {
       "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
       isScrolled ? "bg-white shadow-sm" : "bg-white"
     )}>
-      {/* Top Utility Bar */}
-      <div className="hidden lg:block border-b border-hyundai-gray-100 bg-[#f8f8f8]">
-        <div className="portal-container h-11 flex justify-end items-center gap-8">
-           {topNavItems.map((item) => (
-             <a key={item.name} href={item.href} className="text-[12px] font-medium text-hyundai-gray-500 hover:text-hyundai-black transition-colors">{item.name}</a>
-           ))}
-           <div className="flex items-center gap-6 border-l border-hyundai-gray-200 pl-8 ml-2">
-              <Link href="/admin" className="text-[12px] font-medium text-hyundai-gray-500 hover:text-hyundai-black">관리자</Link>
-              <div className="flex items-center gap-1 cursor-pointer group">
-                 <span className="text-[12px] font-medium text-hyundai-black">KOREAN</span>
-                 <svg className="w-3 h-3 text-hyundai-gray-400 group-hover:text-hyundai-black transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-              </div>
-           </div>
-        </div>
-      </div>
 
       {/* Main Bar */}
       <div className="border-b border-hyundai-gray-200">
