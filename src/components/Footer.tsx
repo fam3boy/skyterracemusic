@@ -34,9 +34,14 @@ export default function Footer() {
         </div>
 
         <div className="pt-8 border-t border-hyundai-gray-50 flex flex-col md:flex-row justify-between items-center gap-4">
-           <p className="text-[11px] font-medium text-hyundai-gray-400">
-             © {currentYear} HYUNDAI DEPARTMENT STORE INC. ALL RIGHTS RESERVED.
-           </p>
+           <div className="flex flex-col gap-1">
+             <p className="text-[11px] font-medium text-hyundai-gray-400">
+               © {currentYear} HYUNDAI DEPARTMENT STORE INC. ALL RIGHTS RESERVED.
+             </p>
+             <p className="text-[9px] text-hyundai-gray-200">
+               음악 데이터 제공: <a href="http://www.maniadb.com/" target="_blank" rel="noreferrer" className="hover:text-hyundai-gray-400 transition-colors">ManiaDB</a> (<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/kr/" target="_blank" rel="noreferrer" className="hover:text-hyundai-gray-400 transition-colors">CC BY-NC-SA 2.0 KR</a>)
+             </p>
+           </div>
            <div className="flex gap-4">
               <Link href="/admin" className="text-[10px] text-hyundai-gray-300 hover:text-hyundai-gray-500 transition-colors">관리자 접속</Link>
            </div>
