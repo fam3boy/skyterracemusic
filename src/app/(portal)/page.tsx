@@ -283,7 +283,7 @@ export default async function HomePage() {
               <div className="lg:col-span-2 relative h-[400px] bg-hyundai-gray-50 flex items-center justify-center group overflow-hidden border border-hyundai-gray-100">
                <div className="absolute inset-0 bg-[#e5e7eb]">
                   <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3211.2345!2d127.3897!3d36.4239!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x35654992525fb507%3A0x6bba3a682b1d7d0a!2sHyundai%20Premium%20Outlets%20Daejeon!5e0!3m2!1skr!2skr!4v1710840000000!5m2!1skr!2skr"
+                    src="https://maps.google.com/maps?q=%ED%98%84%EB%8C%80%ED%94%84%EB%A6%AC%EB%AF%B8%EC%97%84%EC%95%84%EC%9A%B8%EB%A0%9B%20%EB%8C%80%EC%A0%84%EC%A0%90&t=&z=16&ie=UTF8&iwloc=&output=embed"
                     className="w-full h-full border-0 grayscale-[20%]"
                     allowFullScreen
                     loading="lazy"
