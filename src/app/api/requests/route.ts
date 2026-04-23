@@ -38,6 +38,29 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: '신청 내용에 가이드라인 위반 단어(금칙어)가 포함되어 있어 접수할 수 없습니다.' }, { status: 400 });
     }
 
+    // 2. OpenAI AI Context Moderation Check (Secondary Filter)
+    if (process.env.OPENAI_API_KEY) {
+      try {
+        const modRes = await fetch('https://api.openai.com/v1/moderations', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+          },
+          body: JSON.stringify({ input: textToCheck })
+        });
+        
+        if (modRes.ok) {
+          const modData = await modRes.json();
+          if (modData.results && modData.results[0]?.flagged) {
+            return NextResponse.json({ error: '시스템 안전 정책(AI 필터: 혐오/폭력/선정성 등)에 의해 신청이 자동 차단되었습니다.' }, { status: 400 });
+          }
+        }
+      } catch (e) {
+        console.error('OpenAI Moderation Context Check Failed:', e);
+      }
+    }
+
     // Verify Turnstile CAPTCHA
     const turnstileSecret = process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA';
     try {

@@ -257,7 +257,34 @@ export default function AdminSettingsPage() {
       </div>
 
       {activeTab === 'automation' && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 animate-in fade-in duration-500">
+        <div className="space-y-10 animate-in fade-in duration-500">
+          
+          {/* AI Moderation Context Notice */}
+          <div className="card-premium p-8 bg-hyundai-black text-white rounded-[2rem] relative overflow-hidden shadow-2xl shadow-hyundai-black/30">
+            <div className="absolute -right-6 -top-6 text-white/5 pointer-events-none">
+              <Settings2 className="w-48 h-48" />
+            </div>
+            <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+               <div className="space-y-2">
+                  <h3 className="text-xl font-bold flex items-center gap-3">
+                    <div className="w-2.5 h-2.5 rounded-full bg-hyundai-gold animate-pulse"></div>
+                    OpenAI 자동 검열 엔진 (AI Moderation) 활성화됨
+                  </h3>
+                  <p className="text-white/70 text-[13px] font-medium leading-relaxed max-w-3xl border-l-2 border-hyundai-gold/50 pl-4 mt-2">
+                    현재 시스템은 직접 등록한 금칙어뿐만 아니라, 가장 진보된 AI 엔진을 통해 문맥을 실시간 분석하고 있습니다.<br />
+                    AI 엔진은 별도의 등록 없이도 <strong>[증오/차별 발언, 성적/선정적 내용, 폭력, 괴롭힘, 자해 조장]</strong> 등의 맥락을 정밀하게 인지하여 신청을 원천 자동 차단합니다.
+                  </p>
+               </div>
+               <div className="px-5 py-3 bg-white/10 rounded-xl whitespace-nowrap border border-white/20 shadow-inner">
+                 <span className="text-[12px] font-bold text-hyundai-gold uppercase tracking-widest flex items-center gap-2">
+                   <div className="w-1.5 h-1.5 rounded-full bg-hyundai-gold"></div>
+                   상태: 정상 작동 중
+                 </span>
+               </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           <div className="card-premium p-8">
             <h3 className="text-xl font-bold mb-6 flex items-center gap-3">
               <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
@@ -304,6 +331,7 @@ export default function AdminSettingsPage() {
               ))}
             </div>
           </div>
+        </div>
         </div>
       )}
 
