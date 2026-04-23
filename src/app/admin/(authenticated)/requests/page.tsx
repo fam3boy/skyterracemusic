@@ -454,6 +454,13 @@ export default function RequestsManagementPage() {
                          <p className="text-hyundai-gray-400 font-bold uppercase tracking-tight text-[11px] pl-5">
                             {new Date(req.created_at).toLocaleDateString()} • {new Date(req.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                          </p>
+                         {req.story && (
+                           <div className="mt-4 pl-5 max-w-[350px]">
+                             <div className="p-4 bg-hyundai-gray-50 border-l-2 border-hyundai-black text-[12px] font-medium text-hyundai-gray-600 leading-relaxed whitespace-pre-wrap max-h-32 overflow-y-auto custom-scrollbar">
+                               "{req.story}"
+                             </div>
+                           </div>
+                         )}
                       </div>
                     </td>
                     <td className="px-8 py-6 text-right">
