@@ -23,7 +23,7 @@ export default function StatusSearchPage() {
   };
 
   return (
-    <div className="bg-white min-h-screen pb-40">
+    <div className="bg-white min-h-[calc(100vh-200px)]">
 
       <div className="portal-container pt-6 md:pt-10">
         {/* 2. Top Header (Hyundai Style) */}
@@ -88,8 +88,7 @@ export default function StatusSearchPage() {
                    <h4 className="text-[15px] font-bold text-hyundai-black tracking-tight">심사 주기 안내</h4>
                 </div>
                 <p className="text-[13px] font-medium text-hyundai-gray-400 leading-relaxed tracking-tight">
-                   신청곡은 시스템 내부 선별 기준에 따라 정기적으로 검토됩니다. <br />
-                   검토 완료 후 상태가 '승인'으로 전환되면 정규 방송 리스트에 포함됩니다.
+                   매주 목요일 18시 이전 신청곡에 한해서 그 주 금요일부터 반영되어 송출됩니다.
                 </p>
              </div>
              
