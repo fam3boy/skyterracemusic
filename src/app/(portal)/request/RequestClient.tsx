@@ -251,7 +251,7 @@ export default function RequestClient({ initialTheme, initialBranding }: { initi
                  </div>
                  <div className="form-field space-y-6">
                     {(!formData.title || showManualFields) && (
-                      <div className="flex flex-col gap-4">
+                      <div className="flex flex-col gap-4 relative">
                         <div className="relative group">
                           <input 
                             type="text" 
@@ -273,8 +273,8 @@ export default function RequestClient({ initialTheme, initialBranding }: { initi
                         </div>
                         
                         {(searchResults.length > 0 || searching) && (
-                          <div className="border border-hyundai-gray-100 shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
-                             <div className="max-h-[400px] overflow-y-auto divide-y divide-hyundai-gray-50">
+                          <div className="absolute top-[60px] left-0 right-0 z-50 bg-white border border-hyundai-gray-200 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300 rounded-b-xl">
+                             <div className="max-h-[300px] overflow-y-auto divide-y divide-hyundai-gray-50 custom-scrollbar">
                                 {searching ? (
                                   <div className="py-20 flex flex-col items-center justify-center gap-4 text-hyundai-gray-300">
                                      <div className="w-8 h-8 border-2 border-hyundai-gray-50 border-t-hyundai-accent rounded-full animate-spin"></div>
@@ -286,14 +286,14 @@ export default function RequestClient({ initialTheme, initialBranding }: { initi
                                       key={i} 
                                       type="button"
                                       onClick={() => selectMusicResult(result)}
-                                      className="w-full flex items-center gap-6 p-6 text-left hover:bg-hyundai-gray-50 transition-all group"
+                                      className="w-full flex items-center gap-6 p-5 text-left hover:bg-hyundai-gray-50 focus:bg-hyundai-gray-50 transition-all group outline-none"
                                     >
-                                       <div className="w-16 h-16 bg-hyundai-gray-100 shrink-0 overflow-hidden relative border border-hyundai-gray-50">
-                                          {result.image ? <img src={result.image} alt="" className="w-full h-full object-cover" /> : <Music className="w-full h-full p-4 text-hyundai-gray-300" />}
+                                       <div className="w-14 h-14 bg-hyundai-gray-100 shrink-0 overflow-hidden relative border border-hyundai-gray-50">
+                                          {result.image ? <img src={result.image} alt="" className="w-full h-full object-cover" /> : <Music className="w-full h-full p-3 text-hyundai-gray-300" />}
                                        </div>
                                        <div className="flex-grow min-w-0">
-                                          <p className="font-bold text-hyundai-black text-xl truncate tracking-tight">{result.title}</p>
-                                          <p className="text-[14px] font-semibold text-hyundai-gray-400 truncate tracking-wide">{result.artist}</p>
+                                          <p className="font-bold text-hyundai-black text-lg truncate tracking-tight">{result.title}</p>
+                                          <p className="text-[13px] font-semibold text-hyundai-gray-400 truncate tracking-wide">{result.artist}</p>
                                        </div>
                                        <ChevronRight className="w-5 h-5 text-hyundai-gray-200 group-hover:text-hyundai-accent transition-colors" />
                                     </button>
