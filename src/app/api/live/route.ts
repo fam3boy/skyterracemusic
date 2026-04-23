@@ -11,7 +11,7 @@ export async function GET(req: Request) {
       SELECT id, title, artist, story, requester_name, image, youtube_url, approved_at 
       FROM song_requests 
       WHERE status = 'approved' 
-      ORDER BY approved_at DESC 
+      ORDER BY approved_at ASC 
       LIMIT ${limit}
     `;
 

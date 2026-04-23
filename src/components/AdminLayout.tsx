@@ -19,7 +19,8 @@ import {
   Search,
   Menu,
   X,
-  FileText
+  FileText,
+  Radio
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -78,6 +79,7 @@ export default function AdminLayout({
 
   const navItems = [
     { name: '대시보드', href: '/admin/dashboard', icon: LayoutDashboard },
+    { name: '방송 송출 제어', href: '/admin/live-control', icon: Radio },
     { name: '신청곡 관리', href: '/admin/requests', icon: Music },
     { name: '플레이리스트', href: '/admin/playlist', icon: ListMusic },
     { name: '월별 테마', href: '/admin/themes', icon: CalendarDays },

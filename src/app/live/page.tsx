@@ -15,20 +15,10 @@ export default function LiveBroadcastPage() {
     fetchTracks();
     const pollInterval = setInterval(() => {
       fetchTracks();
-    }, 30000);
+    }, 3000); // Poll every 3 seconds for precise Live Control response
 
     return () => clearInterval(pollInterval);
   }, []);
-
-  useEffect(() => {
-    if (tracks.length > 0) {
-      const rotateInterval = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % tracks.length);
-      }, 15000);
-
-      return () => clearInterval(rotateInterval);
-    }
-  }, [tracks]);
 
   // Auto-scroll the active chat bubble into view
   useEffect(() => {
@@ -45,8 +35,9 @@ export default function LiveBroadcastPage() {
       const res = await fetch('/api/live?limit=15');
       if (res.ok) {
         const data = await res.json();
-        // Sort ascending by time so the newest is at the bottom, like a real messenger
-        setTracks(data.sort((a: any, b: any) => new Date(a.approved_at).getTime() - new Date(b.approved_at).getTime()));
+        // Since API returns ASC (first = oldest = currently playing), we can just set it
+        // The first track tracks[0] is always Now Playing.
+        setTracks(data);
       }
     } catch (err) {
       console.error('Failed to fetch live tracks', err);
@@ -187,17 +178,19 @@ export default function LiveBroadcastPage() {
                    </div>
 
                    {/* Chat Bubble Base (Story) */}
-                   <div className={cn(
-                      "px-8 py-6 rounded-3xl rounded-tl-sm text-lg xl:text-xl font-medium leading-relaxed shadow-lg relative",
-                      isActive 
-                        ? "bg-hyundai-black text-white" 
-                        : "bg-white text-hyundai-black border border-black/5"
-                   )}>
-                      {isActive && <div className="absolute inset-0 bg-gradient-to-r from-hyundai-gold/10 to-transparent rounded-3xl pointer-events-none"></div>}
-                      <p className="relative z-10 whitespace-pre-wrap word-break">
-                        {track.story || "이 음악을 틀어주시면 정말 감사하겠습니다! 🎵"}
-                      </p>
-                   </div>
+                   {track.story && (
+                     <div className={cn(
+                        "px-8 py-6 rounded-3xl rounded-tl-sm text-lg xl:text-xl font-medium leading-relaxed shadow-lg relative",
+                        isActive 
+                          ? "bg-hyundai-black text-white" 
+                          : "bg-white text-hyundai-black border border-black/5"
+                     )}>
+                        {isActive && <div className="absolute inset-0 bg-gradient-to-r from-hyundai-gold/10 to-transparent rounded-3xl pointer-events-none"></div>}
+                        <p className="relative z-10 whitespace-pre-wrap word-break">
+                          {track.story}
+                        </p>
+                     </div>
+                   )}
 
                    {/* Attached Music Card inside Chat */}
                    <div className={cn(
